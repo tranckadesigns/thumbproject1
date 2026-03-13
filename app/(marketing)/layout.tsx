@@ -1,0 +1,20 @@
+import { Nav } from "@/components/marketing/nav";
+import { Footer } from "@/components/marketing/footer";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+
+export default async function MarketingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const supabase = await getSupabaseServerClient();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
+
+  return (
+    <>
+      <Nav isLoggedIn={!!user} />
+      <main className="pt-14">{children}</main>
+      <Footer />
+    </>
+  );
+}
