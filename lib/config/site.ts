@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "PSDfuel",
   description:
     "Premium editable PSD thumbnail assets for YouTube creators and designers.",
-  url: "https://psdfuel.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://psdfuel.com",
   plans: {
     monthly: {
       id: "monthly",
