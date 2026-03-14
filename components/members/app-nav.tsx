@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings, Heart } from "lucide-react";
+import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings } from "lucide-react";
 import { signOutAction } from "@/app/(auth)/actions";
 import { Wordmark } from "@/components/brand/wordmark";
 import { UnlockButton } from "@/components/ui/unlock-button";
