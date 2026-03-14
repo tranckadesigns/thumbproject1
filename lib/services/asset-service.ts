@@ -6,6 +6,7 @@ import type {
 
 export interface IAssetService {
   getLibrary(filters?: AssetFilters): Promise<Asset[]>;
+  getAllAdmin(): Promise<Asset[]>;
   getAsset(slug: string): Promise<Asset | null>;
   getFeatured(): Promise<Asset[]>;
   getByCategory(category: AssetCategory): Promise<Asset[]>;
@@ -16,6 +17,10 @@ export class AssetService implements IAssetService {
 
   async getLibrary(filters?: AssetFilters): Promise<Asset[]> {
     return this.repo.getAll(filters);
+  }
+
+  async getAllAdmin(): Promise<Asset[]> {
+    return this.repo.getAllAdmin();
   }
 
   async getAsset(slug: string): Promise<Asset | null> {

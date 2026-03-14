@@ -9,6 +9,7 @@ export interface AssetFilters {
 
 export interface IAssetRepository {
   getAll(filters?: AssetFilters): Promise<Asset[]>;
+  getAllAdmin(): Promise<Asset[]>;
   getBySlug(slug: string): Promise<Asset | null>;
   getById(id: string): Promise<Asset | null>;
   getFeatured(): Promise<Asset[]>;
@@ -21,6 +22,12 @@ export class MockAssetRepository implements IAssetRepository {
 
   constructor(seed: Asset[] = []) {
     this.assets = seed;
+  }
+
+  async getAllAdmin(): Promise<Asset[]> {
+    return [...this.assets].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
   }
 
   async getAll(filters?: AssetFilters): Promise<Asset[]> {

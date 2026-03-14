@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { refreshSessionInMiddleware } from "@/lib/supabase/middleware";
 
-const PROTECTED_PREFIXES = ["/library", "/asset", "/dashboard", "/favorites"];
+const PROTECTED_PREFIXES = ["/library", "/asset", "/dashboard", "/favorites", "/admin"];
 // forgot-password and reset-password are always accessible (even when logged in)
 const AUTH_PATHS = ["/login", "/signup"];
 
