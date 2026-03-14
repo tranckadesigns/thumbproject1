@@ -35,23 +35,11 @@ function NavLink({ href, label }: { href: string; label: string }) {
 }
 
 function LibraryNavLink() {
-  const pathname = usePathname();
-  const isActive = pathname.startsWith("/library");
-
   return (
     <Link
       href="/library"
-      className={cn(
-        "flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-sm font-medium transition-all duration-200",
-        isActive
-          ? "border-accent/50 bg-accent/10 text-accent"
-          : "border-accent/25 bg-accent/[0.05] text-accent/75 hover:border-accent/40 hover:bg-accent/[0.09] hover:text-accent"
-      )}
-      style={
-        isActive
-          ? { boxShadow: "0 0 14px rgba(201,169,110,0.14)" }
-          : undefined
-      }
+      className="flex items-center gap-1.5 rounded-full border border-accent/50 bg-accent/10 px-3.5 py-1 text-sm font-medium text-accent transition-all duration-200 hover:border-accent/70 hover:bg-accent/15"
+      style={{ boxShadow: "0 0 14px rgba(201,169,110,0.14)" }}
     >
       <Library className="h-3.5 w-3.5" />
       Library
@@ -205,13 +193,8 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
                   <Link
                     key={href}
                     href={href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg border px-4 py-3 text-sm font-medium transition-all",
-                      isActive
-                        ? "border-accent/40 bg-accent/10 text-accent"
-                        : "border-accent/20 bg-accent/[0.05] text-accent/80 hover:border-accent/35 hover:bg-accent/[0.09] hover:text-accent"
-                    )}
-                    style={isActive ? { boxShadow: "0 0 14px rgba(201,169,110,0.12)" } : undefined}
+                    className="flex items-center gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-medium text-accent transition-all hover:border-accent/60 hover:bg-accent/15"
+                    style={{ boxShadow: "0 0 14px rgba(201,169,110,0.12)" }}
                   >
                     <Icon className="h-4 w-4" />
                     {label}
