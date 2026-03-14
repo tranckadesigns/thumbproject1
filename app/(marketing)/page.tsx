@@ -18,8 +18,6 @@ import {
   ChallengeProgressOverlay,
   BestWorstOverlay,
   CountdownTimerOverlay,
-  SubscriberMilestoneOverlay,
-  ReactionBubbleOverlay,
 } from "@/components/marketing/asset-overlays";
 import { TestimonialsSection } from "@/components/marketing/testimonials";
 import { PsdShowcase } from "@/components/marketing/psd-showcase";
@@ -38,7 +36,6 @@ import { cn } from "@/lib/utils/cn";
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
 
 interface ThumbnailMockupProps {
-  thumbnailTitle: string;
   videoTitle: string;
   channel: string;
   views: string;
@@ -51,7 +48,6 @@ interface ThumbnailMockupProps {
 }
 
 function ThumbnailMockup({
-  thumbnailTitle,
   videoTitle,
   channel,
   views,
@@ -328,73 +324,6 @@ function ProblemSection() {
 
 // ─── 4. Solution ──────────────────────────────────────────────────────────────
 
-function SolutionSection() {
-  const attributes = [
-    {
-      icon: Layers,
-      title: "Fully layered PSD",
-      desc: "Every element on its own named layer — text, backgrounds, effects, icons. Nothing merged, nothing flattened.",
-    },
-    {
-      icon: Zap,
-      title: "Swap any number in seconds",
-      desc: "Click the text layer, type your value, export. Most assets take under 60 seconds to customize for your video.",
-    },
-    {
-      icon: Download,
-      title: "Instant download",
-      desc: "No export queues, no waiting. Click download and the PSD is yours immediately. Works on any upload schedule.",
-    },
-    {
-      icon: RefreshCw,
-      title: "New assets monthly",
-      desc: "The library grows every month across all 12 categories. Your subscription includes everything added, automatically.",
-    },
-  ];
-
-  return (
-    <section className="border-t border-border px-6 py-24">
-      <div className="mx-auto max-w-5xl">
-        <Reveal>
-          <div className="mb-14 text-center">
-            <p className="mb-4 text-xs font-medium tracking-widest text-content-muted uppercase">
-              What Vaulted provides
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight text-content-primary md:text-4xl">
-              The library that actually
-              <br />
-              understands thumbnails.
-            </h2>
-            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-content-secondary">
-              Every asset is purpose-built for the thumbnail format — not
-              adapted from a UI kit or repurposed from a template pack.
-            </p>
-          </div>
-        </Reveal>
-
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {attributes.map((attr, i) => {
-            const Icon = attr.icon;
-            return (
-              <Reveal key={attr.title} delay={i * 80}>
-                <div className="group flex flex-col gap-4 rounded-xl border border-border bg-base-surface p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/20 hover:bg-base-elevated hover:shadow-elevated">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-base-elevated transition-colors duration-300 group-hover:border-accent/30 group-hover:bg-accent/5">
-                    <Icon className="h-4 w-4 text-accent" />
-                  </div>
-                  <div>
-                    <p className="mb-1.5 text-sm font-semibold text-content-primary">{attr.title}</p>
-                    <p className="text-sm leading-relaxed text-content-secondary">{attr.desc}</p>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ─── 5. Comparison ────────────────────────────────────────────────────────────
 
 const comparisonRows = [
@@ -659,7 +588,6 @@ function HowItWorksSection() {
 
 const thumbnailData: ThumbnailMockupProps[] = [
   {
-    thumbnailTitle: "HOW I MADE $24K THIS MONTH",
     videoTitle: "How I Made $24,180 From YouTube This Month (Full Revenue Breakdown)",
     channel: "MarkBuilds",
     views: "1.2M views",
@@ -670,7 +598,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     overlayPos: "right",
   },
   {
-    thumbnailTitle: "30-DAY CHALLENGE: Day 22",
     videoTitle: "I Did This Every Day For 30 Days Straight — Here's What Happened",
     channel: "SophieDaily",
     views: "847K views",
@@ -681,7 +608,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     overlayPos: "right",
   },
   {
-    thumbnailTitle: "BEST vs WORST Strategies",
     videoTitle: "I Tested Every YouTube Growth Strategy — Here's What Actually Works",
     channel: "JordanKodes",
     views: "2.4M views",
@@ -692,7 +618,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     overlayPos: "center",
   },
   {
-    thumbnailTitle: "Going LIVE In...",
     videoTitle: "LIVE in 24 Hours — Don't Miss This (Biggest Stream of the Year)",
     channel: "NinaLive",
     views: "430K views",
