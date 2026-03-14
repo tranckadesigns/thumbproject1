@@ -7,6 +7,7 @@ import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings, Heart } from
 import { signOutAction } from "@/app/(auth)/actions";
 import { Wordmark } from "@/components/brand/wordmark";
 import { UnlockButton } from "@/components/ui/unlock-button";
+import { FavoritesNavButton } from "@/components/ui/favorites-nav-button";
 import { cn } from "@/lib/utils/cn";
 
 interface AppNavProps {
@@ -36,7 +37,6 @@ function NavLink({ href, label }: { href: string; label: string }) {
 const SUB_navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/library",   label: "Library",   icon: Library },
-  { href: "/favorites", label: "Favorites", icon: Heart },
 ];
 
 const ACCOUNT_NAV_ITEM = { href: "/account", label: "Account", icon: Settings };
@@ -84,6 +84,9 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
             {navItems.map(({ href, label }) => (
               <NavLink key={href} href={href} label={label} />
             ))}
+
+            {/* Favorites heart button — only for subscribers */}
+            {hasSubscription && <FavoritesNavButton />}
 
             {/* Upgrade CTA for non-subscribers */}
             {!hasSubscription && (

@@ -8,6 +8,7 @@ import { X, Menu, User, LogOut, LayoutDashboard, Library, Heart, Settings } from
 import { Wordmark } from "@/components/brand/wordmark";
 import { buttonVariants } from "@/components/ui/button";
 import { signOutAction } from "@/app/(auth)/actions";
+import { FavoritesNavButton } from "@/components/ui/favorites-nav-button";
 import { cn } from "@/lib/utils/cn";
 
 interface NavProps {
@@ -72,7 +73,7 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
       <>
         <NavLink href="/dashboard" label="Dashboard" />
         <NavLink href="/library"   label="Library" />
-        <NavLink href="/favorites" label="Favorites" />
+        <FavoritesNavButton />
 
         <div ref={dropdownRef} className="relative">
           <button
