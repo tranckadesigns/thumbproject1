@@ -35,6 +35,8 @@ import { PriceAnchorSection } from "@/components/marketing/price-anchor";
 import { NewThisMonthSection } from "@/components/marketing/new-this-month";
 import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
+import { getLibraryStats } from "@/lib/services/stats-service";
+import type { LibraryStats } from "@/lib/services/stats-service";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
 
@@ -106,7 +108,7 @@ function ThumbnailMockup({
 
 // ─── 1. Hero ──────────────────────────────────────────────────────────────────
 
-function HeroSection() {
+function HeroSection({ stats }: { stats: LibraryStats }) {
   const includes = [
     "Fully layered .PSD files",
     "Commercial license included",
@@ -216,8 +218,8 @@ function HeroSection() {
               Trusted by{" "}
               <span className="text-content-secondary">1,200+</span> YouTube creators
               {" · "}
-              <span className="text-content-secondary">180+</span> assets across{" "}
-              <span className="text-content-secondary">12</span> categories
+              <span className="text-content-secondary">{stats.assetCount}+</span> assets across{" "}
+              <span className="text-content-secondary">{stats.categoryCount}</span> categories
             </p>
           </Reveal>
 
@@ -466,7 +468,7 @@ const categoryData = [
   { name: "Reactions",   assets: 4, desc: "Polls, votes & emoji reactions" },
 ];
 
-function CategoryShowcaseSection() {
+function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
   return (
     <section className="border-t border-border bg-base-surface px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -476,7 +478,7 @@ function CategoryShowcaseSection() {
               Browse the library
             </p>
             <h2 className="text-3xl font-semibold tracking-tight text-content-primary md:text-4xl">
-              12 categories.
+              {stats.categoryCount} categories.
               <br />
               Every thumbnail format covered.
             </h2>
@@ -807,14 +809,16 @@ function CtaSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function HomePage() {
+export default async function HomePage() {
+  const stats = await getLibraryStats();
+
   return (
     <>
       {/* 1 — Hook: headline + live preview */}
-      <HeroSection />
+      <HeroSection stats={stats} />
 
       {/* 2 — Quick credibility */}
-      <StatsStrip />
+      <StatsStrip assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
 
       {/* 3 — Social proof: who uses it */}
       <CreatorsMarquee />
@@ -823,7 +827,7 @@ export default function HomePage() {
       <RealThumbnailsSection />
 
       {/* 4 — Show the full library breadth */}
-      <CategoryShowcaseSection />
+      <CategoryShowcaseSection stats={stats} />
 
       {/* 5 — Now that they've seen it, the problem lands harder */}
       <ProblemSection />
@@ -850,7 +854,7 @@ export default function HomePage() {
       <LibraryGrowthV5 />
 
       {/* 11b — Freshness signal: what's new this month */}
-      <NewThisMonthSection />
+      <NewThisMonthSection assetCount={stats.assetCount} />
 
       {/* 12 — Show the PSD quality up close */}
       <PsdShowcase />
@@ -868,7 +872,7 @@ export default function HomePage() {
       <PriceAnchorSection />
 
       {/* 15b — Price (after trust is established) */}
-      <PricingPreviewSection />
+      <PricingPreviewSection assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
 
       {/* 13 — Handle last objections */}
       <FAQSection />

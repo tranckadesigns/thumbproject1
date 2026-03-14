@@ -12,6 +12,8 @@ import { Separator } from "@/components/ui/separator";
 import { AssetCard } from "@/components/marketing/asset-overlays";
 import { siteConfig } from "@/lib/config/site";
 import { cn } from "@/lib/utils/cn";
+import { getLibraryStats } from "@/lib/services/stats-service";
+import type { LibraryStats } from "@/lib/services/stats-service";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -19,14 +21,16 @@ export const metadata: Metadata = {
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const planFeatures = [
-  "Full library — all 100+ assets",
-  "All 12 categories included",
-  "Fully layered Adobe Photoshop PSD",
-  "Commercial license included",
-  "New assets added every month",
-  "Unlimited downloads, no credits",
-];
+function getPlanFeatures(stats: LibraryStats) {
+  return [
+    `Full library — all ${stats.assetCount}+ assets`,
+    `All ${stats.categoryCount} categories included`,
+    "Fully layered Adobe Photoshop PSD",
+    "Commercial license included",
+    "New assets added every month",
+    "Unlimited downloads, no credits",
+  ];
+}
 
 const includedFeatures = [
   "Full library access — all assets, always",
@@ -141,12 +145,15 @@ function Stars() {
 function PlanCard({
   planId,
   featured,
+  stats,
 }: {
   planId: keyof typeof siteConfig.plans;
   featured?: boolean;
+  stats: LibraryStats;
 }) {
   const plan = siteConfig.plans[planId];
   const isYearly = planId === "yearly";
+  const planFeatures = getPlanFeatures(stats);
 
   return (
     <div
@@ -226,7 +233,7 @@ function PlanCard({
 
 // ─── Sections ─────────────────────────────────────────────────────────────────
 
-function PricingHero() {
+function PricingHero({ stats }: { stats: LibraryStats }) {
   return (
     <section className="px-6 py-24 text-center">
       <div className="mx-auto max-w-2xl">
@@ -239,7 +246,7 @@ function PricingHero() {
           <span className="text-accent">Everything unlocked.</span>
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-content-secondary">
-          Instant access to 100+ fully layered PSD thumbnail assets across 12 categories.
+          Instant access to {stats.assetCount}+ fully layered PSD thumbnail assets across {stats.categoryCount} categories.
           No tiers, no credits, no limits.
         </p>
 
@@ -255,9 +262,9 @@ function PricingHero() {
         </div>
 
         <div className="mt-7 flex items-center justify-center gap-2 text-xs text-content-muted">
-          <span>100+ assets</span>
+          <span>{stats.assetCount}+ assets</span>
           <span className="opacity-30">·</span>
-          <span>12 categories</span>
+          <span>{stats.categoryCount} categories</span>
           <span className="opacity-30">·</span>
           <span>Commercial license</span>
           <span className="opacity-30">·</span>
@@ -268,13 +275,13 @@ function PricingHero() {
   );
 }
 
-function PricingCards() {
+function PricingCards({ stats }: { stats: LibraryStats }) {
   return (
     <section className="px-6 pb-24">
       <div className="mx-auto max-w-2xl">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <PlanCard planId="monthly" />
-          <FeaturedPlanCard />
+          <PlanCard planId="monthly" stats={stats} />
+          <FeaturedPlanCard assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
         </div>
         {/* Trust strip */}
         <div className="mt-6 flex flex-col items-center gap-2">
@@ -535,11 +542,12 @@ function PricingCta() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const stats = await getLibraryStats();
   return (
     <>
-      <PricingHero />
-      <PricingCards />
+      <PricingHero stats={stats} />
+      <PricingCards stats={stats} />
       <PricingTestimonials />
       <LibrarySnapshot />
       <ProductHighlights />

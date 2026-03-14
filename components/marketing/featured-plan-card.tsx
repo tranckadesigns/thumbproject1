@@ -8,16 +8,15 @@ import { CheckoutButton } from '@/components/ui/checkout-button'
 import { cn } from '@/lib/utils/cn'
 import { siteConfig } from '@/lib/config/site'
 
-const planFeatures = [
-  'Full library — all 100+ assets',
-  'All 12 categories included',
-  'Fully layered Adobe Photoshop PSD',
-  'Commercial license included',
-  'New assets added every month',
-  'Unlimited downloads, no credits',
-]
-
-export function FeaturedPlanCard() {
+export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: number; categoryCount: number }) {
+  const planFeatures = [
+    `Full library — all ${assetCount}+ assets`,
+    `All ${categoryCount} categories included`,
+    'Fully layered Adobe Photoshop PSD',
+    'Commercial license included',
+    'New assets added every month',
+    'Unlimited downloads, no credits',
+  ]
   const plan = siteConfig.plans.yearly
   const cardRef = useRef<HTMLDivElement>(null)
   const btnRef = useRef<HTMLDivElement>(null)

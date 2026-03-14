@@ -60,12 +60,17 @@ function AnimatedStat({ raw, label }: AnimatedStatProps) {
   );
 }
 
-export function StatsStrip() {
+interface StatsStripProps {
+  assetCount: number;
+  categoryCount: number;
+}
+
+export function StatsStrip({ assetCount, categoryCount }: StatsStripProps) {
   const stats = [
-    { raw: "180+",   label: "PSD assets" },
-    { raw: "12",     label: "Categories" },
-    { raw: "1,200+", label: "Creators" },
-    { raw: "~60s",   label: "Avg. edit time" },
+    { raw: `${assetCount}+`, label: "PSD assets" },
+    { raw: String(categoryCount), label: "Categories" },
+    { raw: "1,200+",             label: "Creators" },
+    { raw: "~60s",               label: "Avg. edit time" },
   ];
 
   return (

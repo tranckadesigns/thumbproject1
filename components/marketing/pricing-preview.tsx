@@ -4,16 +4,15 @@ import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils/cn";
 
-const features = [
-  "Full library access — 180+ PSD assets",
-  "All 12 asset categories",
-  "New assets added every month",
-  "Full commercial license included",
-  "Instant download — no queue, no credits",
-  "Photoshop CC+ & Affinity Photo compatible",
-];
-
-export function PricingPreviewSection() {
+export function PricingPreviewSection({ assetCount, categoryCount }: { assetCount: number; categoryCount: number }) {
+  const features = [
+    `Full library access — ${assetCount}+ PSD assets`,
+    `All ${categoryCount} asset categories`,
+    "New assets added every month",
+    "Full commercial license included",
+    "Instant download — no queue, no credits",
+    "Photoshop CC+ & Affinity Photo compatible",
+  ];
   return (
     <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-4xl">

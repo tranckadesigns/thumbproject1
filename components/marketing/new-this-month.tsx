@@ -33,7 +33,7 @@ const newAssets = [
   },
 ];
 
-export function NewThisMonthSection() {
+export function NewThisMonthSection({ assetCount }: { assetCount: number }) {
   return (
     <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -57,7 +57,7 @@ export function NewThisMonthSection() {
               </p>
             </div>
             <p className="shrink-0 text-sm text-content-muted">
-              180+ total assets
+              {assetCount}+ total assets
             </p>
           </div>
         </Reveal>
