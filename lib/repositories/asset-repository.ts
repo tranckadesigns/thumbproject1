@@ -14,6 +14,9 @@ export interface IAssetRepository {
   getById(id: string): Promise<Asset | null>;
   getFeatured(): Promise<Asset[]>;
   getByCategory(category: AssetCategory): Promise<Asset[]>;
+  create(data: Omit<Asset, "id" | "created_at">): Promise<Asset>;
+  update(id: string, data: Partial<Omit<Asset, "id" | "created_at">>): Promise<Asset>;
+  delete(id: string): Promise<void>;
 }
 
 // Mock implementation — replace with Supabase adapter in Phase 8.
@@ -68,5 +71,26 @@ export class MockAssetRepository implements IAssetRepository {
     return this.assets.filter(
       (a) => a.category === category && a.is_published
     );
+  }
+
+  async create(data: Omit<Asset, "id" | "created_at">): Promise<Asset> {
+    const asset: Asset = {
+      ...data,
+      id: `asset-${Date.now()}`,
+      created_at: new Date().toISOString(),
+    };
+    this.assets.push(asset);
+    return asset;
+  }
+
+  async update(id: string, data: Partial<Omit<Asset, "id" | "created_at">>): Promise<Asset> {
+    const idx = this.assets.findIndex((a) => a.id === id);
+    if (idx === -1) throw new Error(`Asset not found: ${id}`);
+    this.assets[idx] = { ...this.assets[idx], ...data };
+    return this.assets[idx];
+  }
+
+  async delete(id: string): Promise<void> {
+    this.assets = this.assets.filter((a) => a.id !== id);
   }
 }
