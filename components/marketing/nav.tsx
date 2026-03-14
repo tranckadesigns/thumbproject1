@@ -122,16 +122,53 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
       </>
     );
   } else if (isLoggedIn && !hasSubscription) {
-    // Logged in, no sub — account link + unlock button
+    // Logged in, no sub — get access button + profile dropdown
     desktopNav = (
       <>
-        <NavLink href="/account" label="Account" />
         <Link
           href="/pricing"
           className={cn(buttonVariants({ size: "sm" }), "flex items-center gap-1.5")}
         >
           Get access
         </Link>
+
+        <div ref={dropdownRef} className="relative">
+          <button
+            onClick={() => setDropdownOpen(o => !o)}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
+            aria-label="Account menu"
+          >
+            {initials}
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 top-10 w-56 rounded-xl border border-border bg-base-surface shadow-2xl">
+              <div className="border-b border-border px-4 py-3">
+                <p className="text-xs text-content-muted">Signed in as</p>
+                <p className="truncate text-sm font-medium text-content-primary">{email}</p>
+              </div>
+              <div className="p-1.5">
+                <Link
+                  href="/account"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-content-secondary hover:bg-base-overlay hover:text-content-primary transition-colors"
+                >
+                  <User className="h-3.5 w-3.5" />
+                  Account
+                </Link>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-content-secondary hover:bg-base-overlay hover:text-content-primary transition-colors"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    Sign out
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
       </>
     );
   } else {
