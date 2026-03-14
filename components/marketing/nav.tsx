@@ -2,75 +2,161 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, Menu, Lock } from "lucide-react";
+import { X, Menu, Lock, User, LogOut, LayoutDashboard, Library, Heart, Settings } from "lucide-react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { buttonVariants } from "@/components/ui/button";
+import { signOutAction } from "@/app/(auth)/actions";
 import { cn } from "@/lib/utils/cn";
 
 interface NavProps {
   isLoggedIn?: boolean;
   hasSubscription?: boolean;
+  email?: string;
 }
 
-export function Nav({ isLoggedIn, hasSubscription }: NavProps) {
+function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [mobileOpen]);
-
-  const navLink = (href: string, label: string) => (
+  const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+  return (
     <Link
       href={href}
       className={cn(
         "text-sm transition-colors",
-        pathname === href
-          ? "text-content-primary"
-          : "text-content-secondary hover:text-content-primary"
+        isActive ? "text-content-primary" : "text-content-secondary hover:text-content-primary"
       )}
     >
       {label}
     </Link>
   );
+}
 
-  // Library button state based on auth + subscription
-  const libraryButton = isLoggedIn ? (
-    hasSubscription ? (
-      <Link href="/library" className={cn(buttonVariants({ size: "sm" }))}>
-        Library
-      </Link>
-    ) : (
-      <Link
-        href="/pricing"
-        className={cn(
-          buttonVariants({ size: "sm", variant: "secondary" }),
-          "flex items-center gap-1.5 opacity-70"
-        )}
-        title="Active subscription required"
-      >
-        <Lock className="h-3 w-3" />
-        Library
-      </Link>
-    )
-  ) : (
-    <Link href="/signup" className={cn(buttonVariants({ size: "sm" }))}>
-      Get access
-    </Link>
-  );
+const MEMBER_LINKS = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/library",   label: "Library",   icon: Library },
+  { href: "/favorites", label: "Favorites", icon: Heart },
+  { href: "/account",   label: "Account",   icon: Settings },
+];
+
+export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const initials = email ? email.slice(0, 2).toUpperCase() : "?";
+
+  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // ─── Desktop right side ────────────────────────────────────────────────────
+  let desktopNav: React.ReactNode;
+
+  if (isLoggedIn && hasSubscription) {
+    // Full member — show app nav links + profile dropdown
+    desktopNav = (
+      <>
+        <NavLink href="/dashboard" label="Dashboard" />
+        <NavLink href="/library"   label="Library" />
+        <NavLink href="/favorites" label="Favorites" />
+
+        <div ref={dropdownRef} className="relative">
+          <button
+            onClick={() => setDropdownOpen(o => !o)}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
+            aria-label="Account menu"
+          >
+            {initials}
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 top-10 w-56 rounded-xl border border-border bg-base-surface shadow-2xl">
+              <div className="border-b border-border px-4 py-3">
+                <p className="text-xs text-content-muted">Signed in as</p>
+                <p className="truncate text-sm font-medium text-content-primary">{email}</p>
+              </div>
+              <div className="p-1.5">
+                <Link
+                  href="/account"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-content-secondary hover:bg-base-overlay hover:text-content-primary transition-colors"
+                >
+                  <User className="h-3.5 w-3.5" />
+                  Account
+                </Link>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-content-secondary hover:bg-base-overlay hover:text-content-primary transition-colors"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    Sign out
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  } else if (isLoggedIn && !hasSubscription) {
+    // Logged in, no sub — account link + unlock button
+    desktopNav = (
+      <>
+        <NavLink href="/account" label="Account" />
+        <Link
+          href="/pricing"
+          className={cn(buttonVariants({ size: "sm" }), "flex items-center gap-1.5")}
+        >
+          Get access
+        </Link>
+      </>
+    );
+  } else {
+    // Logged out
+    desktopNav = (
+      <>
+        <NavLink href="/login" label="Sign in" />
+        <Link href="/signup" className={cn(buttonVariants({ size: "sm" }))}>
+          Get access
+        </Link>
+      </>
+    );
+  }
+
+  // ─── Mobile links ──────────────────────────────────────────────────────────
+  const mobileLinks = isLoggedIn && hasSubscription
+    ? MEMBER_LINKS
+    : isLoggedIn
+    ? [
+        { href: "/",        label: "Home",    icon: LayoutDashboard },
+        { href: "/pricing", label: "Pricing", icon: LayoutDashboard },
+        { href: "/account", label: "Account", icon: Settings },
+      ]
+    : [
+        { href: "/",        label: "Home",    icon: LayoutDashboard },
+        { href: "/pricing", label: "Pricing", icon: LayoutDashboard },
+        { href: "/login",   label: "Sign in", icon: User },
+      ];
 
   return (
     <>
       {mounted && createPortal(
         <>
-          {/* Mobile drawer */}
           {mobileOpen && (
             <div className="fixed inset-0 z-[200] flex flex-col bg-base md:hidden">
               <div className="flex h-14 items-center justify-between border-b border-border px-6">
@@ -86,52 +172,57 @@ export function Nav({ isLoggedIn, hasSubscription }: NavProps) {
                 </button>
               </div>
 
+              {/* Email strip for logged-in users */}
+              {isLoggedIn && email && (
+                <div className="border-b border-border px-6 py-4">
+                  <p className="text-xs text-content-muted">Signed in as</p>
+                  <p className="truncate text-sm font-medium text-content-primary">{email}</p>
+                </div>
+              )}
+
               <nav className="flex flex-col gap-1 p-4">
-                {[
-                  { href: "/", label: "Home" },
-                  { href: "/pricing", label: "Pricing" },
-                  ...(isLoggedIn
-                    ? [
-                        { href: "/library", label: "Library" },
-                        { href: "/account", label: "Account" },
-                      ]
-                    : [
-                        { href: "/login", label: "Sign in" },
-                      ]
-                  ),
-                ].map(({ href, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={cn(
-                      "flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors",
-                      pathname === href
-                        ? "bg-base-surface text-content-primary"
-                        : "text-content-secondary hover:bg-base-surface hover:text-content-primary"
-                    )}
-                  >
-                    {label}
-                  </Link>
-                ))}
+                {mobileLinks.map(({ href, label, icon: Icon }) => {
+                  const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                        isActive
+                          ? "bg-base-surface text-content-primary"
+                          : "text-content-secondary hover:bg-base-surface hover:text-content-primary"
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {label}
+                    </Link>
+                  );
+                })}
               </nav>
 
-              <div className="mt-auto border-t border-border p-6">
+              <div className="mt-auto border-t border-border p-4 space-y-2">
                 {isLoggedIn ? (
-                  <Link
-                    href={hasSubscription ? "/library" : "/pricing"}
-                    className={cn(buttonVariants({ size: "lg" }), "w-full justify-center")}
-                  >
-                    {hasSubscription ? "Go to library" : "Upgrade to access"}
-                  </Link>
+                  <form action={signOutAction}>
+                    <button
+                      type="submit"
+                      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-content-secondary hover:bg-base-surface hover:text-content-primary transition-colors"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </button>
+                  </form>
                 ) : (
                   <>
                     <Link
                       href="/signup"
+                      onClick={() => setMobileOpen(false)}
                       className={cn(buttonVariants({ size: "lg" }), "w-full justify-center")}
                     >
                       Get access
                     </Link>
-                    <p className="mt-3 text-center text-xs text-content-muted">
+                    <p className="text-center text-xs text-content-muted">
                       Monthly from $19 · Cancel anytime
                     </p>
                   </>
@@ -151,18 +242,8 @@ export function Nav({ isLoggedIn, hasSubscription }: NavProps) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-7 md:flex">
-            {navLink("/pricing", "Pricing")}
-            {isLoggedIn ? (
-              <>
-                {navLink("/account", "Account")}
-                {libraryButton}
-              </>
-            ) : (
-              <>
-                {navLink("/login", "Sign in")}
-                {libraryButton}
-              </>
-            )}
+            {!hasSubscription && <NavLink href="/pricing" label="Pricing" />}
+            {desktopNav}
           </nav>
 
           {/* Mobile hamburger */}

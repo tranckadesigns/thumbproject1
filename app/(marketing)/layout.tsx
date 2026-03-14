@@ -21,12 +21,13 @@ export default async function MarketingLayout({
 
   const sub = user ? await getSubscription() : null;
   const hasSubscription = demoMode || sub?.status === "active" || sub?.status === "trialing";
+  const email = user?.email ?? (demoMode ? "demo@psdfuel.com" : undefined);
 
   return (
     <>
       <ReadingProgress />
       <AnnouncementBar />
-      <Nav isLoggedIn={!!user || demoMode} hasSubscription={hasSubscription} />
+      <Nav isLoggedIn={!!user || demoMode} hasSubscription={hasSubscription} email={email} />
       <MagneticLiquid targetId="hero-get-access" />
       <main>{children}</main>
       <Footer />
