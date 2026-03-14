@@ -4,8 +4,7 @@ import type { AssetCategory } from "@/types/asset";
 import { assetService } from "@/lib/services/index";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LibrarySidebar } from "@/components/members/library-sidebar";
-import { LibrarySearch } from "@/components/members/library-search";
-import { MemberAssetCard } from "@/components/members/member-asset-card";
+import { LibraryContent } from "@/components/members/library-content";
 import { MobileCategoryPillsClient } from "@/components/members/mobile-category-pills";
 import { siteConfig } from "@/lib/config/site";
 
@@ -27,18 +26,17 @@ async function getFavoriteIds(): Promise<Set<string>> {
 export default async function LibraryPage({ searchParams }: LibraryPageProps) {
   const { category, q, sort } = await searchParams;
 
+  // Fetch by category only — search is handled client-side
   let assets = await assetService.getLibrary({
     category: category as AssetCategory | undefined,
-    search: q,
   });
 
-  // Sort
+  // Sort server-side so initial render is correct
   if (sort === "featured") {
     assets = [...assets].sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
   } else if (sort === "az") {
     assets = [...assets].sort((a, b) => a.title.localeCompare(b.title));
   } else {
-    // Default: newest first
     assets = [...assets].sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
@@ -46,15 +44,13 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
 
   const allAssets = await assetService.getLibrary();
 
-  // Category counts from full library
   const categoryCounts = allAssets.reduce<Record<string, number>>((acc, asset) => {
     acc[asset.category] = (acc[asset.category] ?? 0) + 1;
     return acc;
   }, {});
 
-  const [favoriteIds] = await Promise.all([getFavoriteIds()]);
+  const favoriteIds = await getFavoriteIds();
   const categories = [...siteConfig.categories] as string[];
-  const isFiltered = !!(category || q);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -64,21 +60,10 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
           Library
         </h1>
         <p className="mt-1 text-sm text-content-muted">
-          {isFiltered
-            ? `${assets.length} result${assets.length !== 1 ? "s" : ""}${category ? ` in ${category}` : ""}${q ? ` for "${q}"` : ""}`
+          {category
+            ? `${assets.length} asset${assets.length !== 1 ? "s" : ""} in ${category}`
             : `${allAssets.length} assets across ${siteConfig.categories.length} categories`}
         </p>
-      </div>
-
-      {/* Search + sort bar — full width */}
-      <div className="mb-6">
-        <Suspense>
-          <LibrarySearch
-            activeSearch={q}
-            activeSort={sort}
-            activeCategory={category}
-          />
-        </Suspense>
       </div>
 
       {/* Mobile category pills */}
@@ -109,30 +94,17 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
           </div>
         </aside>
 
-        {/* Asset grid */}
-        <div className="min-w-0 flex-1">
-          {assets.length > 0 ? (
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {assets.map((asset) => (
-                <MemberAssetCard key={asset.id} asset={asset} isFavorited={favoriteIds.has(asset.id)} />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-32 text-center">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-base-elevated">
-                <svg width="18" height="18" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path
-                    d="M7 0 L8.3 5.7 L14 7 L8.3 8.3 L7 14 L5.7 8.3 L0 7 L5.7 5.7 Z"
-                    fill="rgba(201,169,110,0.3)"
-                  />
-                </svg>
-              </div>
-              <p className="text-sm font-medium text-content-primary">No assets found</p>
-              <p className="mt-1.5 text-sm text-content-muted">
-                Try a different search or category.
-              </p>
-            </div>
-          )}
+        {/* Search + asset grid — fully client-side search */}
+        <div className="min-w-0 flex-1 space-y-6">
+          <Suspense>
+            <LibraryContent
+              assets={assets}
+              favoriteIds={favoriteIds}
+              activeSort={sort}
+              activeCategory={category}
+              initialSearch={q}
+            />
+          </Suspense>
         </div>
       </div>
     </div>
