@@ -1,10 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
-import Link from 'next/link'
 import { Check, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
+import { CheckoutButton } from '@/components/ui/checkout-button'
 import { cn } from '@/lib/utils/cn'
 import { siteConfig } from '@/lib/config/site'
 
@@ -96,13 +96,13 @@ export function FeaturedPlanCard() {
           }}
           className="mt-7"
         >
-          <Link
-            href="/signup"
+          <CheckoutButton
+            planId="yearly"
             className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'w-full justify-center')}
           >
             Get started
             <ChevronRight className="h-4 w-4" />
-          </Link>
+          </CheckoutButton>
         </div>
       </div>
 

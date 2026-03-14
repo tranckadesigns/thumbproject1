@@ -11,6 +11,12 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FeaturedPlanCard } from "@/components/marketing/featured-plan-card";
+import {
+  MonthlyCheckoutButton,
+  YearlyCheckoutButton,
+  MonthlyCtaButton,
+  YearlyCtaButton,
+} from "@/components/marketing/plan-checkout-buttons";
 import { Separator } from "@/components/ui/separator";
 import { AssetCard } from "@/components/marketing/asset-overlays";
 import { siteConfig } from "@/lib/config/site";
@@ -201,29 +207,13 @@ function PlanCard({
           </div>
         )}
 
-        {featured ? (
-          <Link
-            href="/signup"
-            className={cn(
-              buttonVariants({ variant: "default", size: "lg" }),
-              "w-full justify-center mt-7"
-            )}
-          >
-            Get started
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        ) : (
-          <Link
-            href="/signup"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "lg" }),
-              "w-full justify-center mt-7"
-            )}
-          >
-            Get started
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        )}
+        <div className="mt-7">
+          {featured ? (
+            <YearlyCheckoutButton />
+          ) : (
+            <MonthlyCheckoutButton />
+          )}
+        </div>
       </div>
 
       {/* Feature list */}
@@ -523,15 +513,7 @@ function PricingCta() {
               $19 <span className="text-base font-normal text-content-muted">/mo</span>
             </p>
             <p className="mt-1.5 text-xs text-content-muted">Cancel anytime.</p>
-            <Link
-              href="/signup?plan=monthly"
-              className={cn(
-                buttonVariants({ variant: "secondary", size: "sm" }),
-                "mt-5 w-full justify-center"
-              )}
-            >
-              Start monthly
-            </Link>
+            <MonthlyCtaButton />
           </div>
 
           <div className="relative rounded-xl border border-accent/40 bg-base-elevated p-6 text-left overflow-hidden">
@@ -548,15 +530,7 @@ function PricingCta() {
               $149 <span className="text-base font-normal text-content-muted">/yr</span>
             </p>
             <p className="mt-1.5 text-xs text-content-muted">$12.42/mo equivalent.</p>
-            <Link
-              href="/signup?plan=yearly"
-              className={cn(
-                buttonVariants({ variant: "default", size: "sm" }),
-                "mt-5 w-full justify-center"
-              )}
-            >
-              Start yearly
-            </Link>
+            <YearlyCtaButton />
           </div>
         </div>
 
