@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       // ── Checkout completed → subscription created ──────────────────────────
       case "checkout.session.completed": {
-        const session = event.data.object as Stripe.CheckoutSession;
+        const session = event.data.object as Stripe.Checkout.Session;
         if (session.mode !== "subscription") break;
 
         const userId    = session.metadata?.user_id;
