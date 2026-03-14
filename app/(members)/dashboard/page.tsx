@@ -105,7 +105,7 @@ export default async function DashboardPage() {
               </div>
               <p className="text-sm font-medium text-content-primary">No favorites yet</p>
               <p className="mt-1 text-xs text-content-muted">
-                Save assets you like — they'll appear here.
+                Save assets you like — they&apos;ll appear here.
               </p>
               <Link
                 href="/library"

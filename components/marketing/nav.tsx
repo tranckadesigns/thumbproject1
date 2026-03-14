@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, Menu, Lock, User, LogOut, LayoutDashboard, Library, Heart, Settings } from "lucide-react";
+import { X, Menu, User, LogOut, LayoutDashboard, Library, Heart, Settings } from "lucide-react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { buttonVariants } from "@/components/ui/button";
 import { signOutAction } from "@/app/(auth)/actions";
