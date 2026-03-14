@@ -13,10 +13,12 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({ planId, className, children }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   async function handleClick() {
     setLoading(true);
+    setError(null);
 
     try {
       // Check if user is logged in
@@ -24,7 +26,6 @@ export function CheckoutButton({ planId, className, children }: CheckoutButtonPr
       if (supabase) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          // Not logged in — go to signup first, then return to checkout
           router.push(`/signup?plan=${planId}`);
           return;
         }
@@ -37,23 +38,36 @@ export function CheckoutButton({ planId, className, children }: CheckoutButtonPr
         body: JSON.stringify({ planId }),
       });
 
-      if (!res.ok) throw new Error("Checkout failed");
+      const data = await res.json();
 
-      const { url } = await res.json();
-      if (url) window.location.href = url;
+      if (!res.ok) {
+        throw new Error(data.error || `Server error ${res.status}`);
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Checkout error:", err);
+      setError(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
     }
   }
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={loading}
-      className={cn(className)}
-    >
-      {loading ? "Redirecting…" : children}
-    </button>
+    <div style={{ display: "contents" }}>
+      <button
+        onClick={handleClick}
+        disabled={loading}
+        className={cn(className)}
+      >
+        {loading ? "Redirecting…" : children}
+      </button>
+      {error && (
+        <p className="mt-2 text-center text-xs text-red-400">{error}</p>
+      )}
+    </div>
   );
 }
