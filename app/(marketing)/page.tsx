@@ -31,7 +31,6 @@ import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
 import { FileSpecsSection } from "@/components/marketing/file-specs";
 import { LibraryGrowthV5 } from "@/components/marketing/library-growth-v5";
 import { EmailCaptureSection } from "@/components/marketing/email-capture";
-import { LiveViewers } from "@/components/marketing/live-viewers";
 import { cn } from "@/lib/utils/cn";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
@@ -220,11 +219,6 @@ function HeroSection() {
             </p>
           </Reveal>
 
-          <Reveal delay={440}>
-            <div className="mt-3 flex justify-center">
-              <LiveViewers />
-            </div>
-          </Reveal>
         </div>
 
         {/* Product preview grid */}
