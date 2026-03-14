@@ -45,10 +45,22 @@ import {
 } from "@/components/marketing/asset-overlays";
 import type { AssetCategory } from "@/types/asset";
 import { assetService } from "@/lib/services/index";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { DownloadButton } from "@/components/members/download-button";
+import { FavoriteButton } from "@/components/members/favorite-button";
+import { MemberAssetCard } from "@/components/members/member-asset-card";
 import { Badge } from "@/components/ui/badge";
 import { formatFileSize } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
+
+async function getFavoriteIds(): Promise<Set<string>> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return new Set();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return new Set();
+  const { data } = await supabase.from("favorites").select("asset_id").eq("user_id", user.id);
+  return new Set((data ?? []).map((r: { asset_id: string }) => r.asset_id));
+}
 
 // ─── Per-slug overlay mapping (matches library cards exactly) ─────────────────
 
@@ -129,6 +141,16 @@ export default async function AssetPage({ params }: AssetPageProps) {
 
   const OverlayComponent = slugOverlayMap[asset.slug] ?? YouTubeRevenueOverlay;
 
+  // Favorites + related assets in parallel
+  const [favoriteIds, allAssets] = await Promise.all([
+    getFavoriteIds(),
+    assetService.getLibrary(),
+  ]);
+  const isFavorited = favoriteIds.has(asset.id);
+  const relatedAssets = allAssets
+    .filter((a) => a.category === asset.category && a.id !== asset.id)
+    .slice(0, 4);
+
   return (
     <div className="px-6 py-10">
       <div className="mx-auto max-w-5xl">
@@ -180,8 +202,16 @@ export default async function AssetPage({ params }: AssetPageProps) {
               </p>
             </div>
 
-            {/* Download */}
-            <DownloadButton assetId={asset.id} slug={asset.slug} className="w-full sm:w-auto" />
+            {/* Download + Favorite */}
+            <div className="flex items-center gap-3">
+              <DownloadButton assetId={asset.id} slug={asset.slug} className="flex-1 sm:flex-none" />
+              <FavoriteButton
+                assetId={asset.id}
+                initialFavorited={isFavorited}
+                alwaysVisible
+                size="md"
+              />
+            </div>
 
             {/* Description */}
             <div className="rounded-xl border border-border bg-base-surface p-5">
@@ -242,6 +272,23 @@ export default async function AssetPage({ params }: AssetPageProps) {
             )}
           </div>
         </div>
+        {/* Related assets */}
+        {relatedAssets.length > 0 && (
+          <section className="mt-14">
+            <h2 className="mb-5 text-sm font-semibold uppercase tracking-widest text-content-muted">
+              More in {asset.category}
+            </h2>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {relatedAssets.map((related) => (
+                <MemberAssetCard
+                  key={related.id}
+                  asset={related}
+                  isFavorited={favoriteIds.has(related.id)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

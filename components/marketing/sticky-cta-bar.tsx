@@ -7,7 +7,8 @@ import { buttonVariants } from "@/components/ui/button"
 
 const SCROLL_THRESHOLD = 700
 
-export function StickyCTABar() {
+export function StickyCTABar({ hasSubscription }: { hasSubscription?: boolean }) {
+  if (hasSubscription) return null
   const [visible,   setVisible]   = useState(false)
   const [dismissed, setDismissed] = useState(false)
 

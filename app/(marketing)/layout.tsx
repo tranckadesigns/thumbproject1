@@ -32,7 +32,7 @@ export default async function MarketingLayout({
       <main>{children}</main>
       <Footer />
       <ActivityToast />
-      <StickyCTABar />
+      <StickyCTABar hasSubscription={hasSubscription} />
       <ScrollToTop />
       <CookieConsent />
     </>
