@@ -760,8 +760,8 @@ export default async function HomePage({
   const params = await searchParams;
 
   // Supabase sends ?code= to the site URL when the redirect URL isn't whitelisted.
-  // Intercept it here and forward to the correct page.
-  if (params.code) redirect(`/reset-password?code=${params.code}`);
+  // Intercept it here and forward to the auth callback handler.
+  if (params.code) redirect(`/auth/callback?code=${params.code}&next=/reset-password`);
 
   const [stats, recentAssets] = await Promise.all([
     getLibraryStats(),

@@ -7,11 +7,16 @@ const PROTECTED_PREFIXES = ["/library", "/asset", "/dashboard", "/favorites", "/
 const AUTH_PATHS = ["/login", "/signup"];
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Let the auth callback route handle itself — skip middleware entirely
+  if (pathname.startsWith("/auth/callback")) {
+    return NextResponse.next({ request });
+  }
+
   const response = NextResponse.next({ request });
 
   const { user } = await refreshSessionInMiddleware(request, response);
-
-  const { pathname } = request.nextUrl;
 
   const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
   if (isProtected && !user) {

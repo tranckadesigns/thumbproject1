@@ -71,7 +71,7 @@ export async function forgotPasswordAction(
 
   // Always return success to avoid leaking whether an email exists
   await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${siteUrl}/reset-password`,
+    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
   });
 
   return { error: null, success: true };
