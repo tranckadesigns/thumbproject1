@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
+import { Loader2 } from "lucide-react";
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 
 export const metadata: Metadata = {
@@ -18,7 +20,13 @@ export default function ResetPasswordPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-base-surface p-6">
-        <ResetPasswordForm />
+        <Suspense fallback={
+          <div className="flex justify-center py-6">
+            <Loader2 className="h-6 w-6 animate-spin text-content-muted" />
+          </div>
+        }>
+          <ResetPasswordForm />
+        </Suspense>
       </div>
     </div>
   );
