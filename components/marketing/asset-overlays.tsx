@@ -1207,14 +1207,11 @@ const overlayColors: Record<OverlayType, string> = {
 };
 
 interface AssetCardProps {
-  overlayType: OverlayType;
   title: string;
   className?: string;
 }
 
-export function AssetCard({ overlayType, title, className }: AssetCardProps) {
-  const OverlayComponent = overlayMap[overlayType];
-
+export function AssetCard({ title, className }: AssetCardProps) {
   return (
     <div
       className={cn(
@@ -1229,18 +1226,6 @@ export function AssetCard({ overlayType, title, className }: AssetCardProps) {
       <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-20">
         <div className="h-2 w-3/4 rounded bg-white/20" />
         <div className="h-1.5 w-1/2 rounded bg-white/15" />
-      </div>
-
-      {/* Category badge */}
-      <div className="absolute top-2.5 left-2.5">
-        <span
-          className={cn(
-            "rounded-full px-2 py-0.5 text-[10px] font-medium",
-            overlayColors[overlayType]
-          )}
-        >
-          {overlayLabels[overlayType]}
-        </span>
       </div>
 
       {/* Members only lock overlay — revealed on hover */}

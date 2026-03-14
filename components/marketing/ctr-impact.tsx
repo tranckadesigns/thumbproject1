@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Reveal } from '@/components/ui/reveal'
-import { YouTubeRevenueOverlay } from '@/components/marketing/asset-overlays'
 
 function CountUp({ to, decimals = 1, suffix = '', duration = 1500 }: {
   to: number; decimals?: number; suffix?: string; duration?: number
@@ -61,11 +60,6 @@ function VideoCard({ withOverlay, title, channel, views, ctr, animated }: CardPr
           className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full opacity-20"
           style={{ background: 'radial-gradient(circle, #FF8C00 0%, transparent 70%)' }}
         />
-        {withOverlay && (
-          <div className="absolute right-3 top-[8%] h-[84%] w-[46%]">
-            <YouTubeRevenueOverlay />
-          </div>
-        )}
         <div className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5">
           <span className="text-[11px] font-medium text-white">14:32</span>
         </div>

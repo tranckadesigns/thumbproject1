@@ -116,16 +116,13 @@ const productHighlights = [
   },
 ];
 
-const libraryPreviewAssets: {
-  overlayType: "revenue" | "payout" | "milestone" | "bestworst" | "countdown" | "challenge";
-  title: string;
-}[] = [
-  { overlayType: "revenue", title: "YouTube Revenue Alert" },
-  { overlayType: "payout", title: "Stripe Payout Overlay" },
-  { overlayType: "milestone", title: "Subscriber Milestone" },
-  { overlayType: "bestworst", title: "Best vs Worst Comparison" },
-  { overlayType: "countdown", title: "Countdown Timer" },
-  { overlayType: "challenge", title: "Challenge Progress" },
+const libraryPreviewAssets = [
+  "YouTube Revenue Alert",
+  "Stripe Payout Overlay",
+  "Subscriber Milestone",
+  "Best vs Worst Comparison",
+  "Countdown Timer",
+  "Challenge Progress",
 ];
 
 // ─── Components ───────────────────────────────────────────────────────────────
@@ -368,11 +365,10 @@ function LibrarySnapshot() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {libraryPreviewAssets.map((asset) => (
+          {libraryPreviewAssets.map((title) => (
             <AssetCard
-              key={asset.overlayType}
-              overlayType={asset.overlayType}
-              title={asset.title}
+              key={title}
+              title={title}
             />
           ))}
         </div>

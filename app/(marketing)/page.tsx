@@ -11,13 +11,7 @@ import {
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
-import {
-  AssetCard,
-  YouTubeRevenueOverlay,
-  ChallengeProgressOverlay,
-  BestWorstOverlay,
-  CountdownTimerOverlay,
-} from "@/components/marketing/asset-overlays";
+import { AssetCard } from "@/components/marketing/asset-overlays";
 import { TestimonialsSection } from "@/components/marketing/testimonials";
 import { PsdShowcase } from "@/components/marketing/psd-showcase";
 import { FAQSection } from "@/components/marketing/faq";
@@ -46,10 +40,6 @@ interface ThumbnailMockupProps {
   views: string;
   gradient: string;
   accentColor: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  OverlayComponent: React.ComponentType<any>;
-  assetName: string;
-  overlayPos?: "right" | "center";
 }
 
 function ThumbnailMockup({
@@ -58,14 +48,7 @@ function ThumbnailMockup({
   views,
   gradient,
   accentColor,
-  OverlayComponent,
-  assetName,
-  overlayPos = "right",
 }: ThumbnailMockupProps) {
-  const posClass =
-    overlayPos === "right"
-      ? "absolute right-3 top-[8%] h-[84%] w-[46%]"
-      : "absolute left-1/2 top-1/2 h-[72%] w-[54%] -translate-x-1/2 -translate-y-1/2";
 
   return (
     <div>
@@ -75,18 +58,6 @@ function ThumbnailMockup({
           className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full opacity-30"
           style={{ background: `radial-gradient(circle, ${accentColor}50 0%, transparent 70%)` }}
         />
-        <div className={posClass}>
-          <div className="relative h-full w-full">
-            <OverlayComponent />
-          </div>
-        </div>
-        <div className="absolute bottom-2.5 left-3">
-          <div className="flex items-center gap-1.5 rounded-full border border-white/5 bg-black/75 px-2.5 py-1 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
-            <span className="text-[9px] text-white/55">Asset used:</span>
-            <span className="text-[9px] font-semibold text-accent">{assetName}</span>
-          </div>
-        </div>
       </div>
       <div className="mt-3 flex items-start gap-2.5 px-0.5">
         <div
@@ -234,21 +205,21 @@ function HeroSection({ stats }: { stats: LibraryStats }) {
           </Reveal>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { type: "revenue" as const, title: "YouTube Revenue Notification" },
-              { type: "milestone" as const, title: "Subscriber Milestone Popup" },
-              { type: "bestworst" as const, title: "Best vs Worst Comparison" },
-              { type: "countdown" as const, title: "Countdown Timer Overlay" },
-              { type: "challenge" as const, title: "Challenge Progress Bar" },
-              { type: "reaction" as const, title: "Reaction Bubbles" },
-            ].map(({ type, title }, i) => (
+              "YouTube Revenue Notification",
+              "Subscriber Milestone Popup",
+              "Best vs Worst Comparison",
+              "Countdown Timer Overlay",
+              "Challenge Progress Bar",
+              "Reaction Bubbles",
+            ].map((title, i) => (
               <div
-                key={type}
+                key={title}
                 style={{
                   opacity: 0,
                   animation: `slideUp 0.55s cubic-bezier(0.16,1,0.3,1) ${500 + i * 90}ms forwards`,
                 }}
               >
-                <AssetCard overlayType={type} title={title} />
+                <AssetCard title={title} />
               </div>
             ))}
           </div>
@@ -598,9 +569,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "1.2M views",
     gradient: "linear-gradient(135deg, #180d00 0%, #2a1400 55%, #120a00 100%)",
     accentColor: "#FF8C00",
-    OverlayComponent: YouTubeRevenueOverlay,
-    assetName: "Revenue Alert",
-    overlayPos: "right",
   },
   {
     videoTitle: "I Did This Every Day For 30 Days Straight — Here's What Happened",
@@ -608,9 +576,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "847K views",
     gradient: "linear-gradient(135deg, #000d18 0%, #001625 55%, #000a14 100%)",
     accentColor: "#FB923C",
-    OverlayComponent: ChallengeProgressOverlay,
-    assetName: "Challenge Progress",
-    overlayPos: "right",
   },
   {
     videoTitle: "I Tested Every YouTube Growth Strategy — Here's What Actually Works",
@@ -618,9 +583,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "2.4M views",
     gradient: "linear-gradient(135deg, #050d05 0%, #091509 55%, #040b04 100%)",
     accentColor: "#4ADE80",
-    OverlayComponent: BestWorstOverlay,
-    assetName: "Comparison Frame",
-    overlayPos: "center",
   },
   {
     videoTitle: "LIVE in 24 Hours — Don't Miss This (Biggest Stream of the Year)",
@@ -628,9 +590,6 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "430K views",
     gradient: "linear-gradient(135deg, #06040e 0%, #0a0820 55%, #060414 100%)",
     accentColor: "#818CF8",
-    OverlayComponent: CountdownTimerOverlay,
-    assetName: "Countdown Timer",
-    overlayPos: "center",
   },
 ];
 
@@ -656,7 +615,7 @@ function RealThumbnailsSection() {
 
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
           {thumbnailData.map((t, i) => (
-            <Reveal key={t.assetName} delay={i * 80}>
+            <Reveal key={t.videoTitle} delay={i * 80}>
               <ThumbnailMockup {...t} />
             </Reveal>
           ))}
