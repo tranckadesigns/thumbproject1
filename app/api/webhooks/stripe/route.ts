@@ -7,6 +7,16 @@ import { getSupabaseServiceClient } from "@/lib/supabase/service";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
 
+// In Stripe API >= 2025-x, current_period_end moved to the item level
+function getPeriodEnd(sub: any): string {
+  const ts =
+    sub.current_period_end ??
+    sub.items?.data?.[0]?.current_period_end ??
+    sub.billing_cycle_anchor;
+  if (!ts) return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+  return new Date(ts * 1000).toISOString();
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -47,8 +57,8 @@ export async function POST(request: NextRequest) {
           stripeSubscriptionId: subId,
           status:               sub.status,
           planId:               planId ?? null,
-          currentPeriodEnd:     new Date(sub.current_period_end * 1000).toISOString(),
-          cancelAtPeriodEnd:    sub.cancel_at_period_end,
+          currentPeriodEnd:     getPeriodEnd(sub),
+          cancelAtPeriodEnd:    sub.cancel_at_period_end ?? false,
         });
         break;
       }
@@ -65,8 +75,8 @@ export async function POST(request: NextRequest) {
           stripeSubscriptionId: sub.id,
           status:               sub.status,
           planId:               sub.metadata?.plan_id ?? null,
-          currentPeriodEnd:     new Date(sub.current_period_end * 1000).toISOString(),
-          cancelAtPeriodEnd:    sub.cancel_at_period_end,
+          currentPeriodEnd:     getPeriodEnd(sub),
+          cancelAtPeriodEnd:    sub.cancel_at_period_end ?? false,
         });
         break;
       }
@@ -83,7 +93,7 @@ export async function POST(request: NextRequest) {
           stripeSubscriptionId: sub.id,
           status:               "canceled",
           planId:               sub.metadata?.plan_id ?? null,
-          currentPeriodEnd:     new Date(sub.current_period_end * 1000).toISOString(),
+          currentPeriodEnd:     getPeriodEnd(sub),
           cancelAtPeriodEnd:    true,
         });
         break;
