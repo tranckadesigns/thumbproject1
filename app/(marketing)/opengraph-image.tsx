@@ -69,6 +69,11 @@ export default function OgImage() {
         {/* Headline */}
         <div
           style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "baseline",
+            gap: "0 12px",
             fontSize: 68,
             fontWeight: 800,
             color: "#F2F2F2",
@@ -79,8 +84,9 @@ export default function OgImage() {
             marginBottom: 20,
           }}
         >
-          Premium PSD assets for{" "}
-          <span style={{ color: "#C9A96E" }}>YouTube</span> creators
+          <span>Premium PSD assets for</span>
+          <span style={{ color: "#C9A96E" }}>YouTube</span>
+          <span>creators</span>
         </div>
 
         {/* Subline */}
