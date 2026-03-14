@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 const productLinks = [
   { label: "Pricing",         href: "/pricing" },
+  { label: "Changelog",       href: "/changelog" },
   { label: "Library",         href: "/app/library" },
   { label: "Sign in",         href: "/login" },
   { label: "Get access",      href: "/signup" },

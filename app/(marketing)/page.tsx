@@ -31,6 +31,9 @@ import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
 import { FileSpecsSection } from "@/components/marketing/file-specs";
 import { LibraryGrowthV5 } from "@/components/marketing/library-growth-v5";
 import { EmailCaptureSection } from "@/components/marketing/email-capture";
+import { PriceAnchorSection } from "@/components/marketing/price-anchor";
+import { NewThisMonthSection } from "@/components/marketing/new-this-month";
+import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
@@ -831,6 +834,9 @@ export default function HomePage() {
       {/* 7 — How simple it actually is */}
       <HowItWorksSection />
 
+      {/* 7b — Interactive step-by-step demo */}
+      <DemoWorkflowSection />
+
       {/* 8 — Make the time ROI tangible */}
       <TimeReclaimedSection />
 
@@ -842,6 +848,9 @@ export default function HomePage() {
 
       {/* 11 — Library growing over time */}
       <LibraryGrowthV5 />
+
+      {/* 11b — Freshness signal: what's new this month */}
+      <NewThisMonthSection />
 
       {/* 12 — Show the PSD quality up close */}
       <PsdShowcase />
@@ -855,7 +864,10 @@ export default function HomePage() {
       {/* 15 — Pre-pricing recap: what does the subscription include */}
       <WhatsIncludedSection />
 
-      {/* 15 — Price (after trust is established) */}
+      {/* 15 — Price anchoring vs alternatives */}
+      <PriceAnchorSection />
+
+      {/* 15b — Price (after trust is established) */}
       <PricingPreviewSection />
 
       {/* 13 — Handle last objections */}

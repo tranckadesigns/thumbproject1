@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { X, Menu } from "lucide-react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
@@ -16,7 +17,6 @@ const PROXIMITY = 300;
 const BLOB_COUNT = 4;
 const BLOB_SIZES = [38, 30, 22, 16];
 const BLOB_SPEEDS = [0.14, 0.09, 0.055, 0.03];
-// How much each blob is pulled toward the button (0 = stays at cursor, 1 = goes to button)
 const BLOB_PULL = [0, 0.3, 0.65, 0.95];
 
 export function Nav({ isLoggedIn }: NavProps) {
@@ -25,6 +25,7 @@ export function Nav({ isLoggedIn }: NavProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const blobEls = useRef<(HTMLDivElement | null)[]>(Array(BLOB_COUNT).fill(null));
   const [mounted, setMounted] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const isNear = useRef(false);
   const opacityVal = useRef(0);
@@ -35,6 +36,19 @@ export function Nav({ isLoggedIn }: NavProps) {
   );
 
   useEffect(() => { setMounted(true); }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
+  // Prevent body scroll when mobile menu open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -51,7 +65,6 @@ export function Nav({ isLoggedIn }: NavProps) {
 
       if (dist < PROXIMITY && !isNear.current) {
         isNear.current = true;
-        // Snap all blobs to cursor so they don't sweep in from 0,0
         blobPos.current.forEach(b => { b.x = e.clientX; b.y = e.clientY; });
       } else if (dist >= PROXIMITY && isNear.current) {
         isNear.current = false;
@@ -74,7 +87,6 @@ export function Nav({ isLoggedIn }: NavProps) {
         container.style.opacity = String(opacityVal.current);
       }
 
-      // Button center for magnetic target
       let btnCx = mouseX.current;
       let btnCy = mouseY.current;
       if (btn) {
@@ -122,7 +134,6 @@ export function Nav({ isLoggedIn }: NavProps) {
     <>
       {mounted && createPortal(
         <>
-          {/* SVG gooey filter — makes blobs merge into liquid when close */}
           <svg style={{ position: "fixed", width: 0, height: 0, overflow: "hidden" }}>
             <defs>
               <filter id="nav-gooey">
@@ -136,7 +147,6 @@ export function Nav({ isLoggedIn }: NavProps) {
             </defs>
           </svg>
 
-          {/* Blob container */}
           <div
             ref={containerRef}
             style={{
@@ -168,6 +178,71 @@ export function Nav({ isLoggedIn }: NavProps) {
               );
             })}
           </div>
+
+          {/* Mobile drawer */}
+          {mobileOpen && (
+            <div className="fixed inset-0 z-[200] flex flex-col bg-base md:hidden">
+              {/* Header */}
+              <div className="flex h-14 items-center justify-between border-b border-border px-6">
+                <Link href="/" onClick={() => setMobileOpen(false)}>
+                  <Wordmark />
+                </Link>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-content-muted transition-colors hover:border-border-strong hover:text-content-primary"
+                  aria-label="Close menu"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Links */}
+              <nav className="flex flex-col gap-1 p-4">
+                {[
+                  { href: "/", label: "Home" },
+                  { href: "/pricing", label: "Pricing" },
+                  { href: "/changelog", label: "Changelog" },
+                  ...(isLoggedIn
+                    ? [
+                        { href: "/library", label: "Library" },
+                        { href: "/account", label: "Account" },
+                      ]
+                    : [
+                        { href: "/login", label: "Sign in" },
+                      ]
+                  ),
+                ].map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                      pathname === href
+                        ? "bg-base-surface text-content-primary"
+                        : "text-content-secondary hover:bg-base-surface hover:text-content-primary"
+                    )}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* CTA */}
+              <div className="mt-auto border-t border-border p-6">
+                <Link
+                  href={isLoggedIn ? "/library" : "/signup"}
+                  className={cn(buttonVariants({ size: "lg" }), "w-full justify-center")}
+                >
+                  {isLoggedIn ? "Go to library" : "Get access"}
+                </Link>
+                {!isLoggedIn && (
+                  <p className="mt-3 text-center text-xs text-content-muted">
+                    Monthly from $19 · Cancel anytime
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </>,
         document.body
       )}
@@ -178,7 +253,8 @@ export function Nav({ isLoggedIn }: NavProps) {
             <Wordmark />
           </Link>
 
-          <nav className="flex items-center gap-7">
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-7 md:flex">
             {navLink("/pricing", "Pricing")}
             {isLoggedIn ? (
               <>
@@ -203,6 +279,15 @@ export function Nav({ isLoggedIn }: NavProps) {
               </>
             )}
           </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-content-muted transition-colors hover:border-border-strong hover:text-content-primary md:hidden"
+            aria-label="Open menu"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
         </div>
       </header>
     </>
