@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
+import { sendWelcomeEmail } from "@/lib/email/send-welcome";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -60,6 +61,15 @@ export async function POST(request: NextRequest) {
           currentPeriodEnd:     getPeriodEnd(sub),
           cancelAtPeriodEnd:    sub.cancel_at_period_end ?? false,
         });
+
+        // Send welcome email
+        const customerEmail = session.customer_details?.email ?? session.customer_email;
+        if (customerEmail) {
+          await sendWelcomeEmail({
+            to: customerEmail,
+            plan: (planId === "yearly" ? "yearly" : "monthly"),
+          });
+        }
         break;
       }
 
