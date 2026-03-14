@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Asset } from "@/types/asset";
 import { cn } from "@/lib/utils/cn";
-import { AssetPreview } from "@/components/members/asset-preview";
 import { formatFileSize } from "@/lib/utils/format";
 
 interface MemberAssetCardProps {
@@ -39,7 +38,7 @@ export function MemberAssetCard({ asset, className }: MemberAssetCardProps) {
     <Link href={`/asset/${asset.slug}`} className={cn("group block", className)}>
       {/* Preview */}
       <div className="relative aspect-video overflow-hidden rounded-xl border border-border transition-all duration-300 group-hover:border-border-strong group-hover:shadow-elevated">
-        <AssetPreview slug={asset.slug} />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#161616]" />
 
         {/* Badges */}
         <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5">
