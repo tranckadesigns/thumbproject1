@@ -13,7 +13,7 @@ export default function SignupPage() {
           Create your account
         </h1>
         <p className="mt-1.5 text-sm text-content-muted">
-          Get instant access to the full library
+          Step 1 of 2 — then choose your plan
         </p>
       </div>
 

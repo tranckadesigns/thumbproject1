@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
+import { Suspense } from "react";
+import { SubscriptionActivationPoller } from "@/components/members/subscription-activation-poller";
 
 export const metadata: Metadata = { title: "Welcome to PSDfuel" };
 
@@ -20,14 +20,9 @@ export default function CheckoutSuccessPage() {
         {/* Success icon */}
         <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-emerald-500/40 bg-emerald-500/10">
           <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            width="28" height="28" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2.5"
+            strokeLinecap="round" strokeLinejoin="round"
             className="text-emerald-400"
           >
             <polyline points="20 6 9 17 4 12" />
@@ -39,8 +34,7 @@ export default function CheckoutSuccessPage() {
             You&apos;re in. Welcome to PSDfuel.
           </h1>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-content-secondary">
-            Your subscription is active. The full library is yours — download
-            any asset, any time.
+            Your subscription is active. The full library is yours — download any asset, any time.
           </p>
         </div>
 
@@ -62,12 +56,10 @@ export default function CheckoutSuccessPage() {
           ))}
         </div>
 
-        <Link
-          href="/library"
-          className={cn(buttonVariants({ size: "lg" }), "mt-2")}
-        >
-          Go to the library
-        </Link>
+        {/* Polls until subscription is active, then shows the button */}
+        <Suspense fallback={null}>
+          <SubscriptionActivationPoller />
+        </Suspense>
 
         <p className="text-xs text-content-muted">
           Receipt sent to your email · Manage subscription in{" "}
