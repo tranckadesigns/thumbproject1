@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
 import { assetService } from "@/lib/services/index";
+import { hasActiveSubscription } from "@/lib/subscription";
 
 export async function GET(
   _request: NextRequest,
@@ -16,6 +17,12 @@ export async function GET(
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Subscription gate — require active subscription
+  const subscribed = await hasActiveSubscription();
+  if (!subscribed) {
+    return NextResponse.json({ error: "Subscription required" }, { status: 403 });
   }
 
   // Resolve asset by ID or slug

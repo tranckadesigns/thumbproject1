@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, FileImage, Tag } from "lucide-react";
+import { FileImage, Tag } from "lucide-react";
+import { BackButton } from "@/components/ui/back-button";
 import {
   YouTubeRevenueOverlay,
   StripePayoutOverlay,
@@ -156,13 +156,9 @@ export default async function AssetPage({ params }: AssetPageProps) {
     <div className="px-6 py-10">
       <div className="mx-auto max-w-5xl">
         {/* Back link */}
-        <Link
-          href="/library"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm text-content-muted hover:text-content-primary transition-colors"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to library
-        </Link>
+        <div className="mb-8">
+          <BackButton />
+        </div>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {/* Preview */}
