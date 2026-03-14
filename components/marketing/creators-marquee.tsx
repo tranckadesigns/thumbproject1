@@ -47,7 +47,7 @@ export function CreatorsMarquee({ creatorCount }: { creatorCount: number }) {
   return (
     <section style={{ borderTop: "1px solid #242424", backgroundColor: "#0F0F0F", padding: "56px 0", overflow: "hidden" }}>
       <p style={{ textAlign: "center", fontSize: 11, fontWeight: 500, letterSpacing: "0.16em", color: "#525252", textTransform: "uppercase", marginBottom: 32, padding: "0 24px" }}>
-        Trusted by {creatorCount.toLocaleString()}+ YouTube creators worldwide
+        Trusted by {creatorCount.toLocaleString("en-US")}+ YouTube creators worldwide
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Marquee speed={60} gradient={false}>

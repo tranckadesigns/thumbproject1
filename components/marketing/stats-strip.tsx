@@ -36,7 +36,7 @@ function AnimatedStat({ raw, label }: AnimatedStatProps) {
           const t = Math.min((now - startTime) / duration, 1);
           const eased = 1 - Math.pow(1 - t, 3);
           const current = Math.round(eased * target);
-          const formatted = current >= 1000 ? current.toLocaleString() : String(current);
+          const formatted = current >= 1000 ? current.toLocaleString("en-US") : String(current);
           setDisplayed(prefix + formatted + suffix);
           if (t < 1) requestAnimationFrame(tick);
         }
@@ -70,7 +70,7 @@ export function StatsStrip({ assetCount, categoryCount, creatorCount }: StatsStr
   const stats = [
     { raw: `${assetCount}+`,                      label: "PSD assets" },
     { raw: String(categoryCount),                  label: "Categories" },
-    { raw: `${creatorCount.toLocaleString()}+`,    label: "Creators" },
+    { raw: `${creatorCount}+`,                     label: "Creators" },
     { raw: "~60s",                                 label: "Avg. edit time" },
   ];
 

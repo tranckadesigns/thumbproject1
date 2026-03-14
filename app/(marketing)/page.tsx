@@ -189,7 +189,7 @@ function HeroSection({ stats }: { stats: LibraryStats }) {
           <Reveal delay={360}>
             <p className="mt-5 text-sm text-content-muted">
               Trusted by{" "}
-              <span className="text-content-secondary">{stats.creatorCount.toLocaleString()}+</span> YouTube creators
+              <span className="text-content-secondary">{stats.creatorCount.toLocaleString("en-US")}+</span> YouTube creators
               {" · "}
               <span className="text-content-secondary">{stats.assetCount}+</span> assets across{" "}
               <span className="text-content-secondary">{stats.categoryCount}</span> categories
@@ -718,7 +718,7 @@ function CtaSection({ creatorCount }: { creatorCount: number }) {
             deserve better.
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-content-secondary">
-            Join {creatorCount.toLocaleString()}+ YouTube creators using PSDfuel to build scroll-stopping
+            Join {creatorCount.toLocaleString("en-US")}+ YouTube creators using PSDfuel to build scroll-stopping
             thumbnails in minutes, not hours.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
