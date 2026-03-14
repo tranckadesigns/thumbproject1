@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { LogOut, User, CreditCard, Calendar, AlertCircle, Sparkles, Check } from "lucide-react";
+import { LogOut, User, CreditCard, Calendar, AlertCircle } from "lucide-react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscription } from "@/lib/subscription";
 import { signOutAction } from "@/app/(auth)/actions";
 import { Badge } from "@/components/ui/badge";
 import { BillingPortalButton } from "@/components/members/billing-portal-button";
+import { UnlockButton } from "@/components/ui/unlock-button";
 import { formatDate } from "@/lib/utils/format";
 
 export const metadata: Metadata = {
@@ -129,31 +130,10 @@ export default async function AccountPage() {
                 <div>
                   <p className="text-sm font-semibold text-content-primary">No active subscription</p>
                   <p className="mt-0.5 text-xs text-content-muted">
-                    Get full access to the entire PSDfuel library.
+                    Subscribe to get full access to the library.
                   </p>
                 </div>
-
-                <ul className="space-y-1.5">
-                  {[
-                    "39+ premium PSD assets",
-                    "All 12 categories",
-                    "New assets every month",
-                    "Instant download on everything",
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-xs text-content-secondary">
-                      <Check className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href="/pricing"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent/90 transition-colors"
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  View plans &amp; pricing
-                </a>
+                <UnlockButton label="View plans &amp; pricing" className="w-full justify-center" />
               </div>
             )}
           </div>

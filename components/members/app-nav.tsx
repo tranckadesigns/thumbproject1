@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings, Heart, Sparkles } from "lucide-react";
+import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings, Heart } from "lucide-react";
 import { signOutAction } from "@/app/(auth)/actions";
 import { Wordmark } from "@/components/brand/wordmark";
+import { UnlockButton } from "@/components/ui/unlock-button";
 import { cn } from "@/lib/utils/cn";
 
 interface AppNavProps {
@@ -86,13 +87,7 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
 
             {/* Upgrade CTA for non-subscribers */}
             {!hasSubscription && (
-              <Link
-                href="/pricing"
-                className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent/90 transition-colors"
-              >
-                <Sparkles className="h-3 w-3" />
-                Get access
-              </Link>
+              <UnlockButton size="sm" label="Get access" />
             )}
 
             {/* Profile dropdown */}
@@ -195,13 +190,7 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
             {/* Upgrade CTA for non-subscribers */}
             {!hasSubscription && (
               <div className="border-t border-border p-4">
-                <Link
-                  href="/pricing"
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white hover:bg-accent/90 transition-colors"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Get full access
-                </Link>
+                <UnlockButton label="Get full access" className="w-full justify-center" />
               </div>
             )}
 
