@@ -174,8 +174,7 @@ function HeroSection() {
           <Reveal delay={160}>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-content-secondary">
               The only library built specifically for YouTube thumbnail overlays.
-              Fully layered PSDs — revenue notifications, subscriber milestones,
-              countdowns, comparisons, and more. Customize in under 60 seconds.
+              Fully layered PSDs. Customize in under 60 seconds.
             </p>
           </Reveal>
 
