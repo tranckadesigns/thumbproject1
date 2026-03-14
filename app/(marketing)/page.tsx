@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ChevronRight,
   Layers,
-  Zap,
   RefreshCw,
   Download,
   Pencil,

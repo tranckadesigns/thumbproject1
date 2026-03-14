@@ -73,7 +73,7 @@ export function TimeReclaimedSection() {
 
         <Reveal delay={200}>
           <p className="mt-4 text-center text-xs text-content-muted/50">
-            That's three full work days back in your schedule. Every single month.
+            That&apos;s three full work days back in your schedule. Every single month.
           </p>
         </Reveal>
 
