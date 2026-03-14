@@ -23,7 +23,6 @@ import { CtrImpactSection } from "@/components/marketing/ctr-impact";
 import { PricingPreviewSection } from "@/components/marketing/pricing-preview";
 import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
 import { FileSpecsSection } from "@/components/marketing/file-specs";
-import { LibraryGrowthV5 } from "@/components/marketing/library-growth-v5";
 import { EmailCaptureSection } from "@/components/marketing/email-capture";
 import { PriceAnchorSection } from "@/components/marketing/price-anchor";
 import { NewThisMonthSection } from "@/components/marketing/new-this-month";
@@ -791,9 +790,6 @@ export default async function HomePage() {
 
       {/* 10 — File quality specs, build trust */}
       <FileSpecsSection />
-
-      {/* 11 — Library growing over time */}
-      <LibraryGrowthV5 />
 
       {/* 11b — Freshness signal: what's new this month */}
       <NewThisMonthSection assetCount={stats.assetCount} />
