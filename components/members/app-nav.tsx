@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings, Heart } from "lucide-react";
+import { User, LogOut, Menu, X, LayoutDashboard, Library, Settings, Heart, Sparkles } from "lucide-react";
 import { signOutAction } from "@/app/(auth)/actions";
 import { Wordmark } from "@/components/brand/wordmark";
 import { cn } from "@/lib/utils/cn";
@@ -83,6 +83,17 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
             {navItems.map(({ href, label }) => (
               <NavLink key={href} href={href} label={label} />
             ))}
+
+            {/* Upgrade CTA for non-subscribers */}
+            {!hasSubscription && (
+              <Link
+                href="/pricing"
+                className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent/90 transition-colors"
+              >
+                <Sparkles className="h-3 w-3" />
+                Get access
+              </Link>
+            )}
 
             {/* Profile dropdown */}
             <div ref={dropdownRef} className="relative">
@@ -180,17 +191,32 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
             })}
           </nav>
 
-          {/* Sign out */}
-          <div className="mt-auto border-t border-border p-4">
-            <form action={signOutAction}>
-              <button
-                type="submit"
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-content-secondary hover:bg-base-surface hover:text-content-primary transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign out
-              </button>
-            </form>
+          <div className="mt-auto">
+            {/* Upgrade CTA for non-subscribers */}
+            {!hasSubscription && (
+              <div className="border-t border-border p-4">
+                <Link
+                  href="/pricing"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white hover:bg-accent/90 transition-colors"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Get full access
+                </Link>
+              </div>
+            )}
+
+            {/* Sign out */}
+            <div className="border-t border-border p-4">
+              <form action={signOutAction}>
+                <button
+                  type="submit"
+                  className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-content-secondary hover:bg-base-surface hover:text-content-primary transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign out
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       )}
