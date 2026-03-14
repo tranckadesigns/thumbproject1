@@ -66,6 +66,7 @@ const config: Config = {
         "fade-in": "fadeIn 0.2s ease-out",
         "slide-up": "slideUp 0.25s ease-out",
         marquee: "marquee 40s linear infinite",
+        "marquee-reverse": "marqueeReverse 40s linear infinite",
         "glow-pulse": "glowPulse 7s ease-in-out infinite",
         shimmer: "shimmer 3s linear infinite",
         "accent-dot": "accentDot 3s ease-in-out infinite",
@@ -85,6 +86,10 @@ const config: Config = {
         marquee: {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        marqueeReverse: {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0%)" },
         },
         glowPulse: {
           "0%, 100%": { opacity: "0.5", transform: "scale(1)" },

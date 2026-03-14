@@ -19,21 +19,20 @@ import {
   BestWorstOverlay,
   CountdownTimerOverlay,
   SubscriberMilestoneOverlay,
-  GrowthChartOverlay,
-  AlertBannerOverlay,
-  InstagramAlertOverlay,
-  ShopifySalesOverlay,
-  CTRAnalyticsOverlay,
-  RatingStarsOverlay,
   ReactionBubbleOverlay,
-  PollResultOverlay,
 } from "@/components/marketing/asset-overlays";
 import { TestimonialsSection } from "@/components/marketing/testimonials";
 import { PsdShowcase } from "@/components/marketing/psd-showcase";
 import { FAQSection } from "@/components/marketing/faq";
-import { StatsStrip } from "@/components/marketing/stats-strip";
-import { ForCreatorsSection } from "@/components/marketing/for-creators";
+import { CategoryIcon, CategoryIconStyles } from "@/components/marketing/category-icons";
+import { StatsStrip } from "@/components/marketing/stats-strip"
+import { CreatorsMarquee } from "@/components/marketing/creators-marquee"
+;
+import { CtrImpactSection } from "@/components/marketing/ctr-impact";
 import { PricingPreviewSection } from "@/components/marketing/pricing-preview";
+import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
+import { FileSpecsSection } from "@/components/marketing/file-specs";
+import { LibraryGrowthV5 } from "@/components/marketing/library-growth-v5";
 import { cn } from "@/lib/utils/cn";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
@@ -75,14 +74,6 @@ function ThumbnailMockup({
           className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full opacity-30"
           style={{ background: `radial-gradient(circle, ${accentColor}50 0%, transparent 70%)` }}
         />
-        <div className="absolute left-4 top-4 max-w-[48%]">
-          <p
-            className="font-black text-xl leading-[1.18] text-white uppercase"
-            style={{ textShadow: "0 2px 10px rgba(0,0,0,1), 0 1px 3px rgba(0,0,0,1)" }}
-          >
-            {thumbnailTitle}
-          </p>
-        </div>
         <div className={posClass}>
           <div className="relative h-full w-full">
             <OverlayComponent />
@@ -529,18 +520,18 @@ function ComparisonSection() {
 // ─── 6. Category Showcase ─────────────────────────────────────────────────────
 
 const categoryData = [
-  { name: "Revenue", assets: 4, Overlay: YouTubeRevenueOverlay, desc: "Earnings, payouts & income notifications" },
-  { name: "Subscribers", assets: 4, Overlay: SubscriberMilestoneOverlay, desc: "Milestone popups & live counters" },
-  { name: "Growth", assets: 3, Overlay: GrowthChartOverlay, desc: "Views, charts & channel performance" },
-  { name: "Alerts", assets: 3, Overlay: AlertBannerOverlay, desc: "Live alerts, breaking news & warnings" },
-  { name: "Social", assets: 3, Overlay: InstagramAlertOverlay, desc: "Instagram, Twitter & TikTok proof" },
-  { name: "Commerce", assets: 3, Overlay: ShopifySalesOverlay, desc: "Sales, products & ecommerce data" },
-  { name: "Analytics", assets: 3, Overlay: CTRAnalyticsOverlay, desc: "CTR, impressions & watch time" },
-  { name: "Challenges", assets: 3, Overlay: ChallengeProgressOverlay, desc: "Progress bars, streaks & day trackers" },
-  { name: "Comparisons", assets: 3, Overlay: BestWorstOverlay, desc: "Before/after & best vs worst frames" },
-  { name: "Ratings", assets: 3, Overlay: RatingStarsOverlay, desc: "Stars, scores & review summaries" },
-  { name: "Timers", assets: 3, Overlay: CountdownTimerOverlay, desc: "Countdown clocks & live event timers" },
-  { name: "Reactions", assets: 4, Overlay: ReactionBubbleOverlay, desc: "Polls, votes & emoji reactions" },
+  { name: "Revenue",     assets: 4, desc: "Earnings, payouts & income notifications" },
+  { name: "Subscribers", assets: 4, desc: "Milestone popups & live counters" },
+  { name: "Growth",      assets: 3, desc: "Views, charts & channel performance" },
+  { name: "Alerts",      assets: 3, desc: "Live alerts, breaking news & warnings" },
+  { name: "Social",      assets: 3, desc: "Instagram, Twitter & TikTok proof" },
+  { name: "E-Commerce",  assets: 3, desc: "Sales, products & ecommerce data" },
+  { name: "Analytics",   assets: 3, desc: "CTR, impressions & watch time" },
+  { name: "Challenges",  assets: 3, desc: "Progress bars, streaks & day trackers" },
+  { name: "Comparisons", assets: 3, desc: "Before/after & best vs worst frames" },
+  { name: "Ratings",     assets: 3, desc: "Stars, scores & review summaries" },
+  { name: "Timers",      assets: 3, desc: "Countdown clocks & live event timers" },
+  { name: "Reactions",   assets: 4, desc: "Polls, votes & emoji reactions" },
 ];
 
 function CategoryShowcaseSection() {
@@ -564,14 +555,13 @@ function CategoryShowcaseSection() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-          {categoryData.map(({ name, assets, Overlay, desc }, i) => (
+        <CategoryIconStyles />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {categoryData.map(({ name, assets, desc }, i) => (
             <Reveal key={name} delay={i * 40}>
               <div className="group">
-                <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-video transition-all duration-300 group-hover:border-border-strong group-hover:shadow-elevated">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]" />
-                  <Overlay />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-border bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818] transition-all duration-300 group-hover:border-accent/25 group-hover:shadow-elevated">
+                  <CategoryIcon name={name} />
                 </div>
                 <div className="mt-2.5">
                   <div className="flex items-center justify-between">
@@ -870,9 +860,17 @@ function CtaSection() {
               See pricing
             </Link>
           </div>
-          <p className="mt-6 text-sm text-content-muted">
-            Monthly from $19 · Yearly from $149 · Cancel anytime
-          </p>
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <p className="text-sm text-content-muted">
+              Monthly from $19 · Yearly from $149 · Cancel anytime
+            </p>
+            <p className="flex items-center gap-1.5 text-xs text-content-muted/60">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent/60">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              30-day money-back guarantee · Secured by Stripe
+            </p>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -890,7 +888,10 @@ export default function HomePage() {
       {/* 2 — Quick credibility */}
       <StatsStrip />
 
-      {/* 3 — Show the product immediately, before explaining it */}
+      {/* 3 — Social proof: who uses it */}
+      <CreatorsMarquee />
+
+      {/* 4 — Show the product immediately, before explaining it */}
       <RealThumbnailsSection />
 
       {/* 4 — Show the full library breadth */}
@@ -905,19 +906,28 @@ export default function HomePage() {
       {/* 7 — How simple it actually is */}
       <HowItWorksSection />
 
-      {/* 8 — Who exactly it's for (self-identification) */}
-      <ForCreatorsSection />
+      {/* 8 — Make the time ROI tangible */}
+      <TimeReclaimedSection />
 
-      {/* 9 — What the membership includes */}
-      <WhatsIncludedSection />
+      {/* 9 — Why overlays drive clicks (visual proof) */}
+      <CtrImpactSection />
 
-      {/* 10 — Show the PSD quality up close */}
+      {/* 10 — File quality specs, build trust */}
+      <FileSpecsSection />
+
+      {/* 11 — Library growing over time */}
+      <LibraryGrowthV5 />
+
+      {/* 12 — Show the PSD quality up close */}
       <PsdShowcase />
 
-      {/* 11 — Social proof */}
+      {/* 13 — Social proof */}
       <TestimonialsSection />
 
-      {/* 12 — Price (after trust is established) */}
+      {/* 14 — Pre-pricing recap: what does the subscription include */}
+      <WhatsIncludedSection />
+
+      {/* 15 — Price (after trust is established) */}
       <PricingPreviewSection />
 
       {/* 13 — Handle last objections */}

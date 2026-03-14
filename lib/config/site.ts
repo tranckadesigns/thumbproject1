@@ -24,7 +24,7 @@ export const siteConfig = {
     "Growth",
     "Alerts",
     "Social",
-    "Commerce",
+    "E-Commerce",
     "Analytics",
     "Challenges",
     "Comparisons",

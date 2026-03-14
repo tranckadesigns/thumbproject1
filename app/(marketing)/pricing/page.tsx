@@ -35,7 +35,7 @@ const includedFeatures = [
   "Full library access — all assets, always",
   "Fully layered Adobe Photoshop PSD files",
   "New assets added every month across all categories",
-  "Revenue, Subscribers, Growth, Alerts, Social, Commerce, Analytics, Challenges, Comparisons, Ratings, Timers, Reactions — and growing",
+  "Revenue, Subscribers, Growth, Alerts, Social, E-Commerce, Analytics, Challenges, Comparisons, Ratings, Timers, Reactions — and growing",
   "Commercial license — use in client work and YouTube channels",
   "Unlimited downloads, no credit system",
   "Instant access from the moment you subscribe",
@@ -261,6 +261,18 @@ function PricingHero() {
           Instant access to 100+ fully layered PSD thumbnail assets across 12 categories.
           No tiers, no credits, no limits.
         </p>
+
+        {/* Founding member urgency */}
+        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/[0.06] px-4 py-2 text-xs text-accent">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          <span>
+            <span className="font-semibold">Founding member pricing</span>
+            {" — "}locked at $19/mo until we reach 2,000 members
+          </span>
+        </div>
+
         <div className="mt-7 flex items-center justify-center gap-2 text-xs text-content-muted">
           <span>100+ assets</span>
           <span className="opacity-30">·</span>
@@ -283,9 +295,26 @@ function PricingCards() {
           <PlanCard planId="monthly" />
           <FeaturedPlanCard />
         </div>
-        <p className="mt-6 text-center text-xs text-content-muted">
-          Secure checkout · Cancel anytime · Instant access
-        </p>
+        {/* Trust strip */}
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <div className="flex items-center gap-4 text-xs text-content-muted">
+            <span className="flex items-center gap-1.5">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              30-day money-back guarantee
+            </span>
+            <span className="opacity-30">·</span>
+            <span className="flex items-center gap-1.5">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Secured by Stripe
+            </span>
+            <span className="opacity-30">·</span>
+            <span>Cancel anytime</span>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -4,7 +4,7 @@ export type AssetCategory =
   | "Growth"
   | "Alerts"
   | "Social"
-  | "Commerce"
+  | "E-Commerce"
   | "Analytics"
   | "Challenges"
   | "Comparisons"

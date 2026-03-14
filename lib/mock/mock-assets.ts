@@ -334,14 +334,14 @@ export const mockAssets: Asset[] = [
     created_at: "2026-02-25T10:00:00Z",
   },
 
-  // ─── Commerce ─────────────────────────────────────────────────────────────
+  // ─── E-Commerce ───────────────────────────────────────────────────────────
   {
     id: "asset-008",
     slug: "shopify-sales-dashboard",
     title: "Shopify Sales Dashboard",
     short_description: "Shopify-styled sales overview card showing total revenue.",
     full_description: "A dashboard-style Shopify sales card showing total sales, order count, and conversion rate. Styled to look exactly like the Shopify admin app.",
-    category: "Commerce",
+    category: "E-Commerce",
     platform_type: "General",
     style_type: "Dark",
     thumbnail_url: "",
@@ -360,7 +360,7 @@ export const mockAssets: Asset[] = [
     title: "Digital Product Sale Badge",
     short_description: "Sales notification for digital products and courses.",
     full_description: "A clean sale notification badge for digital products. Shows product name, price, and quantity sold. Works for courses, templates, presets, or any digital product.",
-    category: "Commerce",
+    category: "E-Commerce",
     platform_type: "General",
     style_type: "Minimal",
     thumbnail_url: "",
@@ -379,7 +379,7 @@ export const mockAssets: Asset[] = [
     title: "Course Enrollment Counter",
     short_description: "Student enrollment count badge for online courses.",
     full_description: "An enrollment counter showing the number of students enrolled in a course with a progress bar toward a seat limit. Editable count, goal, and label.",
-    category: "Commerce",
+    category: "E-Commerce",
     platform_type: "General",
     style_type: "Dark",
     thumbnail_url: "",

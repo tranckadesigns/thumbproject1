@@ -100,7 +100,7 @@ const categoryBadgeColors: Record<AssetCategory, string> = {
   Growth: "bg-emerald-500/15 text-emerald-400",
   Alerts: "bg-yellow-500/15 text-yellow-400",
   Social: "bg-purple-500/15 text-purple-400",
-  Commerce: "bg-lime-500/15 text-lime-400",
+  "E-Commerce": "bg-lime-500/15 text-lime-400",
   Analytics: "bg-amber-500/15 text-amber-400",
   Challenges: "bg-orange-500/15 text-orange-400",
   Comparisons: "bg-sky-500/15 text-sky-400",
