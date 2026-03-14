@@ -28,6 +28,7 @@ import { PriceAnchorSection } from "@/components/marketing/price-anchor";
 import { NewThisMonthSection } from "@/components/marketing/new-this-month";
 import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
+import { redirect } from "next/navigation";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
 import { assetService } from "@/lib/services";
@@ -751,7 +752,17 @@ function CtaSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>;
+}) {
+  const params = await searchParams;
+
+  // Supabase sends ?code= to the site URL when the redirect URL isn't whitelisted.
+  // Intercept it here and forward to the correct page.
+  if (params.code) redirect(`/reset-password?code=${params.code}`);
+
   const [stats, recentAssets] = await Promise.all([
     getLibraryStats(),
     assetService.getRecent(4),
