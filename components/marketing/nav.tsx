@@ -72,7 +72,14 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
     desktopNav = (
       <>
         <NavLink href="/dashboard" label="Dashboard" />
-        <NavLink href="/library"   label="Library" />
+        <Link
+          href="/library"
+          className="flex items-center gap-1.5 rounded-full border border-accent/50 bg-accent/10 px-3.5 py-1 text-sm font-medium text-accent transition-all duration-200 hover:border-accent/70 hover:bg-accent/15"
+          style={{ boxShadow: "0 0 14px rgba(201,169,110,0.14)" }}
+        >
+          <Library className="h-3.5 w-3.5" />
+          Library
+        </Link>
         <FavoritesNavButton />
 
         <div ref={dropdownRef} className="relative">
@@ -184,6 +191,20 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
               <nav className="flex flex-col gap-1 p-4">
                 {mobileLinks.map(({ href, label, icon: Icon }) => {
                   const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+                  if (href === "/library") {
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-3 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-medium text-accent transition-all hover:border-accent/60 hover:bg-accent/15"
+                        style={{ boxShadow: "0 0 14px rgba(201,169,110,0.12)" }}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {label}
+                      </Link>
+                    );
+                  }
                   return (
                     <Link
                       key={href}
