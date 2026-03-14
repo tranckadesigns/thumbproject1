@@ -34,6 +34,31 @@ function NavLink({ href, label }: { href: string; label: string }) {
   );
 }
 
+function LibraryNavLink() {
+  const pathname = usePathname();
+  const isActive = pathname.startsWith("/library");
+
+  return (
+    <Link
+      href="/library"
+      className={cn(
+        "flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-sm font-medium transition-all duration-200",
+        isActive
+          ? "border-accent/50 bg-accent/10 text-accent"
+          : "border-accent/25 bg-accent/[0.05] text-accent/75 hover:border-accent/40 hover:bg-accent/[0.09] hover:text-accent"
+      )}
+      style={
+        isActive
+          ? { boxShadow: "0 0 14px rgba(201,169,110,0.14)" }
+          : undefined
+      }
+    >
+      <Library className="h-3.5 w-3.5" />
+      Library
+    </Link>
+  );
+}
+
 const SUB_navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/library",   label: "Library",   icon: Library },
@@ -81,9 +106,13 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-7 md:flex">
-            {navItems.map(({ href, label }) => (
-              <NavLink key={href} href={href} label={label} />
-            ))}
+            {navItems.map(({ href, label }) =>
+              href === "/library" ? (
+                <LibraryNavLink key={href} />
+              ) : (
+                <NavLink key={href} href={href} label={label} />
+              )
+            )}
 
             {/* Favorites heart button — only for subscribers */}
             {hasSubscription && <FavoritesNavButton />}
@@ -171,6 +200,24 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
           <nav className="flex flex-col gap-1 p-4">
             {navItems.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+              if (href === "/library") {
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg border px-4 py-3 text-sm font-medium transition-all",
+                      isActive
+                        ? "border-accent/40 bg-accent/10 text-accent"
+                        : "border-accent/20 bg-accent/[0.05] text-accent/80 hover:border-accent/35 hover:bg-accent/[0.09] hover:text-accent"
+                    )}
+                    style={isActive ? { boxShadow: "0 0 14px rgba(201,169,110,0.12)" } : undefined}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </Link>
+                );
+              }
               return (
                 <Link
                   key={href}
