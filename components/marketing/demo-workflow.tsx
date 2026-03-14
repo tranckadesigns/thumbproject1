@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Reveal } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils/cn";
-import { YouTubeRevenueOverlay } from "@/components/marketing/asset-overlays";
 
 const steps = [
   {
@@ -32,156 +31,183 @@ const steps = [
   },
 ];
 
+// ─── Step 1: Browse ───────────────────────────────────────────────────────────
+// Shows a mini library grid. One card is selected. Instantly recognizable.
+
 function BrowseVisual() {
-  return (
-    <div className="flex flex-col gap-2">
-      {["Revenue", "Subscribers", "Timers", "Reactions"].map((cat, i) => (
-        <div
-          key={cat}
-          className={cn(
-            "flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
-            i === 0
-              ? "border-accent/30 bg-accent/[0.06]"
-              : "border-border bg-base-elevated"
-          )}
-        >
-          <div
-            className={cn(
-              "h-1.5 w-1.5 rounded-full",
-              i === 0 ? "bg-accent" : "bg-border-strong"
-            )}
-          />
-          <span
-            className={cn(
-              "text-xs font-medium",
-              i === 0 ? "text-content-primary" : "text-content-muted"
-            )}
-          >
-            {cat}
-          </span>
-          <span className="ml-auto text-[10px] text-content-muted">
-            {[4, 4, 3, 4][i]} assets
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+  const cards = [
+    { label: "Revenue Alert", cat: "Revenue", selected: true },
+    { label: "Subscriber Milestone", cat: "Subscribers", selected: false },
+    { label: "Countdown Timer", cat: "Timers", selected: false },
+    { label: "Poll Results", cat: "Reactions", selected: false },
+    { label: "Growth Chart", cat: "Growth", selected: false },
+    { label: "Before & After", cat: "Comparisons", selected: false },
+  ];
 
-function DownloadVisual() {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="relative w-full overflow-hidden rounded-xl border border-border bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]">
-        <div className="flex aspect-video items-center justify-center p-4">
-          <div className="h-[70%] w-[55%]">
-            <YouTubeRevenueOverlay />
-          </div>
-        </div>
-      </div>
-      <div className="flex w-full items-center gap-3 rounded-lg border border-accent/25 bg-accent/[0.06] px-4 py-3">
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-accent"
-        >
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
+    <div className="flex flex-col gap-3">
+      {/* Search bar */}
+      <div className="flex items-center gap-2 rounded-lg border border-border bg-base-surface px-3 py-2">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-content-muted shrink-0">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        <span className="text-xs font-medium text-content-primary">
-          Revenue_Alert_v2.psd
-        </span>
-        <span className="ml-auto text-[10px] text-content-muted">4.2 MB</span>
+        <span className="text-xs text-content-muted">Revenue…</span>
       </div>
-    </div>
-  );
-}
 
-function EditVisual() {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="rounded-lg border border-border bg-base-elevated px-3 py-2">
-        <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-content-muted">
-          Layers
-        </p>
-        {[
-          { name: "💰 Revenue amount", active: true },
-          { name: "📋 Background card", active: false },
-          { name: "🎨 Accent bar", active: false },
-          { name: "✦ Icon", active: false },
-        ].map((layer) => (
+      {/* Grid */}
+      <div className="grid grid-cols-3 gap-2">
+        {cards.map((card) => (
           <div
-            key={layer.name}
+            key={card.label}
             className={cn(
-              "flex items-center gap-2 rounded px-2 py-1.5",
-              layer.active ? "bg-accent/10" : ""
+              "flex flex-col gap-1.5 rounded-lg border p-2 transition-colors",
+              card.selected
+                ? "border-accent/40 bg-accent/[0.06]"
+                : "border-border bg-base-elevated"
             )}
           >
-            <div
-              className={cn(
-                "h-1 w-1 rounded-full",
-                layer.active ? "bg-accent" : "bg-border-strong"
-              )}
-            />
-            <span
-              className={cn(
-                "text-[11px]",
-                layer.active ? "text-accent" : "text-content-muted"
-              )}
-            >
-              {layer.name}
-            </span>
+            {/* Placeholder preview */}
+            <div className={cn(
+              "aspect-video w-full rounded-md",
+              card.selected ? "bg-accent/10" : "bg-base-surface"
+            )} />
+            <p className={cn(
+              "truncate text-[9px] font-medium leading-none",
+              card.selected ? "text-accent" : "text-content-muted"
+            )}>
+              {card.label}
+            </p>
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/[0.04] px-3 py-2.5">
-        <span className="text-xs text-content-muted">Text:</span>
-        <span className="font-mono text-sm font-semibold text-content-primary">
-          $24,180
-        </span>
-        <span className="ml-auto text-[10px] text-accent">Active layer</span>
+      <p className="text-center text-[10px] text-content-muted">Pick any asset from the library</p>
+    </div>
+  );
+}
+
+// ─── Step 2: Download ─────────────────────────────────────────────────────────
+// Shows a PSD file + one big download button. Nothing else.
+
+function DownloadVisual() {
+  return (
+    <div className="flex flex-col items-center gap-5">
+      {/* File */}
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex h-20 w-16 flex-col overflow-hidden rounded-lg border border-border bg-base-surface shadow-elevated">
+          {/* Folded corner */}
+          <div className="relative h-full w-full">
+            <div className="absolute right-0 top-0 h-0 w-0 border-b-[12px] border-l-[12px] border-b-base-elevated border-l-transparent" />
+            <div className="flex h-full flex-col items-center justify-center gap-1 pt-2">
+              <div className="h-1 w-8 rounded-full bg-border-strong" />
+              <div className="h-1 w-6 rounded-full bg-border" />
+              <div className="h-1 w-7 rounded-full bg-border" />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 bg-accent/15 py-0.5 text-center text-[8px] font-bold tracking-widest text-accent">
+              PSD
+            </div>
+          </div>
+        </div>
+        <p className="text-xs font-medium text-content-secondary">Revenue_Alert.psd</p>
+        <p className="text-[10px] text-content-muted">18.4 MB</p>
+      </div>
+
+      {/* Button */}
+      <button className="flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-black shadow-elevated transition-opacity hover:opacity-90">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download PSD
+      </button>
+
+      <p className="text-[10px] text-content-muted">Instant · No credits · No queue</p>
+    </div>
+  );
+}
+
+// ─── Step 3: Edit ─────────────────────────────────────────────────────────────
+// Shows before → after. The number changes. Dead simple.
+
+function EditVisual() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-center text-[10px] font-medium uppercase tracking-widest text-content-muted">
+        Double-click a text layer · Type your value
+      </p>
+
+      <div className="flex items-center gap-3">
+        {/* Before */}
+        <div className="flex-1 rounded-lg border border-border bg-base-elevated p-4 text-center">
+          <p className="mb-1 text-[9px] font-medium uppercase tracking-wide text-content-muted">Before</p>
+          <p className="text-xl font-bold text-content-muted/30">$0.00</p>
+        </div>
+
+        {/* Arrow */}
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-accent/25 bg-accent/10">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+
+        {/* After */}
+        <div className="flex-1 rounded-lg border border-accent/30 bg-accent/[0.06] p-4 text-center">
+          <p className="mb-1 text-[9px] font-medium uppercase tracking-wide text-accent/70">After</p>
+          <p className="text-xl font-bold text-content-primary">$24,180</p>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-border bg-base-elevated px-4 py-3">
+        <p className="mb-1 text-[9px] font-medium uppercase tracking-wide text-content-muted">Every element is a named layer</p>
+        <div className="flex flex-wrap gap-1.5">
+          {["Revenue amount", "Background card", "Accent bar", "Icon"].map((l, i) => (
+            <span key={l} className={cn(
+              "rounded-full border px-2 py-0.5 text-[9px] font-medium",
+              i === 0
+                ? "border-accent/25 bg-accent/10 text-accent"
+                : "border-border text-content-muted"
+            )}>
+              {l}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
+// ─── Step 4: Export ───────────────────────────────────────────────────────────
+// Clear success state. File is done. Ready to use.
+
 function ExportVisual() {
   return (
-    <div className="flex flex-col gap-3">
-      <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-[#0d0d0d] to-[#181818]">
-        <div className="flex aspect-video items-center justify-center">
-          <div className="h-[75%] w-[58%]">
-            <YouTubeRevenueOverlay />
-          </div>
-        </div>
-        <div className="absolute bottom-2 right-2 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5">
-          <span className="text-[10px] font-semibold text-emerald-400">
-            PNG exported
-          </span>
-        </div>
-      </div>
-      <div className="flex items-center gap-2 text-xs text-content-muted">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-emerald-500"
-        >
-          <polyline points="20 6 9 17 4 12" />
+    <div className="flex flex-col items-center gap-5">
+      {/* Success icon */}
+      <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-emerald-500/40 bg-emerald-500/10">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+          <polyline points="20 6 9 17 4 12"/>
         </svg>
-        Ready to drop into your thumbnail canvas
       </div>
+
+      <div className="text-center">
+        <p className="text-base font-semibold text-content-primary">Ready to use</p>
+        <p className="mt-1 text-sm text-content-muted">Exported as PNG · Drop into Photoshop</p>
+      </div>
+
+      {/* File chip */}
+      <div className="flex items-center gap-3 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-md border border-emerald-500/20 bg-emerald-500/10">
+          <span className="text-[9px] font-bold text-emerald-400">PNG</span>
+        </div>
+        <div>
+          <p className="text-xs font-medium text-content-primary">Revenue_Alert_final.png</p>
+          <p className="text-[10px] text-content-muted">1920 × 1080 · Transparent bg</p>
+        </div>
+      </div>
+
+      <p className="text-center text-[10px] text-content-muted">
+        Total time: under 60 seconds
+      </p>
     </div>
   );
 }
@@ -239,14 +265,10 @@ export function DemoWorkflowSection() {
                     {step.id}
                   </div>
                   <div className="min-w-0">
-                    <p
-                      className={cn(
-                        "text-sm font-semibold",
-                        active === i
-                          ? "text-content-primary"
-                          : "text-content-secondary"
-                      )}
-                    >
+                    <p className={cn(
+                      "text-sm font-semibold",
+                      active === i ? "text-content-primary" : "text-content-secondary"
+                    )}>
                       {step.label}
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-content-muted">
@@ -257,9 +279,9 @@ export function DemoWorkflowSection() {
               ))}
             </div>
 
-            {/* Visual */}
+            {/* Visual panel */}
             <div className="flex items-center">
-              <div className="w-full rounded-2xl border border-border bg-base-elevated p-6">
+              <div className="w-full rounded-2xl border border-border bg-base-elevated p-7">
                 <Visual />
               </div>
             </div>
