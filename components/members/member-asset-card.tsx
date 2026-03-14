@@ -64,15 +64,14 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
 
         {/* Thumbnail — PNG with transparency floats on dark background */}
         {asset.thumbnail_url && (
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <Image
-              src={asset.thumbnail_url}
-              alt={asset.title}
-              fill
-              className="object-contain p-4"
-              unoptimized
-            />
-          </div>
+          <Image
+            src={asset.thumbnail_url}
+            alt={asset.title}
+            fill
+            className="object-contain p-5"
+            style={{ filter: "drop-shadow(0 6px 20px rgba(0,0,0,0.55))" }}
+            unoptimized
+          />
         )}
 
         {/* Hover overlay */}
