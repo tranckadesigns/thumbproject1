@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import type Stripe from "stripe";
@@ -28,18 +29,16 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       // ── Checkout completed → subscription created ──────────────────────────
       case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
+        const session = event.data.object as any;
         if (session.mode !== "subscription") break;
 
-        const userId    = session.metadata?.user_id;
-        const planId    = session.metadata?.plan_id;
-        const subId     = session.subscription as string;
-        const custId    = session.customer as string;
+        const userId = session.metadata?.user_id;
+        const planId = session.metadata?.plan_id;
+        const subId  = session.subscription as string;
+        const custId = session.customer as string;
 
         if (!userId || !subId) break;
 
-        // Fetch full subscription to get period end
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sub = await stripe.subscriptions.retrieve(subId) as any;
 
         await upsertSubscription(supabase, {
@@ -56,7 +55,7 @@ export async function POST(request: NextRequest) {
 
       // ── Subscription updated (renewal, plan change, cancel scheduled) ──────
       case "customer.subscription.updated": {
-        const sub = event.data.object as Stripe.Subscription;
+        const sub = event.data.object as any;
         const userId = sub.metadata?.user_id;
         if (!userId) break;
 
@@ -74,7 +73,7 @@ export async function POST(request: NextRequest) {
 
       // ── Subscription canceled / deleted ────────────────────────────────────
       case "customer.subscription.deleted": {
-        const sub = event.data.object as Stripe.Subscription;
+        const sub = event.data.object as any;
         const userId = sub.metadata?.user_id;
         if (!userId) break;
 
@@ -92,12 +91,12 @@ export async function POST(request: NextRequest) {
 
       // ── Payment failed ─────────────────────────────────────────────────────
       case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as any;
         if (!invoice.subscription) break;
 
         const sub = await stripe.subscriptions.retrieve(
           invoice.subscription as string
-        );
+        ) as any;
         const userId = sub.metadata?.user_id;
         if (!userId) break;
 
@@ -119,7 +118,6 @@ export async function POST(request: NextRequest) {
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 async function upsertSubscription(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any,
   data: {
     userId:               string;
@@ -142,8 +140,6 @@ async function upsertSubscription(
       cancel_at_period_end:   data.cancelAtPeriodEnd,
       updated_at:             new Date().toISOString(),
     },
-    {
-      onConflict: "user_id",
-    }
+    { onConflict: "user_id" }
   );
 }
