@@ -52,6 +52,30 @@ export async function signUpAction(
   redirect("/library");
 }
 
+export type ForgotPasswordState = {
+  error: string | null;
+  success: boolean;
+};
+
+export async function forgotPasswordAction(
+  _prevState: ForgotPasswordState,
+  formData: FormData
+): Promise<ForgotPasswordState> {
+  const email = formData.get("email") as string;
+
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return { error: "Auth not configured.", success: false };
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+  // Always return success to avoid leaking whether an email exists
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/reset-password`,
+  });
+
+  return { error: null, success: true };
+}
+
 export async function signOutAction(): Promise<void> {
   const supabase = await getSupabaseServerClient();
   if (supabase) {
