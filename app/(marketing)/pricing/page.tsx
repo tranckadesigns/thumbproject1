@@ -1,14 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import {
-  Check,
-  ChevronRight,
-  Layers,
-  Zap,
-  RefreshCw,
-  ShieldCheck,
-} from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Check, Layers, Zap, RefreshCw, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FeaturedPlanCard } from "@/components/marketing/featured-plan-card";
 import {
