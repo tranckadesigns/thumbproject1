@@ -1,16 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 
 export function ReadingProgress() {
-  const [progress, setProgress] = useState(0)
+  const barRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onScroll = () => {
       const el = document.documentElement
-      const scrolled = el.scrollTop
       const total = el.scrollHeight - el.clientHeight
-      setProgress(total > 0 ? (scrolled / total) * 100 : 0)
+      const progress = total > 0 ? (el.scrollTop / total) * 100 : 0
+      if (barRef.current) {
+        barRef.current.style.width = `${progress}%`
+      }
     }
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
@@ -22,8 +24,9 @@ export function ReadingProgress() {
       aria-hidden
     >
       <div
+        ref={barRef}
         className="h-full bg-accent"
-        style={{ width: `${progress}%`, transition: "width 80ms linear" }}
+        style={{ width: "0%", willChange: "width" }}
       />
     </div>
   )
