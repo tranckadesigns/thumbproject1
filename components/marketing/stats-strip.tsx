@@ -8,40 +8,50 @@ interface AnimatedStatProps {
 }
 
 function AnimatedStat({ raw, label }: AnimatedStatProps) {
-  const [displayed, setDisplayed] = useState("0");
+  const [displayed, setDisplayed] = useState("—");
+  const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
+    const el = ref.current;
+    if (!el) return;
 
-    const prefix = raw.startsWith("~") ? "~" : "";
-    const numStr = raw.replace(/^~/, "").replace(/[^0-9,]/g, "").replace(/,/g, "");
-    const suffix = raw.replace(/^~?[\d,]+/, "");
-    const target = parseInt(numStr, 10);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || started.current) return;
+        started.current = true;
+        observer.disconnect();
 
-    if (isNaN(target)) {
-      setDisplayed(raw);
-      return;
-    }
+        const prefix = raw.startsWith("~") ? "~" : "";
+        const numStr = raw.replace(/^~/, "").replace(/[^0-9,]/g, "").replace(/,/g, "");
+        const suffix = raw.replace(/^~?[\d,]+/, "");
+        const target = parseInt(numStr, 10);
 
-    const duration = 1600;
-    const startTime = performance.now();
+        if (isNaN(target)) { setDisplayed(raw); return; }
 
-    function tick(now: number) {
-      const t = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const current = Math.round(eased * target);
-      const formatted = current >= 1000 ? current.toLocaleString() : String(current);
-      setDisplayed(prefix + formatted + suffix);
-      if (t < 1) requestAnimationFrame(tick);
-    }
+        const duration = 1800;
+        const startTime = performance.now();
 
-    requestAnimationFrame(tick);
+        function tick(now: number) {
+          const t = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const current = Math.round(eased * target);
+          const formatted = current >= 1000 ? current.toLocaleString() : String(current);
+          setDisplayed(prefix + formatted + suffix);
+          if (t < 1) requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+      },
+      { threshold: 0.4 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [raw]);
 
   return (
-    <div className="flex flex-col items-center px-6 py-8 text-center">
+    <div ref={ref} className="flex flex-col items-center px-6 py-8 text-center">
       <span className="text-2xl font-semibold tracking-tightest text-content-primary tabular-nums">
         {displayed}
       </span>
@@ -52,10 +62,10 @@ function AnimatedStat({ raw, label }: AnimatedStatProps) {
 
 export function StatsStrip() {
   const stats = [
-    { raw: "180+", label: "PSD assets" },
-    { raw: "12",   label: "Categories" },
+    { raw: "180+",   label: "PSD assets" },
+    { raw: "12",     label: "Categories" },
     { raw: "1,200+", label: "Creators" },
-    { raw: "~60s", label: "Avg. edit time" },
+    { raw: "~60s",   label: "Avg. edit time" },
   ];
 
   return (

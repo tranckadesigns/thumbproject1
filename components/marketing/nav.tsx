@@ -172,7 +172,7 @@ export function Nav({ isLoggedIn }: NavProps) {
         document.body
       )}
 
-      <header className="fixed inset-x-0 top-0 z-50 h-14 border-b border-border-subtle bg-base/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 h-14 w-full border-b border-border-subtle bg-base/80 backdrop-blur-md">
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex-shrink-0">
             <Wordmark />

@@ -5,6 +5,8 @@ import { ActivityToast } from "@/components/marketing/activity-toast";
 import { StickyCTABar } from "@/components/marketing/sticky-cta-bar";
 import { CookieConsent } from "@/components/marketing/cookie-consent";
 import { ScrollToTop } from "@/components/marketing/scroll-to-top";
+import { AnnouncementBar } from "@/components/marketing/announcement-bar";
+import { ReadingProgress } from "@/components/marketing/reading-progress";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function MarketingLayout({
@@ -18,9 +20,11 @@ export default async function MarketingLayout({
 
   return (
     <>
+      <ReadingProgress />
+      <AnnouncementBar />
       <Nav isLoggedIn={!!user || demoMode} />
       <MagneticLiquid targetId="hero-get-access" />
-      <main className="pt-14">{children}</main>
+      <main>{children}</main>
       <Footer />
       <ActivityToast />
       <StickyCTABar />

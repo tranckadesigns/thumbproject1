@@ -30,6 +30,7 @@ import { PricingPreviewSection } from "@/components/marketing/pricing-preview";
 import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
 import { FileSpecsSection } from "@/components/marketing/file-specs";
 import { LibraryGrowthV5 } from "@/components/marketing/library-growth-v5";
+import { EmailCaptureSection } from "@/components/marketing/email-capture";
 import { cn } from "@/lib/utils/cn";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
@@ -848,7 +849,10 @@ export default function HomePage() {
       {/* 13 — Social proof */}
       <TestimonialsSection />
 
-      {/* 14 — Pre-pricing recap: what does the subscription include */}
+      {/* 14 — Lead capture for non-buyers */}
+      <EmailCaptureSection />
+
+      {/* 15 — Pre-pricing recap: what does the subscription include */}
       <WhatsIncludedSection />
 
       {/* 15 — Price (after trust is established) */}
