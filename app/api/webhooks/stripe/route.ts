@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
         if (!userId || !subId) break;
 
         // Fetch full subscription to get period end
-        const sub = await stripe.subscriptions.retrieve(subId);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sub = await stripe.subscriptions.retrieve(subId) as any;
 
         await upsertSubscription(supabase, {
           userId,
