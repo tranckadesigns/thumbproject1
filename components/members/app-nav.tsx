@@ -47,17 +47,18 @@ function LibraryNavLink() {
   );
 }
 
-const SUB_navItems = [
+const MOBILE_SUB_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/library",   label: "Library",   icon: Library },
+  { href: "/account",   label: "Account",   icon: Settings },
 ];
 
-const ACCOUNT_NAV_ITEM = { href: "/account", label: "Account", icon: Settings };
+const MOBILE_NO_SUB_LINKS = [
+  { href: "/account", label: "Account", icon: Settings },
+];
 
 export function AppNav({ email, hasSubscription = false }: AppNavProps) {
-  const navItems = hasSubscription
-    ? [...SUB_navItems, ACCOUNT_NAV_ITEM]
-    : [ACCOUNT_NAV_ITEM];
+  const mobileLinks = hasSubscription ? MOBILE_SUB_LINKS : MOBILE_NO_SUB_LINKS;
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -94,19 +95,13 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-7 md:flex">
-            {navItems.map(({ href, label }) =>
-              href === "/library" ? (
-                <LibraryNavLink key={href} />
-              ) : (
-                <NavLink key={href} href={href} label={label} />
-              )
-            )}
-
-            {/* Favorites heart button — only for subscribers */}
-            {hasSubscription && <FavoritesNavButton />}
-
-            {/* Upgrade CTA for non-subscribers */}
-            {!hasSubscription && (
+            {hasSubscription ? (
+              <>
+                <NavLink href="/dashboard" label="Dashboard" />
+                <LibraryNavLink />
+                <FavoritesNavButton />
+              </>
+            ) : (
               <UnlockButton size="sm" label="Get access" />
             )}
 
@@ -186,7 +181,7 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
 
           {/* Links */}
           <nav className="flex flex-col gap-1 p-4">
-            {navItems.map(({ href, label, icon: Icon }) => {
+            {mobileLinks.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
               if (href === "/library") {
                 return (
