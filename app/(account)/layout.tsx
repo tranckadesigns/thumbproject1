@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { hasActiveSubscription } from "@/lib/subscription";
 import { AppNav } from "@/components/members/app-nav";
 
 export default async function AccountLayout({
@@ -15,10 +16,11 @@ export default async function AccountLayout({
   if (!demoMode && !user) redirect("/login");
 
   const email = user?.email ?? "demo@psdfuel.com";
+  const subscribed = demoMode || (user ? await hasActiveSubscription() : false);
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={email} />
+      <AppNav email={email} hasSubscription={subscribed} />
       <main className="pt-14">{children}</main>
     </div>
   );

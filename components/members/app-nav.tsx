@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils/cn";
 
 interface AppNavProps {
   email: string;
+  hasSubscription?: boolean;
 }
 
 function NavLink({ href, label }: { href: string; label: string }) {
@@ -31,14 +32,18 @@ function NavLink({ href, label }: { href: string; label: string }) {
   );
 }
 
-const NAV_ITEMS = [
+const SUB_navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/library",   label: "Library",   icon: Library },
   { href: "/favorites", label: "Favorites", icon: Heart },
-  { href: "/account",   label: "Account",   icon: Settings },
 ];
 
-export function AppNav({ email }: AppNavProps) {
+const ACCOUNT_NAV_ITEM = { href: "/account", label: "Account", icon: Settings };
+
+export function AppNav({ email, hasSubscription = false }: AppNavProps) {
+  const navItems = hasSubscription
+    ? [...SUB_navItems, ACCOUNT_NAV_ITEM]
+    : [ACCOUNT_NAV_ITEM];
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -75,7 +80,7 @@ export function AppNav({ email }: AppNavProps) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-7 md:flex">
-            {NAV_ITEMS.map(({ href, label }) => (
+            {navItems.map(({ href, label }) => (
               <NavLink key={href} href={href} label={label} />
             ))}
 
@@ -155,7 +160,7 @@ export function AppNav({ email }: AppNavProps) {
 
           {/* Links */}
           <nav className="flex flex-col gap-1 p-4">
-            {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            {navItems.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
               return (
                 <Link

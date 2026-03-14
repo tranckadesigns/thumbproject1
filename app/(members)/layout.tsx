@@ -27,7 +27,7 @@ export default async function MembersLayout({
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={email} />
+      <AppNav email={email} hasSubscription={true} />
       <main className="pt-14">{children}</main>
     </div>
   );
