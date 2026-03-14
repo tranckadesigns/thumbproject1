@@ -1,12 +1,9 @@
 import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("STRIPE_SECRET_KEY is not set");
-}
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+// Using ?? "missing" avoids a build-time crash when the env var is not yet
+// available during static analysis. At runtime the real key is injected by Vercel.
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "missing", {
   apiVersion: "2026-02-25.clover",
-  typescript: true,
 });
 
 // Map our internal plan IDs to Stripe price IDs (set in env vars)
