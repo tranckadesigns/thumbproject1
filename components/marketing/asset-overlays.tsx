@@ -1231,9 +1231,6 @@ export function AssetCard({ overlayType, title, className }: AssetCardProps) {
         <div className="h-1.5 w-1/2 rounded bg-white/15" />
       </div>
 
-      {/* Platform signal overlay */}
-      <OverlayComponent />
-
       {/* Category badge */}
       <div className="absolute top-2.5 left-2.5">
         <span

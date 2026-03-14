@@ -1,36 +1,10 @@
 import { Reveal } from "@/components/ui/reveal";
-import {
-  YouTubeRevenueOverlay,
-  ChallengeProgressOverlay,
-  CountdownTimerOverlay,
-  BestWorstOverlay,
-} from "@/components/marketing/asset-overlays";
 
 const newAssets = [
-  {
-    name: "Emoji Reaction Bubbles",
-    category: "Reactions",
-    tag: "New",
-    Preview: YouTubeRevenueOverlay,
-  },
-  {
-    name: "Poll Vote Counter",
-    category: "Reactions",
-    tag: "New",
-    Preview: ChallengeProgressOverlay,
-  },
-  {
-    name: "Live Event Timer",
-    category: "Timers",
-    tag: "New",
-    Preview: CountdownTimerOverlay,
-  },
-  {
-    name: "Star Rating Badge",
-    category: "Ratings",
-    tag: "Updated",
-    Preview: BestWorstOverlay,
-  },
+  { name: "Emoji Reaction Bubbles", category: "Reactions",  tag: "New"     },
+  { name: "Poll Vote Counter",      category: "Reactions",  tag: "New"     },
+  { name: "Live Event Timer",       category: "Timers",     tag: "New"     },
+  { name: "Star Rating Badge",      category: "Ratings",    tag: "Updated" },
 ];
 
 export function NewThisMonthSection({ assetCount }: { assetCount: number }) {
@@ -80,9 +54,10 @@ export function NewThisMonthSection({ assetCount }: { assetCount: number }) {
                 </div>
 
                 {/* Preview area */}
-                <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]">
-                  <div className="h-[70%] w-[55%]">
-                    <asset.Preview />
+                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]">
+                  <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-15">
+                    <div className="h-2 w-3/4 rounded bg-white/20" />
+                    <div className="h-1.5 w-1/2 rounded bg-white/15" />
                   </div>
                 </div>
 
