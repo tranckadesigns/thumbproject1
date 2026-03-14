@@ -2,10 +2,12 @@ import Link from "next/link";
 import type { Asset } from "@/types/asset";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/format";
+import { FavoriteButton } from "@/components/members/favorite-button";
 
 interface MemberAssetCardProps {
   asset: Asset;
   className?: string;
+  isFavorited?: boolean;
 }
 
 const categoryColors: Record<string, string> = {
@@ -30,7 +32,7 @@ function isNew(createdAt: string): boolean {
   return now - created < sixtyDays;
 }
 
-export function MemberAssetCard({ asset, className }: MemberAssetCardProps) {
+export function MemberAssetCard({ asset, className, isFavorited = false }: MemberAssetCardProps) {
   const fresh = isNew(asset.created_at);
   const badgeColor = categoryColors[asset.category] ?? "text-content-muted bg-base-elevated";
 
@@ -39,6 +41,11 @@ export function MemberAssetCard({ asset, className }: MemberAssetCardProps) {
       {/* Preview */}
       <div className="relative aspect-video overflow-hidden rounded-xl border border-border transition-all duration-300 group-hover:border-border-strong group-hover:shadow-elevated">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#161616]" />
+
+        {/* Favorite button */}
+        <div className="absolute right-2.5 top-2.5 z-10">
+          <FavoriteButton assetId={asset.id} initialFavorited={isFavorited} />
+        </div>
 
         {/* Badges */}
         <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5">

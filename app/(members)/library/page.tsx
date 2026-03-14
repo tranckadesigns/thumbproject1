@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import type { AssetCategory } from "@/types/asset";
 import { assetService } from "@/lib/services/index";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LibrarySidebar } from "@/components/members/library-sidebar";
 import { LibrarySearch } from "@/components/members/library-search";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
@@ -12,6 +13,15 @@ export const metadata: Metadata = { title: "Library" };
 
 interface LibraryPageProps {
   searchParams: Promise<{ category?: string; q?: string; sort?: string }>;
+}
+
+async function getFavoriteIds(): Promise<Set<string>> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return new Set();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return new Set();
+  const { data } = await supabase.from("favorites").select("asset_id").eq("user_id", user.id);
+  return new Set((data ?? []).map((r: { asset_id: string }) => r.asset_id));
 }
 
 export default async function LibraryPage({ searchParams }: LibraryPageProps) {
@@ -42,6 +52,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
     return acc;
   }, {});
 
+  const [favoriteIds] = await Promise.all([getFavoriteIds()]);
   const categories = [...siteConfig.categories] as string[];
   const isFiltered = !!(category || q);
 
@@ -103,7 +114,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
           {assets.length > 0 ? (
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {assets.map((asset) => (
-                <MemberAssetCard key={asset.id} asset={asset} />
+                <MemberAssetCard key={asset.id} asset={asset} isFavorited={favoriteIds.has(asset.id)} />
               ))}
             </div>
           ) : (
