@@ -7,6 +7,7 @@ import { signOutAction } from "@/app/(auth)/actions";
 import { Badge } from "@/components/ui/badge";
 import { BillingPortalButton } from "@/components/members/billing-portal-button";
 import { UnlockButton } from "@/components/ui/unlock-button";
+import { BackButton } from "@/components/ui/back-button";
 import { formatDate } from "@/lib/utils/format";
 
 export const metadata: Metadata = {
@@ -48,9 +49,10 @@ export default async function AccountPage() {
   return (
     <div className="px-6 py-10">
       <div className="mx-auto max-w-2xl">
-        <h1 className="mb-8 text-2xl font-semibold tracking-tight text-content-primary">
-          Account
-        </h1>
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-2xl font-semibold tracking-tight text-content-primary">Account</h1>
+          <BackButton />
+        </div>
 
         <div className="space-y-4">
           {/* Profile card */}
