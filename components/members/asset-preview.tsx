@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   YouTubeRevenueOverlay,
   StripePayoutOverlay,
@@ -86,13 +87,26 @@ const slugOverlayMap: Record<string, () => React.ReactElement> = {
 
 interface AssetPreviewProps {
   slug: string;
+  thumbnailUrl?: string;
 }
 
-export function AssetPreview({ slug }: AssetPreviewProps) {
-  const Overlay = slugOverlayMap[slug] ?? YouTubeRevenueOverlay;
+export function AssetPreview({ slug, thumbnailUrl }: AssetPreviewProps) {
   return (
     <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#161616]">
-      <Overlay />
+      {thumbnailUrl ? (
+        <Image
+          src={thumbnailUrl}
+          alt={slug}
+          fill
+          className="object-contain p-6"
+          unoptimized
+        />
+      ) : (
+        (() => {
+          const Overlay = slugOverlayMap[slug] ?? YouTubeRevenueOverlay;
+          return <Overlay />;
+        })()
+      )}
     </div>
   );
 }

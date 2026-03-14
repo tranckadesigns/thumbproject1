@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, FileImage, Tag } from "lucide-react";
 import {
@@ -168,15 +169,27 @@ export default async function AssetPage({ params }: AssetPageProps) {
           <div className="space-y-4">
             <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10]">
               <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end gap-1.5 opacity-20">
-                <div className="h-2.5 w-3/4 rounded bg-white/20" />
-                <div className="h-2 w-1/2 rounded bg-white/15" />
-              </div>
-              <OverlayComponent />
+              {asset.thumbnail_url ? (
+                <Image
+                  src={asset.thumbnail_url}
+                  alt={asset.title}
+                  fill
+                  className="object-contain p-6"
+                  unoptimized
+                />
+              ) : (
+                <>
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end gap-1.5 opacity-20">
+                    <div className="h-2.5 w-3/4 rounded bg-white/20" />
+                    <div className="h-2 w-1/2 rounded bg-white/15" />
+                  </div>
+                  <OverlayComponent />
+                </>
+              )}
             </div>
 
             <p className="text-xs text-center text-content-muted">
-              Live preview — overlay shown at scale
+              {asset.thumbnail_url ? "Preview" : "Live preview — overlay shown at scale"}
             </p>
           </div>
 

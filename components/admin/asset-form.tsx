@@ -262,7 +262,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
         {/* Thumbnail */}
         <Field
           label="Thumbnail image"
-          hint="PNG or JPG. Shown as preview in the library. Recommended: 1280×720."
+          hint="PNG with transparent background recommended — the overlay floats on the dark card. Min. 800px wide."
         >
           <input
             ref={thumbnailRef}

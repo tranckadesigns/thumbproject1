@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Asset } from "@/types/asset";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/format";
@@ -60,6 +61,19 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
             </span>
           )}
         </div>
+
+        {/* Thumbnail — PNG with transparency floats on dark background */}
+        {asset.thumbnail_url && (
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <Image
+              src={asset.thumbnail_url}
+              alt={asset.title}
+              fill
+              className="object-contain p-4"
+              unoptimized
+            />
+          </div>
+        )}
 
         {/* Hover overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/55 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
