@@ -189,7 +189,7 @@ function HeroSection({ stats }: { stats: LibraryStats }) {
           <Reveal delay={360}>
             <p className="mt-5 text-sm text-content-muted">
               Trusted by{" "}
-              <span className="text-content-secondary">1,200+</span> YouTube creators
+              <span className="text-content-secondary">{stats.creatorCount.toLocaleString()}+</span> YouTube creators
               {" · "}
               <span className="text-content-secondary">{stats.assetCount}+</span> assets across{" "}
               <span className="text-content-secondary">{stats.categoryCount}</span> categories
@@ -692,7 +692,7 @@ function WhatsIncludedSection() {
 
 // ─── 9. CTA ──────────────────────────────────────────────────────────────────
 
-function CtaSection() {
+function CtaSection({ creatorCount }: { creatorCount: number }) {
   return (
     <section className="relative overflow-hidden border-t border-border px-6 py-32">
       <div
@@ -718,7 +718,7 @@ function CtaSection() {
             deserve better.
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-content-secondary">
-            Join 1,200+ YouTube creators using PSDfuel to build scroll-stopping
+            Join {creatorCount.toLocaleString()}+ YouTube creators using PSDfuel to build scroll-stopping
             thumbnails in minutes, not hours.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -776,10 +776,10 @@ export default async function HomePage({
       <HeroSection stats={stats} />
 
       {/* 2 — Quick credibility */}
-      <StatsStrip assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
+      <StatsStrip assetCount={stats.assetCount} categoryCount={stats.categoryCount} creatorCount={stats.creatorCount} />
 
       {/* 3 — Social proof: who uses it */}
-      <CreatorsMarquee />
+      <CreatorsMarquee creatorCount={stats.creatorCount} />
 
       {/* 4 — Show the product immediately, before explaining it */}
       <RealThumbnailsSection />
@@ -833,7 +833,7 @@ export default async function HomePage({
       <FAQSection />
 
       {/* 14 — Close */}
-      <CtaSection />
+      <CtaSection creatorCount={stats.creatorCount} />
     </>
   );
 }

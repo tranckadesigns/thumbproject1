@@ -63,14 +63,15 @@ function AnimatedStat({ raw, label }: AnimatedStatProps) {
 interface StatsStripProps {
   assetCount: number;
   categoryCount: number;
+  creatorCount: number;
 }
 
-export function StatsStrip({ assetCount, categoryCount }: StatsStripProps) {
+export function StatsStrip({ assetCount, categoryCount, creatorCount }: StatsStripProps) {
   const stats = [
-    { raw: `${assetCount}+`, label: "PSD assets" },
-    { raw: String(categoryCount), label: "Categories" },
-    { raw: "1,200+",             label: "Creators" },
-    { raw: "~60s",               label: "Avg. edit time" },
+    { raw: `${assetCount}+`,                      label: "PSD assets" },
+    { raw: String(categoryCount),                  label: "Categories" },
+    { raw: `${creatorCount.toLocaleString()}+`,    label: "Creators" },
+    { raw: "~60s",                                 label: "Avg. edit time" },
   ];
 
   return (
