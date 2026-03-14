@@ -50,7 +50,6 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { DownloadButton } from "@/components/members/download-button";
 import { FavoriteButton } from "@/components/members/favorite-button";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
-import { ZoomablePreview } from "@/components/members/zoomable-preview";
 import { Badge } from "@/components/ui/badge";
 import { formatFileSize } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
@@ -164,21 +163,31 @@ export default async function AssetPage({ params }: AssetPageProps) {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {/* Preview */}
           <div className="space-y-4">
-            {asset.thumbnail_url ? (
-              <ZoomablePreview src={asset.thumbnail_url} alt={asset.title} />
-            ) : (
-              <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10]">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
-                <div className="absolute inset-0 p-6 flex flex-col justify-end gap-1.5 opacity-20">
-                  <div className="h-2.5 w-3/4 rounded bg-white/20" />
-                  <div className="h-2 w-1/2 rounded bg-white/15" />
-                </div>
-                <OverlayComponent />
-              </div>
-            )}
+            <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10]">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
+              {asset.thumbnail_url ? (
+                <Image
+                  src={asset.thumbnail_url}
+                  alt={asset.title}
+                  fill
+                  className="object-contain p-8"
+                  style={{ filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.6))" }}
+                  unoptimized
+                  priority
+                />
+              ) : (
+                <>
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end gap-1.5 opacity-20">
+                    <div className="h-2.5 w-3/4 rounded bg-white/20" />
+                    <div className="h-2 w-1/2 rounded bg-white/15" />
+                  </div>
+                  <OverlayComponent />
+                </>
+              )}
+            </div>
 
             <p className="text-xs text-center text-content-muted">
-              {asset.thumbnail_url ? "Hover to zoom" : "Live preview — overlay shown at scale"}
+              {asset.thumbnail_url ? "Preview" : "Live preview — overlay shown at scale"}
             </p>
           </div>
 
