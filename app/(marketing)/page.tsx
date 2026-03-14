@@ -30,6 +30,7 @@ import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
+import { assetService } from "@/lib/services";
 import { categoriesConfig } from "@/lib/config/categories";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
@@ -751,7 +752,10 @@ function CtaSection() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const stats = await getLibraryStats();
+  const [stats, recentAssets] = await Promise.all([
+    getLibraryStats(),
+    assetService.getRecent(4),
+  ]);
 
   return (
     <>
@@ -792,7 +796,7 @@ export default async function HomePage() {
       <FileSpecsSection />
 
       {/* 11b — Freshness signal: what's new this month */}
-      <NewThisMonthSection assetCount={stats.assetCount} />
+      <NewThisMonthSection assetCount={stats.assetCount} recentAssets={recentAssets} />
 
       {/* 12 — Show the PSD quality up close */}
       <PsdShowcase />

@@ -95,13 +95,19 @@ alter table public.subscriptions enable row level security;
 alter table public.favorites     enable row level security;
 alter table public.downloads     enable row level security;
 
+-- Drop existing policies before recreating (idempotent)
+drop policy if exists "Published assets are publicly readable"  on public.assets;
+drop policy if exists "Users can read own subscription"         on public.subscriptions;
+drop policy if exists "Users can read own favorites"            on public.favorites;
+drop policy if exists "Users can insert own favorites"          on public.favorites;
+drop policy if exists "Users can delete own favorites"          on public.favorites;
+drop policy if exists "Users can read own downloads"            on public.downloads;
+drop policy if exists "Users can insert own downloads"          on public.downloads;
+
 -- Assets: published assets are readable by everyone (including anon)
 create policy "Published assets are publicly readable"
   on public.assets for select
   using (is_published = true);
-
--- Assets: all assets readable by authenticated users (for library)
--- Admin creates/updates/deletes happen via service role key (bypasses RLS)
 
 -- Subscriptions: users can only read their own subscription
 create policy "Users can read own subscription"

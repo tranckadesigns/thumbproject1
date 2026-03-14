@@ -39,6 +39,10 @@ export class AssetService implements IAssetService {
     return this.repo.getFeatured();
   }
 
+  async getRecent(limit = 4): Promise<Asset[]> {
+    return this.repo.getRecent(limit);
+  }
+
   async getByCategory(category: AssetCategory): Promise<Asset[]> {
     return this.repo.getByCategory(category);
   }

@@ -13,6 +13,7 @@ export interface IAssetRepository {
   getBySlug(slug: string): Promise<Asset | null>;
   getById(id: string): Promise<Asset | null>;
   getFeatured(): Promise<Asset[]>;
+  getRecent(limit: number): Promise<Asset[]>;
   getByCategory(category: AssetCategory): Promise<Asset[]>;
   create(data: Omit<Asset, "id" | "created_at">): Promise<Asset>;
   update(id: string, data: Partial<Omit<Asset, "id" | "created_at">>): Promise<Asset>;
@@ -65,6 +66,13 @@ export class MockAssetRepository implements IAssetRepository {
 
   async getFeatured(): Promise<Asset[]> {
     return this.assets.filter((a) => a.is_featured && a.is_published);
+  }
+
+  async getRecent(limit: number): Promise<Asset[]> {
+    return [...this.assets]
+      .filter((a) => a.is_published)
+      .sort((a, b) => new Date(b.updated_at ?? b.created_at).getTime() - new Date(a.updated_at ?? a.created_at).getTime())
+      .slice(0, limit);
   }
 
   async getByCategory(category: AssetCategory): Promise<Asset[]> {

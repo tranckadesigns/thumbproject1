@@ -1,13 +1,29 @@
+import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
+import type { Asset } from "@/types/asset";
 
-const newAssets = [
-  { name: "Emoji Reaction Bubbles", category: "Reactions",  tag: "New"     },
-  { name: "Poll Vote Counter",      category: "Reactions",  tag: "New"     },
-  { name: "Live Event Timer",       category: "Timers",     tag: "New"     },
-  { name: "Star Rating Badge",      category: "Ratings",    tag: "Updated" },
-];
+function assetTag(asset: Asset): { label: string; style: string } {
+  const created = new Date(asset.created_at).getTime();
+  const updated = asset.updated_at ? new Date(asset.updated_at).getTime() : created;
+  const isUpdated = updated - created > 24 * 60 * 60 * 1000; // updated > 1 day after creation
+  return isUpdated
+    ? { label: "Updated", style: "rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400" }
+    : { label: "New",     style: "rounded-full border border-accent/25 bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent" };
+}
 
-export function NewThisMonthSection({ assetCount }: { assetCount: number }) {
+function currentMonthLabel(): string {
+  return new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}
+
+export function NewThisMonthSection({
+  assetCount,
+  recentAssets,
+}: {
+  assetCount: number;
+  recentAssets: Asset[];
+}) {
+  if (recentAssets.length === 0) return null;
+
   return (
     <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -16,7 +32,7 @@ export function NewThisMonthSection({ assetCount }: { assetCount: number }) {
             <div>
               <div className="mb-3 flex items-center gap-2.5">
                 <p className="text-xs font-medium uppercase tracking-widest text-content-muted">
-                  March 2026
+                  {currentMonthLabel()}
                 </p>
                 <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent border border-accent/20">
                   Just added
@@ -37,42 +53,44 @@ export function NewThisMonthSection({ assetCount }: { assetCount: number }) {
         </Reveal>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {newAssets.map((asset, i) => (
-            <Reveal key={asset.name} delay={i * 70}>
-              <div className="group relative overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
-                {/* Badge */}
-                <div className="absolute right-3 top-3 z-10">
-                  <span
-                    className={
-                      asset.tag === "New"
-                        ? "rounded-full border border-accent/25 bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent"
-                        : "rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400"
-                    }
-                  >
-                    {asset.tag}
-                  </span>
-                </div>
+          {recentAssets.map((asset, i) => {
+            const tag = assetTag(asset);
+            return (
+              <Reveal key={asset.id} delay={i * 70}>
+                <div className="group relative overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
+                  {/* Badge */}
+                  <div className="absolute right-3 top-3 z-10">
+                    <span className={tag.style}>{tag.label}</span>
+                  </div>
 
-                {/* Preview area */}
-                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]">
-                  <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-15">
-                    <div className="h-2 w-3/4 rounded bg-white/20" />
-                    <div className="h-1.5 w-1/2 rounded bg-white/15" />
+                  {/* Preview area */}
+                  <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]">
+                    {asset.thumbnail_url ? (
+                      <Image
+                        src={asset.thumbnail_url}
+                        alt={asset.title}
+                        fill
+                        className="object-contain p-4"
+                        style={{ filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.6))" }}
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-15">
+                        <div className="h-2 w-3/4 rounded bg-white/20" />
+                        <div className="h-1.5 w-1/2 rounded bg-white/15" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="p-4">
+                    <p className="text-sm font-semibold text-content-primary">{asset.title}</p>
+                    <p className="mt-0.5 text-xs text-content-muted">{asset.category}</p>
                   </div>
                 </div>
-
-                {/* Info */}
-                <div className="p-4">
-                  <p className="text-sm font-semibold text-content-primary">
-                    {asset.name}
-                  </p>
-                  <p className="mt-0.5 text-xs text-content-muted">
-                    {asset.category}
-                  </p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            );
+          })}
         </div>
 
         <Reveal delay={320}>

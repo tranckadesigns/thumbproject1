@@ -34,4 +34,5 @@ export interface Asset {
   is_published: boolean;
   tags: string[];
   created_at: string;
+  updated_at?: string;
 }

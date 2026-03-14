@@ -70,6 +70,18 @@ export class SupabaseAssetRepository implements IAssetRepository {
     return data ?? [];
   }
 
+  async getRecent(limit: number): Promise<Asset[]> {
+    const sb = getClient();
+    const { data, error } = await sb
+      .from("assets")
+      .select("*")
+      .eq("is_published", true)
+      .order("updated_at", { ascending: false })
+      .limit(limit);
+    if (error) throw new Error(`getRecent failed: ${error.message}`);
+    return data ?? [];
+  }
+
   async getByCategory(category: AssetCategory): Promise<Asset[]> {
     const sb = getClient();
     const { data, error } = await sb
