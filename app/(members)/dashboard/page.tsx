@@ -1,29 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, LayoutGrid, Sparkles, FolderOpen } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscription } from "@/lib/subscription";
 import { assetService } from "@/lib/services/index";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
-import { siteConfig } from "@/lib/config/site";
+import { DashboardGreeting } from "@/components/members/dashboard-greeting";
 import { formatDate } from "@/lib/utils/format";
+import type { Asset } from "@/types/asset";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
-const categoryColors: Record<string, string> = {
-  Revenue:      "text-amber-400 border-amber-400/20 hover:border-amber-400/40",
-  Subscribers:  "text-red-400 border-red-400/20 hover:border-red-400/40",
-  Growth:       "text-emerald-400 border-emerald-400/20 hover:border-emerald-400/40",
-  Alerts:       "text-yellow-400 border-yellow-400/20 hover:border-yellow-400/40",
-  Social:       "text-purple-400 border-purple-400/20 hover:border-purple-400/40",
-  "E-Commerce": "text-lime-400 border-lime-400/20 hover:border-lime-400/40",
-  Analytics:    "text-sky-400 border-sky-400/20 hover:border-sky-400/40",
-  Challenges:   "text-orange-400 border-orange-400/20 hover:border-orange-400/40",
-  Comparisons:  "text-slate-400 border-slate-400/20 hover:border-slate-400/40",
-  Ratings:      "text-yellow-400 border-yellow-400/20 hover:border-yellow-400/40",
-  Timers:       "text-violet-400 border-violet-400/20 hover:border-violet-400/40",
-  Reactions:    "text-pink-400 border-pink-400/20 hover:border-pink-400/40",
-};
+async function getFavoriteAssets(): Promise<{ assets: Asset[]; ids: Set<string> }> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return { assets: [], ids: new Set() };
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { assets: [], ids: new Set() };
+  const { data } = await supabase.from("favorites").select("asset_id").eq("user_id", user.id);
+  const ids = new Set((data ?? []).map((r: { asset_id: string }) => r.asset_id));
+  const all = await assetService.getLibrary();
+  const assets = all.filter((a) => ids.has(a.id));
+  return { assets, ids };
+}
 
 export default async function DashboardPage() {
   const supabase = await getSupabaseServerClient();
@@ -31,162 +29,141 @@ export default async function DashboardPage() {
   const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   const sub = user ? await getSubscription() : null;
-  const memberSince = user?.created_at ? formatDate(user.created_at) : null;
-
-  const allAssets = await assetService.getLibrary();
-  const featuredAssets = allAssets.filter(a => a.is_featured).slice(0, 4);
-  const newestAssets = [...allAssets]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 4);
-
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  const newThisMonth = allAssets.filter(a => new Date(a.created_at).getTime() > thirtyDaysAgo).length;
-
   const email = user?.email ?? (demoMode ? "demo@psdfuel.com" : "");
-  const initials = email.slice(0, 2).toUpperCase();
 
-  const planLabel = sub?.plan_id === "yearly"
-    ? "Yearly plan"
-    : sub?.plan_id === "monthly"
-    ? "Monthly plan"
-    : demoMode
-    ? "Demo access"
-    : "Active";
+  // Favorites
+  const { assets: favoriteAssets, ids: favoriteIds } = demoMode
+    ? { assets: [] as Asset[], ids: new Set<string>() }
+    : await getFavoriteAssets();
+
+  // All published assets, newest first
+  const allAssets = await assetService.getLibrary();
+  const byNewest = [...allAssets].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  // Newest 4 assets
+  const newAssets = byNewest.slice(0, 4);
+
+  // Recommended: same categories as favorites, excluding already-favorited
+  let recommendedAssets: Asset[] = [];
+  if (favoriteAssets.length > 0) {
+    const favCategories = new Set(favoriteAssets.map((a) => a.category));
+    recommendedAssets = allAssets
+      .filter((a) => favCategories.has(a.category) && !favoriteIds.has(a.id))
+      .slice(0, 4);
+  }
+  // Fall back to featured if no recommendations
+  if (recommendedAssets.length === 0) {
+    recommendedAssets = allAssets.filter((a) => a.is_featured).slice(0, 4);
+  }
+
+  const hasFavorites = favoriteAssets.length > 0;
+  const renewalDate = sub?.current_period_end ? formatDate(sub.current_period_end) : null;
+  const renewalLabel = sub?.cancel_at_period_end ? "Access until" : "Next renewal";
 
   return (
     <div className="px-6 py-10">
-      <div className="mx-auto max-w-6xl space-y-10">
+      <div className="mx-auto max-w-6xl space-y-12">
 
-        {/* Welcome header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent/20 text-sm font-semibold text-accent">
-              {initials}
-            </div>
+        {/* Greeting */}
+        <DashboardGreeting email={email} renewalDate={renewalDate} renewalLabel={renewalLabel} />
+
+        {/* Favorites */}
+        <section>
+          <div className="mb-4 flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-content-primary">
-                Welcome back
-              </h1>
-              <p className="text-sm text-content-muted">{email}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 rounded-full border border-success/25 bg-success/10 px-3 py-1.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-success" />
-            <span className="text-xs font-medium text-success">{planLabel}</span>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { icon: FolderOpen, label: "Total assets", value: allAssets.length.toString() },
-            { icon: LayoutGrid, label: "Categories", value: siteConfig.categories.length.toString() },
-            { icon: Sparkles, label: "New this month", value: newThisMonth > 0 ? `+${newThisMonth}` : "—" },
-          ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="rounded-xl border border-border bg-base-surface p-4">
-              <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-base-overlay">
-                <Icon className="h-4 w-4 text-content-muted" />
-              </div>
-              <p className="text-2xl font-semibold tracking-tight text-content-primary">{value}</p>
-              <p className="mt-0.5 text-xs text-content-muted">{label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Featured assets */}
-        {featuredAssets.length > 0 && (
-          <section>
-            <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-widest text-content-muted">
-                Featured
+                Your favorites
               </h2>
+              {hasFavorites && (
+                <p className="mt-0.5 text-xs text-content-muted">
+                  {favoriteAssets.length} saved asset{favoriteAssets.length !== 1 ? "s" : ""}
+                </p>
+              )}
+            </div>
+            {hasFavorites && (
               <Link
-                href="/library?sort=featured"
+                href="/favorites"
                 className="flex items-center gap-1 text-xs text-content-muted hover:text-content-primary transition-colors"
               >
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
-            </div>
+            )}
+          </div>
+
+          {hasFavorites ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {featuredAssets.map(asset => (
-                <MemberAssetCard key={asset.id} asset={asset} />
+              {favoriteAssets.slice(0, 4).map((asset) => (
+                <MemberAssetCard key={asset.id} asset={asset} isFavorited={true} />
               ))}
             </div>
-          </section>
-        )}
-
-        {/* Newest assets */}
-        {newestAssets.length > 0 && (
-          <section>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-content-muted">
-                Recently added
-              </h2>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-14 text-center">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-base-surface">
+                <Heart className="h-4 w-4 text-content-muted" />
+              </div>
+              <p className="text-sm font-medium text-content-primary">No favorites yet</p>
+              <p className="mt-1 text-xs text-content-muted">
+                Save assets you like — they'll appear here.
+              </p>
               <Link
                 href="/library"
-                className="flex items-center gap-1 text-xs text-content-muted hover:text-content-primary transition-colors"
+                className="mt-4 flex items-center gap-1 text-xs text-content-secondary hover:text-content-primary transition-colors"
               >
-                Full library <ArrowRight className="h-3 w-3" />
+                Browse the library <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {newestAssets.map(asset => (
-                <MemberAssetCard key={asset.id} asset={asset} />
-              ))}
-            </div>
-          </section>
-        )}
+          )}
+        </section>
 
-        {/* Browse by category */}
+        {/* New in the library */}
         <section>
-          <div className="mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-content-muted">
-              Browse by category
+              New in the library
             </h2>
+            <Link
+              href="/library"
+              className="flex items-center gap-1 text-xs text-content-muted hover:text-content-primary transition-colors"
+            >
+              Browse all <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
-            {siteConfig.categories.map(category => {
-              const colors = categoryColors[category] ?? "text-content-muted border-border hover:border-border-strong";
-              return (
-                <Link
-                  key={category}
-                  href={`/library?category=${encodeURIComponent(category)}`}
-                  className={`flex items-center justify-center rounded-xl border bg-base-surface px-3 py-3 text-xs font-medium transition-colors ${colors}`}
-                >
-                  {category}
-                </Link>
-              );
-            })}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {newAssets.map((asset) => (
+              <MemberAssetCard
+                key={asset.id}
+                asset={asset}
+                isFavorited={favoriteIds.has(asset.id)}
+              />
+            ))}
           </div>
         </section>
 
-        {/* Account info strip */}
-        {memberSince && (
-          <div className="flex items-center justify-between rounded-xl border border-border bg-base-surface px-5 py-4">
-            <div className="flex items-center gap-6">
-              <div>
-                <p className="text-xs text-content-muted">Member since</p>
-                <p className="text-sm font-medium text-content-primary">{memberSince}</p>
-              </div>
-              {sub?.current_period_end && (
-                <div>
-                  <p className="text-xs text-content-muted">
-                    {sub.cancel_at_period_end ? "Access until" : "Next renewal"}
-                  </p>
-                  <p className="text-sm font-medium text-content-primary">
-                    {formatDate(sub.current_period_end)}
-                  </p>
-                </div>
-              )}
-            </div>
+        {/* Recommended */}
+        <section>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-content-muted">
+              {hasFavorites ? "More like your favorites" : "Staff picks"}
+            </h2>
             <Link
-              href="/account"
-              className="text-xs text-content-muted hover:text-content-primary transition-colors"
+              href="/library"
+              className="flex items-center gap-1 text-xs text-content-muted hover:text-content-primary transition-colors"
             >
-              Manage account →
+              Full library <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-        )}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {recommendedAssets.map((asset) => (
+              <MemberAssetCard
+                key={asset.id}
+                asset={asset}
+                isFavorited={favoriteIds.has(asset.id)}
+              />
+            ))}
+          </div>
+        </section>
 
       </div>
     </div>
