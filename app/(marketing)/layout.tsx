@@ -8,6 +8,7 @@ import { ScrollToTop } from "@/components/marketing/scroll-to-top";
 import { AnnouncementBar } from "@/components/marketing/announcement-bar";
 import { ReadingProgress } from "@/components/marketing/reading-progress";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getSubscription } from "@/lib/subscription";
 
 export default async function MarketingLayout({
   children,
@@ -18,11 +19,14 @@ export default async function MarketingLayout({
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
   const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
 
+  const sub = user ? await getSubscription() : null;
+  const hasSubscription = demoMode || sub?.status === "active" || sub?.status === "trialing";
+
   return (
     <>
       <ReadingProgress />
       <AnnouncementBar />
-      <Nav isLoggedIn={!!user || demoMode} />
+      <Nav isLoggedIn={!!user || demoMode} hasSubscription={hasSubscription} />
       <MagneticLiquid targetId="hero-get-access" />
       <main>{children}</main>
       <Footer />
