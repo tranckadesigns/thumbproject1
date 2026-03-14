@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -8,14 +8,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// The session is already established by /auth/callback before arriving here.
-// This form only needs to call updateUser({ password }).
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [stage, setStage] = useState<"form" | "success">("form");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const completedRef = useRef(false);
+
+  // When the user navigates away without completing the reset,
+  // sign them out so they don't end up logged in with just the recovery session.
+  useEffect(() => {
+    return () => {
+      if (!completedRef.current) {
+        getSupabaseBrowserClient()?.auth.signOut();
+      }
+    };
+  }, []);
 
   // /auth/callback forwards here with ?error=link_expired when the code is invalid
   if (searchParams.get("error") === "link_expired") {
@@ -74,6 +83,7 @@ export function ResetPasswordForm() {
 
     const supabase = getSupabaseBrowserClient();
     if (!supabase) {
+      completedRef.current = true;
       setStage("success");
       return;
     }
@@ -84,9 +94,16 @@ export function ResetPasswordForm() {
       setErrorMsg(error.message);
       setIsPending(false);
     } else {
+      completedRef.current = true;
       setStage("success");
       setTimeout(() => router.push("/library"), 2000);
     }
+  }
+
+  async function handleCancel() {
+    completedRef.current = true; // prevent the unmount effect from running
+    await getSupabaseBrowserClient()?.auth.signOut();
+    router.push("/");
   }
 
   return (
@@ -126,6 +143,14 @@ export function ResetPasswordForm() {
       <Button type="submit" className="w-full" size="lg" disabled={isPending}>
         {isPending ? "Updating…" : "Set new password"}
       </Button>
+
+      <button
+        type="button"
+        onClick={handleCancel}
+        className="w-full text-center text-sm text-content-muted hover:text-content-secondary transition-colors"
+      >
+        Cancel
+      </button>
     </form>
   );
 }
