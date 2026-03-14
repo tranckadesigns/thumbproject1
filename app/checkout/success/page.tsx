@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { categoriesConfig } from "@/lib/config/categories";
 import { SubscriptionActivationPoller } from "@/components/members/subscription-activation-poller";
 
 export const metadata: Metadata = { title: "Welcome to PSDfuel" };
@@ -41,7 +42,7 @@ export default function CheckoutSuccessPage() {
         {/* What's next */}
         <div className="mt-2 flex flex-col gap-2 rounded-xl border border-border bg-base-surface p-5 text-left w-full max-w-xs">
           {[
-            "Browse 180+ assets across 12 categories",
+            `Browse assets across ${categoriesConfig.length}+ categories`,
             "Download any PSD — instantly, no queue",
             "New assets added every month",
           ].map((item) => (

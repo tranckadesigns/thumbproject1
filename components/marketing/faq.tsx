@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { categoriesConfig } from "@/lib/config/categories";
 
 const faqs = [
   {
@@ -27,7 +28,7 @@ const faqs = [
   },
   {
     q: "How often are new assets added?",
-    a: "New assets are added every month across all 12 categories. Everything added while your subscription is active is yours automatically — no extra cost, no extra steps.",
+    a: `New assets are added every month across all ${categoriesConfig.length} categories. Everything added while your subscription is active is yours automatically — no extra cost, no extra steps.`,
   },
   {
     q: "Can I cancel anytime?",

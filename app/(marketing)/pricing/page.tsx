@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { AssetCard } from "@/components/marketing/asset-overlays";
 import { siteConfig } from "@/lib/config/site";
+import { categoriesConfig } from "@/lib/config/categories";
 import { cn } from "@/lib/utils/cn";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
@@ -107,7 +108,7 @@ const productHighlights = [
   {
     icon: RefreshCw,
     heading: "Growing library",
-    body: "New assets added every month across all 12 categories. Your subscription keeps pace with new content automatically.",
+    body: `New assets added every month across all ${categoriesConfig.length} categories. Your subscription keeps pace with new content automatically.`,
   },
   {
     icon: ShieldCheck,

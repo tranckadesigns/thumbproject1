@@ -31,6 +31,7 @@ import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
+import { categoriesConfig } from "@/lib/config/categories";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
 
@@ -424,21 +425,6 @@ function ComparisonSection() {
 
 // ─── 6. Category Showcase ─────────────────────────────────────────────────────
 
-const categoryData = [
-  { name: "Revenue",     assets: 4, desc: "Earnings, payouts & income notifications" },
-  { name: "Subscribers", assets: 4, desc: "Milestone popups & live counters" },
-  { name: "Growth",      assets: 3, desc: "Views, charts & channel performance" },
-  { name: "Alerts",      assets: 3, desc: "Live alerts, breaking news & warnings" },
-  { name: "Social",      assets: 3, desc: "Instagram, Twitter & TikTok proof" },
-  { name: "E-Commerce",  assets: 3, desc: "Sales, products & ecommerce data" },
-  { name: "Analytics",   assets: 3, desc: "CTR, impressions & watch time" },
-  { name: "Challenges",  assets: 3, desc: "Progress bars, streaks & day trackers" },
-  { name: "Comparisons", assets: 3, desc: "Before/after & best vs worst frames" },
-  { name: "Ratings",     assets: 3, desc: "Stars, scores & review summaries" },
-  { name: "Timers",      assets: 3, desc: "Countdown clocks & live event timers" },
-  { name: "Reactions",   assets: 4, desc: "Polls, votes & emoji reactions" },
-];
-
 function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
   return (
     <section className="border-t border-border bg-base-surface px-6 py-24">
@@ -449,7 +435,7 @@ function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
               Browse the library
             </p>
             <h2 className="text-3xl font-semibold tracking-tight text-content-primary md:text-4xl">
-              {stats.categoryCount} categories.
+              {stats.categoryCount}+ categories.
               <br />
               Every thumbnail format covered.
             </h2>
@@ -462,18 +448,15 @@ function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
 
         <CategoryIconStyles />
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {categoryData.map(({ name, assets, desc }, i) => (
+          {categoriesConfig.map(({ name, description }, i) => (
             <Reveal key={name} delay={i * 40}>
               <div className="group">
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-border bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818] transition-all duration-300 group-hover:border-accent/25 group-hover:shadow-elevated">
                   <CategoryIcon name={name} />
                 </div>
                 <div className="mt-2.5">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-content-primary">{name}</p>
-                    <span className="text-[11px] text-content-muted">{assets} assets</span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-content-muted/70 leading-relaxed">{desc}</p>
+                  <p className="text-sm font-semibold text-content-primary">{name}</p>
+                  <p className="mt-0.5 text-xs text-content-muted/70 leading-relaxed">{description}</p>
                 </div>
               </div>
             </Reveal>

@@ -1,3 +1,5 @@
+import { categoryNames } from "@/lib/config/categories";
+
 export const siteConfig = {
   name: "PSDfuel",
   description:
@@ -18,21 +20,8 @@ export const siteConfig = {
       savings: "Save 35%",
     },
   },
-  categories: [
-    "Revenue",
-    "Subscribers",
-    "Growth",
-    "Alerts",
-    "Social",
-    "E-Commerce",
-    "Analytics",
-    "Challenges",
-    "Comparisons",
-    "Ratings",
-    "Timers",
-    "Reactions",
-  ] as const,
+  categories: categoryNames,
 } as const;
 
 export type SitePlanId = keyof typeof siteConfig.plans;
-export type AssetCategoryName = (typeof siteConfig.categories)[number];
+export type AssetCategoryName = string;
