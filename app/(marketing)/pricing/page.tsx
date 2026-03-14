@@ -510,7 +510,7 @@ function PricingCta() {
           Start building better thumbnails today.
         </h2>
         <p className="mt-4 text-content-secondary">
-          Join Vaulted and unlock the full library instantly.
+          Join PSDfuel and unlock the full library instantly.
         </p>
 
         {/* Compact plan choice */}

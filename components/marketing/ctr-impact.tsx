@@ -140,7 +140,7 @@ export function CtrImpactSection() {
           {/* ── Left: without Vaulted ── */}
           <Reveal>
             <div>
-              <p className="mb-2.5 text-xs font-medium text-content-muted">Without Vaulted</p>
+              <p className="mb-2.5 text-xs font-medium text-content-muted">Without PSDfuel</p>
               <VideoCard
                 withOverlay={false}
                 title="How Much Money I Made From YouTube This Month"
@@ -161,7 +161,7 @@ export function CtrImpactSection() {
                 style={{ background: 'radial-gradient(ellipse at 50% 70%, rgba(201,169,110,0.35) 0%, transparent 65%)' }}
               />
 
-              <p className="relative mb-2.5 text-xs font-semibold text-accent">With Vaulted</p>
+              <p className="relative mb-2.5 text-xs font-semibold text-accent">With PSDfuel</p>
 
               <div className="relative">
                 {/* Animated crown — top-right corner */}

@@ -17,7 +17,7 @@ export default async function MembersLayout({
     redirect("/login");
   }
 
-  const email = user?.email ?? "demo@vaulted.app";
+  const email = user?.email ?? "demo@psdfuel.com";
 
   return (
     <div className="min-h-screen bg-base">

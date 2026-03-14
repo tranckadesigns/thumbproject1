@@ -42,7 +42,7 @@ export function LibraryGrowthV2() {
             </div>
             <div className="flex items-center gap-2">
               <div className="h-2 w-8 rounded-full bg-accent" />
-              <span className="text-[11px] text-content-muted">Vaulted subscription</span>
+              <span className="text-[11px] text-content-muted">PSDfuel subscription</span>
             </div>
           </div>
 
@@ -103,7 +103,7 @@ export function LibraryGrowthV2() {
                 <p className="text-sm font-semibold text-content-muted/60">15 assets — same as day one</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-content-muted">Vaulted after 7 months</p>
+                <p className="text-xs text-content-muted">PSDfuel after 7 months</p>
                 <p className="text-sm font-bold text-accent">33 assets — and growing</p>
               </div>
             </div>

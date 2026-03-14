@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils/cn";
 export const testimonials = [
   {
     quote:
-      "I've been using Vaulted for 3 months. My thumbnails went from looking amateur to agency-level. The PSD layers are clean and everything is editable in minutes.",
+      "I've been using PSDfuel for 3 months. My thumbnails went from looking amateur to agency-level. The PSD layers are clean and everything is editable in minutes.",
     name: "Marcus T.",
     handle: "@marcuscreates",
     subscribers: "284K subscribers",
@@ -41,7 +41,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Subscriber milestone templates are insane. I hit 100K and used the Vaulted milestone overlay in my video — that thumbnail got 2.4x my normal CTR. Crazy.",
+      "Subscriber milestone templates are insane. I hit 100K and used the PSDfuel milestone overlay in my video — that thumbnail got 2.4x my normal CTR. Crazy.",
     name: "Priya M.",
     handle: "@priyamakes",
     subscribers: "134K subscribers",

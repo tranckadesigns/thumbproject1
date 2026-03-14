@@ -24,7 +24,7 @@ export function TimeReclaimedSection() {
             {/* Without */}
             <div className="flex flex-col gap-3 rounded-2xl border border-border bg-base-surface p-8">
               <p className="text-xs font-medium uppercase tracking-widest text-content-muted">
-                Without Vaulted
+                Without PSDfuel
               </p>
               <p className="text-[72px] font-bold leading-none tracking-tighter text-content-muted/40">
                 2h+
@@ -42,7 +42,7 @@ export function TimeReclaimedSection() {
                 style={{ background: 'radial-gradient(circle, rgba(201,169,110,0.2) 0%, transparent 70%)' }}
               />
               <p className="relative text-xs font-medium uppercase tracking-widest text-accent">
-                With Vaulted
+                With PSDfuel
               </p>
               <p className="relative text-[72px] font-bold leading-none tracking-tighter text-accent">
                 &lt;60s
@@ -60,8 +60,8 @@ export function TimeReclaimedSection() {
           <div className="mt-5 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border sm:grid-cols-3">
             {[
               { value: '3×', label: 'videos per week, on average' },
-              { value: '2h+', label: 'spent per thumbnail without Vaulted' },
-              { value: '24h+', label: 'saved every month with Vaulted' },
+              { value: '2h+', label: 'spent per thumbnail without PSDfuel' },
+              { value: '24h+', label: 'saved every month with PSDfuel' },
             ].map(({ value, label }, i) => (
               <div key={i} className="flex flex-col gap-1.5 bg-base-surface px-7 py-5">
                 <p className="text-2xl font-bold tracking-tight text-content-primary">{value}</p>

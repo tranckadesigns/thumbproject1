@@ -30,7 +30,7 @@ export async function GET(
   // Return a placeholder file.
   // In Phase 8, resolve asset.psd_file_key to a signed storage URL and redirect.
   const content = [
-    `Vaulted — ${asset.title}`,
+    `PSDfuel — ${asset.title}`,
     ``,
     `File key: ${asset.psd_file_key}`,
     `Version:  ${asset.version}`,

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils/cn"
 import { buttonVariants } from "@/components/ui/button"
 
-const STORAGE_KEY = "vaulted-cookie-consent"
+const STORAGE_KEY = "psdfuel-cookie-consent"
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false)

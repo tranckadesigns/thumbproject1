@@ -1,8 +1,8 @@
 export const siteConfig = {
-  name: "Vaulted",
+  name: "PSDfuel",
   description:
     "Premium editable PSD thumbnail assets for YouTube creators and designers.",
-  url: "https://vaulted.io",
+  url: "https://psdfuel.com",
   plans: {
     monthly: {
       id: "monthly",

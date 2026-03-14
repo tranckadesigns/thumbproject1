@@ -10,7 +10,7 @@ export async function refreshSessionInMiddleware(
 
   if (!url || !key) {
     // No Supabase configured — demo mode, treat as authenticated.
-    return { user: { id: "demo", email: "demo@vaulted.app" } };
+    return { user: { id: "demo", email: "demo@psdfuel.com" } };
   }
 
   const supabase = createServerClient(url, key, {

@@ -44,7 +44,7 @@ export default async function AccountPage() {
               <div>
                 <p className="mb-1 text-xs text-content-muted">Email address</p>
                 <p className="text-sm font-medium text-content-primary">
-                  {user?.email ?? "demo@vaulted.app"}
+                  {user?.email ?? "demo@psdfuel.com"}
                 </p>
               </div>
 
@@ -71,7 +71,7 @@ export default async function AccountPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-content-primary">
-                  Vaulted Members
+                  PSDfuel Members
                 </p>
                 <p className="mt-0.5 text-xs text-content-muted">
                   Full library access · All 12 categories

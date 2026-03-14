@@ -374,7 +374,7 @@ function ComparisonSection() {
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-content-secondary">
               Most template packs are designed for aesthetics, not performance.
-              Vaulted is the only library built specifically around what actually
+              PSDfuel is the only library built specifically around what actually
               drives clicks on YouTube.
             </p>
           </div>
@@ -389,7 +389,7 @@ function ComparisonSection() {
                 <p className="text-xs font-medium text-content-muted">Other template packs</p>
               </div>
               <div className="border-l border-accent/20 bg-accent/[0.04] px-6 py-4">
-                <p className="text-xs font-semibold text-accent">Vaulted</p>
+                <p className="text-xs font-semibold text-accent">PSDfuel</p>
               </div>
             </div>
 
@@ -436,7 +436,7 @@ function ComparisonSection() {
                 "active:scale-[0.97] transition-transform"
               )}
             >
-              Start with Vaulted
+              Start with PSDfuel
             </Link>
           </div>
         </Reveal>
@@ -767,7 +767,7 @@ function CtaSection() {
             deserve better.
           </h2>
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-content-secondary">
-            Join 1,200+ YouTube creators using Vaulted to build scroll-stopping
+            Join 1,200+ YouTube creators using PSDfuel to build scroll-stopping
             thumbnails in minutes, not hours.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">

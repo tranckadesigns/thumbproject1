@@ -30,7 +30,7 @@ export function StickyCTABar() {
     >
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
         <p className="hidden text-sm text-content-secondary sm:block">
-          <span className="font-semibold text-content-primary">Vaulted</span>
+          <span className="font-semibold text-content-primary">PSDfuel</span>
           {" · "}Full library access · Commercial license · New assets monthly
         </p>
 
