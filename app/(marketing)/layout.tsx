@@ -7,6 +7,8 @@ import { CookieConsent } from "@/components/marketing/cookie-consent";
 import { ScrollToTop } from "@/components/marketing/scroll-to-top";
 import { AnnouncementBar } from "@/components/marketing/announcement-bar";
 import { ReadingProgress } from "@/components/marketing/reading-progress";
+import { AuthErrorBanner } from "@/components/marketing/auth-error-banner";
+import { Suspense } from "react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscription } from "@/lib/subscription";
 
@@ -26,6 +28,7 @@ export default async function MarketingLayout({
   return (
     <>
       <ReadingProgress />
+      <Suspense><AuthErrorBanner /></Suspense>
       <AnnouncementBar />
       <Nav isLoggedIn={!!user || demoMode} hasSubscription={hasSubscription} email={email} />
       <MagneticLiquid targetId="hero-get-access" />
