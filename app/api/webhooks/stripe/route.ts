@@ -140,7 +140,7 @@ async function upsertSubscription(
     cancelAtPeriodEnd:    boolean;
   }
 ) {
-  await supabase.from("subscriptions").upsert(
+  const { error } = await supabase.from("subscriptions").upsert(
     {
       user_id:                data.userId,
       stripe_customer_id:     data.stripeCustomerId,
@@ -153,4 +153,5 @@ async function upsertSubscription(
     },
     { onConflict: "user_id" }
   );
+  if (error) throw new Error(`Supabase upsert failed: ${error.message}`);
 }
