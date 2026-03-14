@@ -17,7 +17,6 @@ const legalLinks = [
   { label: "Cookie Policy",   href: "/cookies" },
 ];
 
-const socialLinks: never[] = [];
 
 function FooterLinkGroup({
   heading,
@@ -64,21 +63,6 @@ export function Footer() {
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
               30-day money-back guarantee
-            </div>
-            {/* Social */}
-            <div className="flex items-center gap-3">
-              {socialLinks.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="text-content-muted/50 transition-colors hover:text-content-muted"
-                >
-                  {s.icon}
-                </a>
-              ))}
             </div>
           </div>
 
