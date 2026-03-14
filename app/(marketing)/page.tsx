@@ -362,12 +362,12 @@ function ComparisonSection() {
         <Reveal delay={80}>
           <div className="overflow-hidden rounded-2xl border border-border">
             {/* Column headers */}
-            <div className="grid grid-cols-[1fr_1fr_1fr] border-b border-border bg-base-surface">
-              <div className="px-6 py-4" />
-              <div className="border-l border-border px-6 py-4">
+            <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_1fr] border-b border-border bg-base-surface">
+              <div className="hidden sm:block px-6 py-4" />
+              <div className="border-l border-border px-4 sm:px-6 py-4">
                 <p className="text-xs font-medium text-content-muted">Other template packs</p>
               </div>
-              <div className="border-l border-accent/20 bg-accent/[0.04] px-6 py-4">
+              <div className="border-l border-accent/20 bg-accent/[0.04] px-4 sm:px-6 py-4">
                 <p className="text-xs font-semibold text-accent">PSDfuel</p>
               </div>
             </div>
@@ -377,29 +377,31 @@ function ComparisonSection() {
               <div
                 key={row.label}
                 className={cn(
-                  "grid grid-cols-[1fr_1fr_1fr] border-b border-border last:border-b-0",
+                  "border-b border-border last:border-b-0",
                   i % 2 === 0 ? "bg-base" : "bg-base-surface"
                 )}
               >
-                {/* Attribute label */}
-                <div className="flex items-center px-6 py-4">
-                  <p className="text-sm font-medium text-content-primary">{row.label}</p>
-                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_1fr]">
+                  {/* Attribute label — full width on mobile, first col on desktop */}
+                  <div className="col-span-2 sm:col-span-1 flex items-center border-b border-border sm:border-b-0 px-4 sm:px-6 py-3 sm:py-4">
+                    <p className="text-sm font-medium text-content-primary">{row.label}</p>
+                  </div>
 
-                {/* Theirs */}
-                <div className="flex items-start gap-2.5 border-l border-border px-6 py-4">
-                  <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-error/10 text-[9px] font-bold text-error">
-                    ✕
-                  </span>
-                  <p className="text-sm leading-relaxed text-content-muted">{row.theirs}</p>
-                </div>
+                  {/* Theirs */}
+                  <div className="flex items-start gap-2 border-l border-border px-4 sm:px-6 py-3 sm:py-4">
+                    <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-error/10 text-[9px] font-bold text-error">
+                      ✕
+                    </span>
+                    <p className="text-xs sm:text-sm leading-relaxed text-content-muted">{row.theirs}</p>
+                  </div>
 
-                {/* Ours */}
-                <div className="flex items-start gap-2.5 border-l border-accent/20 bg-accent/[0.04] px-6 py-4">
-                  <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-accent/15 text-[9px] font-bold text-accent">
-                    ✓
-                  </span>
-                  <p className="text-sm leading-relaxed text-content-secondary">{row.ours}</p>
+                  {/* Ours */}
+                  <div className="flex items-start gap-2 border-l border-accent/20 bg-accent/[0.04] px-4 sm:px-6 py-3 sm:py-4">
+                    <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-accent/15 text-[9px] font-bold text-accent">
+                      ✓
+                    </span>
+                    <p className="text-xs sm:text-sm leading-relaxed text-content-secondary">{row.ours}</p>
+                  </div>
                 </div>
               </div>
             ))}
