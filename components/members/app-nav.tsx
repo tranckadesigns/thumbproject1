@@ -54,6 +54,7 @@ export function AppNav({ email }: AppNavProps) {
         </Link>
 
         <nav className="flex items-center gap-7">
+          <NavLink href="/dashboard" label="Dashboard" />
           <NavLink href="/library" label="Library" />
           <NavLink href="/account" label="Account" />
 

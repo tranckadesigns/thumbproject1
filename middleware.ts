@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { refreshSessionInMiddleware } from "@/lib/supabase/middleware";
 
-const PROTECTED_PREFIXES = ["/library", "/asset", "/account"];
+const PROTECTED_PREFIXES = ["/library", "/asset", "/account", "/dashboard"];
 // forgot-password and reset-password are always accessible (even when logged in)
 const AUTH_PATHS = ["/login", "/signup"];
 
@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
 
   const isAuthPage = AUTH_PATHS.some((p) => pathname === p);
   if (isAuthPage && user) {
-    return NextResponse.redirect(new URL("/library", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;

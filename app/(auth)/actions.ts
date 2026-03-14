@@ -27,7 +27,7 @@ export async function signInAction(
     return { error: error.message };
   }
 
-  redirect("/library");
+  redirect("/dashboard");
 }
 
 export async function signUpAction(
@@ -49,7 +49,8 @@ export async function signUpAction(
     return { error: error.message };
   }
 
-  redirect("/library");
+  // New account — send to pricing so they can pick a plan
+  redirect("/pricing");
 }
 
 export type ForgotPasswordState = {
