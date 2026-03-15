@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LibrarySearch } from "@/components/members/library-search";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
 import type { Asset } from "@/types/asset";
@@ -20,7 +21,22 @@ export function LibraryContent({
   activeCategory,
   initialSearch,
 }: LibraryContentProps) {
-  const [searchValue, setSearchValue] = useState(initialSearch ?? "");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get("q") ?? initialSearch ?? ""
+  );
+
+  function handleSearchChange(value: string) {
+    setSearchValue(value);
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set("q", value);
+    } else {
+      params.delete("q");
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }
 
   const filtered = useMemo(() => {
     const q = searchValue.trim().toLowerCase();
@@ -38,7 +54,7 @@ export function LibraryContent({
     <>
       <LibrarySearch
         value={searchValue}
-        onSearchChange={setSearchValue}
+        onSearchChange={handleSearchChange}
         activeSort={activeSort}
         activeCategory={activeCategory}
         resultCount={filtered.length}

@@ -29,7 +29,7 @@ const categoryColors: Record<string, string> = {
 function isNew(createdAt: string): boolean {
   const created = new Date(createdAt).getTime();
   const now = Date.now();
-  const sixtyDays = 60 * 24 * 60 * 60 * 1000;
+  const sixtyDays = 14 * 24 * 60 * 60 * 1000;
   return now - created < sixtyDays;
 }
 
@@ -96,7 +96,7 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
           <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-medium", badgeColor)}>
             {asset.category}
           </span>
-          <span className="text-[10px] text-content-muted/50">
+<span className="text-[10px] text-content-muted/50">
             {formatFileSize(asset.file_size_mb)}
           </span>
         </div>

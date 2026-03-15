@@ -101,16 +101,16 @@ export default function OgImage() {
             letterSpacing: "-0.3px",
           }}
         >
-          180+ editable thumbnail overlays · New assets every month · From $19/mo
+          Fully editable PSD thumbnail overlays · New assets every month · From $19/mo
         </div>
 
-        {/* Stats */}
+        {/* Feature pills */}
         <div style={{ display: "flex", gap: 0 }}>
           {[
-            ["180+", "PSD assets"],
-            ["12", "Categories"],
-            ["1,200+", "Creators"],
-            ["< 60s", "Edit time"],
+            ["Full library", "Instant access"],
+            ["All categories", "Always included"],
+            ["Commercial", "License included"],
+            ["Under 60s", "Edit time"],
           ].map(([val, label], i) => (
             <div
               key={label}
@@ -123,7 +123,7 @@ export default function OgImage() {
                 borderLeft: i > 0 ? "1px solid #242424" : "none",
               }}
             >
-              <span style={{ fontSize: 30, fontWeight: 700, color: "#C9A96E", letterSpacing: "-1px" }}>{val}</span>
+              <span style={{ fontSize: 18, fontWeight: 700, color: "#C9A96E", letterSpacing: "-0.5px" }}>{val}</span>
               <span style={{ fontSize: 13, color: "#525252", letterSpacing: "0.05em" }}>{label}</span>
             </div>
           ))}

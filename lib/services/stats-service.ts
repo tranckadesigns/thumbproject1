@@ -33,5 +33,8 @@ async function getCreatorCount(): Promise<number> {
     .select("*", { count: "exact", head: true })
     .in("status", ["active", "trialing"]);
 
-  return CREATOR_OFFSET + (count ?? 0);
+  const liveCount = count ?? 0;
+  // Only add live count when meaningful — prevents display flickering
+  // between e.g. 1229+ and 1230+ at low subscriber counts near launch
+  return CREATOR_OFFSET + (liveCount >= 10 ? liveCount : 0);
 }

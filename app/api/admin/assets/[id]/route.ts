@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
 import { assetService } from "@/lib/services/index";
-import type { AssetCategory, PlatformType, StyleType } from "@/types/asset";
+import type { AssetCategory, StyleType } from "@/types/asset";
 
 async function assertAdmin() {
   const supabase = await getSupabaseServerClient();
@@ -60,9 +60,6 @@ export async function PATCH(
 
   const category = fd.get("category") as AssetCategory | null;
   if (category) updates.category = category;
-
-  const platform_type = fd.get("platform_type") as PlatformType | null;
-  if (platform_type) updates.platform_type = platform_type;
 
   const style_type = fd.get("style_type") as StyleType | null;
   if (style_type) updates.style_type = style_type;

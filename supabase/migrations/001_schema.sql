@@ -12,7 +12,6 @@ create table if not exists public.assets (
   short_description text       not null default '',
   full_description text        not null default '',
   category         text        not null,
-  platform_type    text        not null default 'General',
   style_type       text        not null default 'Dark',
   thumbnail_url    text        not null default '',
   preview_images   text[]      not null default '{}',

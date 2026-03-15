@@ -16,7 +16,7 @@ export function EmailCaptureSection() {
   }
 
   return (
-    <section className="border-t border-border px-6 py-20">
+    <section className="border-t border-border bg-base-surface px-6 py-20">
       <div className="mx-auto max-w-lg text-center">
         <Reveal>
           <p className="mb-3 text-xs font-medium uppercase tracking-widest text-content-muted">

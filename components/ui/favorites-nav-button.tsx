@@ -20,7 +20,7 @@ export function FavoritesNavButton() {
           "h-4 w-4 transition-all duration-150",
           isActive
             ? "fill-red-400 text-red-400 scale-110"
-            : "text-content-secondary group-hover:fill-red-400 group-hover:text-red-400 group-hover:scale-110"
+            : "text-content-primary/50 group-hover:fill-red-400 group-hover:text-red-400 group-hover:scale-110"
         )}
       />
     </Link>

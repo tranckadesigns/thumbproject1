@@ -4,6 +4,7 @@ import Link from "next/link";
 
 interface DashboardGreetingProps {
   email: string;
+  displayName?: string;
   renewalDate: string | null;
   renewalLabel: string;
 }
@@ -15,9 +16,9 @@ function getGreeting(): string {
   return "Good evening";
 }
 
-export function DashboardGreeting({ email, renewalDate, renewalLabel }: DashboardGreetingProps) {
+export function DashboardGreeting({ email, displayName, renewalDate, renewalLabel }: DashboardGreetingProps) {
   const greeting = getGreeting();
-  const name = email.split("@")[0];
+  const name = displayName?.trim() || email.split("@")[0];
 
   return (
     <div className="flex items-end justify-between gap-4">

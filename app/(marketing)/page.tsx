@@ -4,8 +4,6 @@ import {
   Layers,
   RefreshCw,
   Download,
-  Pencil,
-  Search,
   Check,
   Shield,
 } from "lucide-react";
@@ -24,14 +22,17 @@ import { PricingPreviewSection } from "@/components/marketing/pricing-preview";
 import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
 import { FileSpecsSection } from "@/components/marketing/file-specs";
 import { EmailCaptureSection } from "@/components/marketing/email-capture";
-import { PriceAnchorSection } from "@/components/marketing/price-anchor";
+
 import { NewThisMonthSection } from "@/components/marketing/new-this-month";
 import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
 import { redirect } from "next/navigation";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
+import type { Asset } from "@/types/asset";
 import { assetService } from "@/lib/services";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getSubscription } from "@/lib/subscription";
 import { categoriesConfig } from "@/lib/config/categories";
 
 // ─── YouTube Thumbnail Mockup ─────────────────────────────────────────────────
@@ -81,7 +82,7 @@ function ThumbnailMockup({
 
 // ─── 1. Hero ──────────────────────────────────────────────────────────────────
 
-function HeroSection({ stats }: { stats: LibraryStats }) {
+function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibraryStats; heroAssets: Asset[]; hasSubscription: boolean }) {
   const includes = [
     "Fully layered .PSD files",
     "Commercial license included",
@@ -206,22 +207,20 @@ function HeroSection({ stats }: { stats: LibraryStats }) {
             </p>
           </Reveal>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              "YouTube Revenue Notification",
-              "Subscriber Milestone Popup",
-              "Best vs Worst Comparison",
-              "Countdown Timer Overlay",
-              "Challenge Progress Bar",
-              "Reaction Bubbles",
-            ].map((title, i) => (
+            {heroAssets.map((asset, i) => (
               <div
-                key={title}
+                key={asset.id}
                 style={{
                   opacity: 0,
                   animation: `slideUp 0.55s cubic-bezier(0.16,1,0.3,1) ${500 + i * 90}ms forwards`,
                 }}
               >
-                <AssetCard title={title} />
+                <AssetCard
+                  title={asset.title}
+                  thumbnailUrl={asset.thumbnail_url || undefined}
+                  slug={asset.slug}
+                  hasSubscription={hasSubscription}
+                />
               </div>
             ))}
           </div>
@@ -476,75 +475,6 @@ function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
   );
 }
 
-// ─── 7. How It Works ──────────────────────────────────────────────────────────
-
-function HowItWorksSection() {
-  const steps = [
-    {
-      number: "01",
-      icon: Search,
-      title: "Browse the library",
-      description: "Filter by category, preview every asset in detail, and find exactly what your video needs.",
-    },
-    {
-      number: "02",
-      icon: Download,
-      title: "Download the PSD",
-      description: "One click to download the fully layered Photoshop file. No credits, no export queues — yours instantly.",
-    },
-    {
-      number: "03",
-      icon: Pencil,
-      title: "Edit and export",
-      description: "Open in Photoshop, click the number layer, type your value, export. Done in under 60 seconds.",
-    },
-  ];
-
-  return (
-    <section className="border-t border-border px-6 py-28">
-      <div className="mx-auto max-w-5xl">
-        <Reveal>
-          <div className="mb-16 text-center">
-            <p className="mb-4 text-xs font-medium tracking-widest text-content-muted uppercase">
-              How it works
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight text-content-primary md:text-4xl">
-              From library to finished thumbnail
-              <br className="hidden sm:block" /> in three steps.
-            </h2>
-          </div>
-        </Reveal>
-
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-0">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <Reveal key={step.number} delay={i * 100}>
-                <div
-                  className={cn(
-                    "group px-0 md:px-10",
-                    i === 0 && "md:pl-0",
-                    i === steps.length - 1 && "md:pr-0",
-                    i < steps.length - 1 && "border-b border-border pb-12 md:border-b-0 md:border-r md:pb-0"
-                  )}
-                >
-                  <span className="select-none text-5xl font-bold tracking-tightest text-border-strong">
-                    {step.number}
-                  </span>
-                  <div className="mt-5 flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-base-elevated transition-colors duration-300 group-hover:border-accent/30 group-hover:bg-accent/5">
-                    <Icon className="h-4 w-4 text-accent" />
-                  </div>
-                  <h3 className="mt-5 text-base font-semibold text-content-primary">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-content-secondary">{step.description}</p>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 // ─── 7. Real Thumbnails ───────────────────────────────────────────────────────
 
@@ -765,74 +695,91 @@ export default async function HomePage({
   // Intercept it here and forward to the auth callback handler.
   if (params.code) redirect(`/auth/callback?code=${params.code}&next=/reset-password`);
 
-  const [stats, recentAssets] = await Promise.all([
+  const supabase = await getSupabaseServerClient();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
+  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const sub = user ? await getSubscription() : null;
+  const hasSubscription = demoMode || sub?.status === "active" || sub?.status === "trialing";
+
+  const [stats, allAssets, recentAssets] = await Promise.all([
     getLibraryStats(),
+    assetService.getLibrary(),
     assetService.getRecent(4),
   ]);
+
+  // Pick one asset per category for hero variety, up to 6
+  const seen = new Set<string>();
+  const heroAssets: Asset[] = [];
+  for (const asset of allAssets) {
+    if (heroAssets.length >= 6) break;
+    if (!seen.has(asset.category)) {
+      seen.add(asset.category);
+      heroAssets.push(asset);
+    }
+  }
+  // Fill remaining slots if fewer than 6 unique categories
+  for (const asset of allAssets) {
+    if (heroAssets.length >= 6) break;
+    if (!heroAssets.includes(asset)) heroAssets.push(asset);
+  }
 
   return (
     <>
       {/* 1 — Hook: headline + live preview */}
-      <HeroSection stats={stats} />
+      <HeroSection stats={stats} heroAssets={heroAssets} hasSubscription={hasSubscription} />
 
-      {/* 2 — Quick credibility */}
+      {/* 2 — Quick credibility numbers */}
       <StatsStrip assetCount={stats.assetCount} categoryCount={stats.categoryCount} creatorCount={stats.creatorCount} />
 
-      {/* 3 — Social proof: who uses it */}
-      <CreatorsMarquee creatorCount={stats.creatorCount} />
-
-      {/* 4 — Show the product immediately, before explaining it */}
+      {/* 3 — Show the product in real context before explaining anything */}
       <RealThumbnailsSection />
 
-      {/* 4 — Show the full library breadth */}
+      {/* 4 — Social proof: real creators use this */}
+      <CreatorsMarquee creatorCount={stats.creatorCount} />
+
+      {/* 5 — Show the full library breadth */}
       <CategoryShowcaseSection stats={stats} />
 
-      {/* 5 — Now that they've seen it, the problem lands harder */}
-      <ProblemSection />
-
-      {/* 6 — Us vs them */}
-      <ComparisonSection />
-
-      {/* 7 — How simple it actually is */}
-      <HowItWorksSection />
-
-      {/* 7b — Interactive step-by-step demo */}
-      <DemoWorkflowSection />
-
-      {/* 8 — Make the time ROI tangible */}
-      <TimeReclaimedSection />
-
-      {/* 9 — Why overlays drive clicks (visual proof) */}
-      <CtrImpactSection />
-
-      {/* 10 — File quality specs, build trust */}
-      <FileSpecsSection />
-
-      {/* 11b — Freshness signal: what's new this month */}
+      {/* 6 — Freshness signal: active product, new assets this month */}
       <NewThisMonthSection assetCount={stats.assetCount} recentAssets={recentAssets} />
 
-      {/* 12 — Show the PSD quality up close */}
-      <PsdShowcase />
+      {/* 7 — Now that they've seen it, the problem lands harder */}
+      <ProblemSection />
 
-      {/* 13 — Social proof */}
+      {/* 8 — Us vs them */}
+      <ComparisonSection />
+
+      {/* 9 — Interactive step-by-step demo */}
+      <DemoWorkflowSection />
+
+      {/* 10 — Make the time ROI tangible */}
+      <TimeReclaimedSection />
+
+      {/* 11 — Social proof: let real users close the deal */}
       <TestimonialsSection />
 
-      {/* 14 — Lead capture for non-buyers */}
-      <EmailCaptureSection />
+      {/* 12 — Why overlays drive clicks (visual proof) */}
+      <CtrImpactSection />
+
+      {/* 13 — Show the PSD quality up close */}
+      <PsdShowcase />
+
+      {/* 14 — File quality specs, build trust */}
+      <FileSpecsSection />
 
       {/* 15 — Pre-pricing recap: what does the subscription include */}
       <WhatsIncludedSection />
 
-      {/* 15 — Price anchoring vs alternatives */}
-      <PriceAnchorSection />
-
-      {/* 15b — Price (after trust is established) */}
+      {/* 16 — Price (after trust is established) */}
       <PricingPreviewSection assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
 
-      {/* 13 — Handle last objections */}
+      {/* 18 — Handle last objections */}
       <FAQSection />
 
-      {/* 14 — Close */}
+      {/* 19 — Lead capture for non-buyers (before final CTA) */}
+      <EmailCaptureSection />
+
+      {/* 20 — Close */}
       <CtaSection creatorCount={stats.creatorCount} />
     </>
   );

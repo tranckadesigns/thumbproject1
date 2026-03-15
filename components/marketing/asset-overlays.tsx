@@ -1,4 +1,6 @@
-import { TrendingUp, DollarSign, ShoppingBag, BarChart2, Instagram, Users, Lock } from "lucide-react";
+import { TrendingUp, DollarSign, ShoppingBag, BarChart2, Instagram, Users, Lock, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 
 // ─── Platform Signal Overlays ─────────────────────────────────────────────────
@@ -1208,41 +1210,67 @@ const overlayColors: Record<OverlayType, string> = {
 
 interface AssetCardProps {
   title: string;
+  thumbnailUrl?: string;
+  slug?: string;
+  hasSubscription?: boolean;
   className?: string;
 }
 
-export function AssetCard({ title, className }: AssetCardProps) {
-  return (
-    <div
-      className={cn(
-        "group relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10] transition-colors duration-200 hover:border-border-strong",
-        className
+export function AssetCard({ title, thumbnailUrl, slug, hasSubscription, className }: AssetCardProps) {
+  const imageBlock = (
+    <>
+      {thumbnailUrl ? (
+        <Image
+          src={thumbnailUrl}
+          alt={title}
+          fill
+          className="object-cover"
+          unoptimized
+        />
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
+          <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-20">
+            <div className="h-2 w-3/4 rounded bg-white/20" />
+            <div className="h-1.5 w-1/2 rounded bg-white/15" />
+          </div>
+        </>
       )}
-    >
-      {/* Thumbnail background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
 
-      {/* Subtle texture lines suggesting thumbnail content */}
-      <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-20">
-        <div className="h-2 w-3/4 rounded bg-white/20" />
-        <div className="h-1.5 w-1/2 rounded bg-white/15" />
-      </div>
-
-      {/* Members only lock overlay — revealed on hover */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pb-8 opacity-0 backdrop-blur-[8px] transition-opacity duration-300 group-hover:opacity-100" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.82) 100%)" }}>
-        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5">
-          <Lock className="h-3.5 w-3.5 text-white/60" strokeWidth={1.5} />
+      {/* Hover overlay — differs by subscription state */}
+      {hasSubscription ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 backdrop-blur-[6px] transition-opacity duration-300 group-hover:opacity-100" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.75) 100%)" }}>
+          <div className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold text-white/90">
+            View asset
+            <ArrowRight className="h-3 w-3" />
+          </div>
         </div>
-        <div className="text-center">
-          <p className="text-[11px] font-semibold tracking-widest text-white/80 uppercase">Members only</p>
-          <p className="mt-1 text-[10px] text-white/35 tracking-wide">Subscribe to unlock</p>
+      ) : (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 backdrop-blur-[8px] transition-opacity duration-300 group-hover:opacity-100" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.82) 100%)" }}>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5">
+            <Lock className="h-3.5 w-3.5 text-white/60" strokeWidth={1.5} />
+          </div>
+          <div className="text-center">
+            <p className="text-[11px] font-semibold tracking-widest text-white/80 uppercase">Members only</p>
+            <p className="mt-1 text-[10px] text-white/35 tracking-wide">Subscribe to unlock</p>
+          </div>
         </div>
-      </div>
+      )}
+    </>
+  );
 
-      {/* Bottom meta bar */}
-      <div className="absolute bottom-0 inset-x-0 border-t border-white/5 bg-black/50 px-3 py-2 backdrop-blur-sm">
-        <p className="truncate text-xs font-medium text-white/60">{title}</p>
-      </div>
+  return (
+    <div className={cn("group", className)}>
+      {hasSubscription && slug ? (
+        <Link href={`/asset/${slug}`} className="relative block overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10] transition-colors duration-200 group-hover:border-border-strong">
+          {imageBlock}
+        </Link>
+      ) : (
+        <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10] transition-colors duration-200 group-hover:border-border-strong">
+          {imageBlock}
+        </div>
+      )}
+      <p className="mt-2 truncate text-xs font-medium text-content-muted px-0.5">{title}</p>
     </div>
   );
 }

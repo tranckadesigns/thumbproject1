@@ -15,6 +15,8 @@ import { categoriesConfig } from "@/lib/config/categories";
 import { cn } from "@/lib/utils/cn";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
+import { assetService } from "@/lib/services";
+import type { Asset } from "@/types/asset";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -117,14 +119,6 @@ const productHighlights = [
   },
 ];
 
-const libraryPreviewAssets = [
-  "YouTube Revenue Alert",
-  "Stripe Payout Overlay",
-  "Subscriber Milestone",
-  "Best vs Worst Comparison",
-  "Countdown Timer",
-  "Challenge Progress",
-];
 
 // ─── Components ───────────────────────────────────────────────────────────────
 
@@ -308,7 +302,7 @@ function PricingCards({ stats }: { stats: LibraryStats }) {
 
 function PricingTestimonials() {
   return (
-    <section className="border-t border-border-subtle px-6 py-20">
+    <section className="border-t border-border-subtle bg-base-surface px-6 py-20">
       <div className="mx-auto max-w-5xl">
         <div className="mb-10 text-center">
           <p className="mb-3 text-xs font-medium tracking-widest text-content-muted uppercase">
@@ -349,7 +343,7 @@ function PricingTestimonials() {
   );
 }
 
-function LibrarySnapshot() {
+function LibrarySnapshot({ assets }: { assets: Asset[] }) {
   return (
     <section className="border-t border-border px-6 py-20">
       <div className="mx-auto max-w-5xl">
@@ -366,10 +360,12 @@ function LibrarySnapshot() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {libraryPreviewAssets.map((title) => (
+          {assets.map((asset) => (
             <AssetCard
-              key={title}
-              title={title}
+              key={asset.id}
+              title={asset.title}
+              thumbnailUrl={asset.thumbnail_url ?? undefined}
+              slug={asset.slug}
             />
           ))}
         </div>
@@ -457,7 +453,7 @@ function WhatIsIncluded() {
 
 function FaqSection() {
   return (
-    <section className="border-t border-border px-6 py-20">
+    <section className="border-t border-border bg-base-surface px-6 py-20">
       <div className="mx-auto max-w-2xl">
         <div className="mb-10 text-center">
           <p className="mb-3 text-xs font-medium tracking-widest text-content-muted uppercase">
@@ -540,13 +536,32 @@ function PricingCta() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function PricingPage() {
-  const stats = await getLibraryStats();
+  const [stats, allAssets] = await Promise.all([
+    getLibraryStats(),
+    assetService.getLibrary(),
+  ]);
+
+  // Pick one per category for variety, up to 6
+  const seen = new Set<string>();
+  const previewAssets: Asset[] = [];
+  for (const asset of allAssets) {
+    if (previewAssets.length >= 6) break;
+    if (!seen.has(asset.category)) {
+      seen.add(asset.category);
+      previewAssets.push(asset);
+    }
+  }
+  for (const asset of allAssets) {
+    if (previewAssets.length >= 6) break;
+    if (!previewAssets.includes(asset)) previewAssets.push(asset);
+  }
+
   return (
     <>
       <PricingHero stats={stats} />
       <PricingCards stats={stats} />
       <PricingTestimonials />
-      <LibrarySnapshot />
+      <LibrarySnapshot assets={previewAssets} />
       <ProductHighlights />
       <WhatIsIncluded />
       <FaqSection />

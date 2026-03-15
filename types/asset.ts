@@ -12,9 +12,7 @@ export type AssetCategory =
   | "Timers"
   | "Reactions";
 
-export type PlatformType = "YouTube" | "General";
-
-export type StyleType = "Dark" | "Light" | "Minimal" | "Bold" | "Clean";
+export type StyleType = "Dark" | "Light" | "Minimal" | "Bold" | "Neon" | "Gradient";
 
 export interface Asset {
   id: string;
@@ -23,7 +21,6 @@ export interface Asset {
   short_description: string;
   full_description: string;
   category: AssetCategory;
-  platform_type: PlatformType;
   style_type: StyleType;
   thumbnail_url: string;
   preview_images: string[];
@@ -35,4 +32,5 @@ export interface Asset {
   tags: string[];
   created_at: string;
   updated_at?: string;
+  download_count?: number;
 }

@@ -6,6 +6,7 @@ import { getSubscription } from "@/lib/subscription";
 import { assetService } from "@/lib/services/index";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
 import { DashboardGreeting } from "@/components/members/dashboard-greeting";
+import { RecentlyViewed } from "@/components/members/recently-viewed";
 import { formatDate } from "@/lib/utils/format";
 import type { Asset } from "@/types/asset";
 
@@ -30,6 +31,7 @@ export default async function DashboardPage() {
 
   const sub = user ? await getSubscription() : null;
   const email = user?.email ?? (demoMode ? "demo@psdfuel.com" : "");
+  const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
 
   // Favorites
   const { assets: favoriteAssets, ids: favoriteIds } = demoMode
@@ -45,17 +47,27 @@ export default async function DashboardPage() {
   // Newest 4 assets
   const newAssets = byNewest.slice(0, 4);
 
-  // Recommended: same categories as favorites, excluding already-favorited
-  let recommendedAssets: Asset[] = [];
+  // Staff picks: start with featured assets, then fill with category matches
+  // when the user has favorites (so content stays relevant without renaming the section).
+  const featuredAssets = allAssets.filter((a) => a.is_featured);
+  let staffPicks: Asset[] = [];
+
   if (favoriteAssets.length > 0) {
     const favCategories = new Set(favoriteAssets.map((a) => a.category));
-    recommendedAssets = allAssets
-      .filter((a) => favCategories.has(a.category) && !favoriteIds.has(a.id))
-      .slice(0, 4);
-  }
-  // Fall back to featured if no recommendations
-  if (recommendedAssets.length === 0) {
-    recommendedAssets = allAssets.filter((a) => a.is_featured).slice(0, 4);
+    const related = allAssets.filter(
+      (a) => favCategories.has(a.category) && !favoriteIds.has(a.id)
+    );
+    // Fill up to 4: related first, then featured as fallback
+    const seen = new Set<string>();
+    for (const a of [...related, ...featuredAssets]) {
+      if (!seen.has(a.id) && !favoriteIds.has(a.id)) {
+        seen.add(a.id);
+        staffPicks.push(a);
+      }
+      if (staffPicks.length === 4) break;
+    }
+  } else {
+    staffPicks = featuredAssets.slice(0, 4);
   }
 
   const hasFavorites = favoriteAssets.length > 0;
@@ -67,7 +79,10 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-6xl space-y-12">
 
         {/* Greeting */}
-        <DashboardGreeting email={email} renewalDate={renewalDate} renewalLabel={renewalLabel} />
+        <DashboardGreeting email={email} displayName={displayName} renewalDate={renewalDate} renewalLabel={renewalLabel} />
+
+        {/* Recently viewed — reads localStorage, renders nothing if empty */}
+        <RecentlyViewed favoriteIds={[...favoriteIds]} />
 
         {/* Favorites */}
         <section>
@@ -141,11 +156,11 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* Recommended */}
+        {/* Staff picks */}
         <section>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-content-muted">
-              {hasFavorites ? "More like your favorites" : "Staff picks"}
+              Staff picks
             </h2>
             <Link
               href="/library"
@@ -155,7 +170,7 @@ export default async function DashboardPage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {recommendedAssets.map((asset) => (
+            {staffPicks.map((asset) => (
               <MemberAssetCard
                 key={asset.id}
                 asset={asset}

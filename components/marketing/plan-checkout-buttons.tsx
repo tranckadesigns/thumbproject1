@@ -11,7 +11,7 @@ export function MonthlyCheckoutButton({ className }: { className?: string }) {
       planId="monthly"
       className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full justify-center", className)}
     >
-      Get started
+      Get access
       <ChevronRight className="h-4 w-4" />
     </CheckoutButton>
   );
@@ -23,7 +23,7 @@ export function YearlyCheckoutButton({ className }: { className?: string }) {
       planId="yearly"
       className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center", className)}
     >
-      Get started
+      Get access
       <ChevronRight className="h-4 w-4" />
     </CheckoutButton>
   );

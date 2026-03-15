@@ -5,6 +5,7 @@ import { assetService } from "@/lib/services/index";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LibrarySidebar } from "@/components/members/library-sidebar";
 import { LibraryContent } from "@/components/members/library-content";
+import { LibrarySkeleton } from "@/components/members/library-skeleton";
 import { MobileCategoryPillsClient } from "@/components/members/mobile-category-pills";
 import { siteConfig } from "@/lib/config/site";
 
@@ -36,6 +37,8 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
     assets = [...assets].sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
   } else if (sort === "az") {
     assets = [...assets].sort((a, b) => a.title.localeCompare(b.title));
+  } else if (sort === "popular") {
+    assets = [...assets].sort((a, b) => (b.download_count ?? 0) - (a.download_count ?? 0));
   } else {
     assets = [...assets].sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -96,7 +99,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
 
         {/* Search + asset grid — fully client-side search */}
         <div className="min-w-0 flex-1 space-y-6">
-          <Suspense>
+          <Suspense fallback={<LibrarySkeleton />}>
             <LibraryContent
               assets={assets}
               favoriteIds={favoriteIds}

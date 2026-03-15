@@ -15,6 +15,17 @@ interface NavProps {
   isLoggedIn?: boolean;
   hasSubscription?: boolean;
   email?: string;
+  displayName?: string;
+}
+
+function getInitials(displayName?: string, email?: string): string {
+  const name = displayName?.trim();
+  if (name) {
+    const parts = name.split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  }
+  return (email ?? "ME").slice(0, 2).toUpperCase();
 }
 
 function NavLink({ href, label }: { href: string; label: string }) {
@@ -40,13 +51,13 @@ const MEMBER_LINKS = [
   { href: "/account",   label: "Account",   icon: Settings },
 ];
 
-export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
+export function Nav({ isLoggedIn, hasSubscription, email, displayName }: NavProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const initials = email ? email.slice(0, 2).toUpperCase() : "?";
+  const initials = getInitials(displayName, email);
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
@@ -80,7 +91,6 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
           <Library className="h-3.5 w-3.5" />
           Library
         </Link>
-        <FavoritesNavButton />
 
         <div ref={dropdownRef} className="relative">
           <button
@@ -119,6 +129,8 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
             </div>
           )}
         </div>
+
+        <FavoritesNavButton />
       </>
     );
   } else if (isLoggedIn && !hasSubscription) {
@@ -251,7 +263,7 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
                         "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors",
                         isActive
                           ? "bg-base-surface text-content-primary"
-                          : "text-content-secondary hover:bg-base-surface hover:text-content-primary"
+                          : "text-content-primary hover:bg-base-surface"
                       )}
                     >
                       <Icon className="h-4 w-4" />
@@ -266,7 +278,7 @@ export function Nav({ isLoggedIn, hasSubscription, email }: NavProps) {
                   <form action={signOutAction}>
                     <button
                       type="submit"
-                      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-content-secondary hover:bg-base-surface hover:text-content-primary transition-colors"
+                      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-content-primary hover:bg-base-surface transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
                       Sign out

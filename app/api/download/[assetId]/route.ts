@@ -34,40 +34,45 @@ export async function GET(
     return NextResponse.json({ error: "Asset not found" }, { status: 404 });
   }
 
-  // If a real PSD is stored in Supabase Storage, generate a signed URL and redirect
+  // If a real PSD is stored in Supabase Storage, return a signed URL as JSON
+  // (client creates anchor tag — avoids loading entire file into browser memory)
   if (asset.psd_file_key) {
     const sb = getSupabaseServiceClient();
     const { data, error } = await sb.storage
       .from("psds")
-      .createSignedUrl(asset.psd_file_key, 60); // expires in 60 seconds
+      .createSignedUrl(asset.psd_file_key, 300); // 5 minutes — enough for slow connections
 
     if (!error && data?.signedUrl) {
-      // Log the download
-      await sb
-        .from("downloads")
+      // Log the download and increment counter (both fire-and-forget)
+      sb.from("downloads")
         .insert({ user_id: user.id, asset_id: asset.id })
-        .then(() => null); // fire-and-forget
+        .then(() => null);
+      sb.rpc("increment_download_count", { asset_id: asset.id })
+        .then(() => null);
 
-      return NextResponse.redirect(data.signedUrl);
+      // Stream the file through our own domain so the browser's native
+      // download works without opening a new tab (cross-origin URLs ignore
+      // the `download` attribute).
+      const fileRes = await fetch(data.signedUrl);
+      if (!fileRes.ok) {
+        return NextResponse.json({ error: "File fetch failed" }, { status: 502 });
+      }
+
+      const filename = `${asset.slug}.psd`;
+      const headers = new Headers({
+        "Content-Type": "application/octet-stream",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+      });
+      const contentLength = fileRes.headers.get("Content-Length");
+      if (contentLength) headers.set("Content-Length", contentLength);
+
+      return new NextResponse(fileRes.body, { headers });
     }
   }
 
-  // Fallback — placeholder text file (no PSD uploaded yet)
-  const content = [
-    `PSDfuel — ${asset.title}`,
-    ``,
-    `This asset doesn't have a PSD file attached yet.`,
-    `Check back soon.`,
-    ``,
-    `Downloaded by: ${user.email}`,
-    `Downloaded at: ${new Date().toISOString()}`,
-  ].join("\n");
-
-  return new NextResponse(content, {
-    status: 200,
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${asset.slug}.txt"`,
-    },
-  });
+  // Fallback — no PSD file attached yet
+  return NextResponse.json(
+    { error: "No file available for this asset yet — check back soon." },
+    { status: 404 }
+  );
 }

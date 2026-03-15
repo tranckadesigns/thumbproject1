@@ -122,7 +122,7 @@ export function PsdShowcase() {
   const displayFont  = showNewFont  ? "22"       : "18";
 
   return (
-    <section className="border-t border-border-subtle px-6 py-24">
+    <section className="border-t border-border-subtle bg-base-surface px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
 

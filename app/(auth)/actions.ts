@@ -36,6 +36,7 @@ export async function signUpAction(
 ): Promise<AuthFormState> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const displayName = (formData.get("display_name") as string | null)?.trim() || null;
 
   const supabase = await getSupabaseServerClient();
 
@@ -43,14 +44,33 @@ export async function signUpAction(
     redirect("/library");
   }
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { display_name: displayName } },
+  });
 
   if (error) {
     return { error: error.message };
   }
 
-  // New account — send to pricing so they can pick a plan
-  redirect("/pricing");
+  redirect("/check-email");
+}
+
+export type UpdateDisplayNameState = { error: string | null; success: boolean };
+
+export async function updateDisplayNameAction(
+  _prevState: UpdateDisplayNameState,
+  formData: FormData
+): Promise<UpdateDisplayNameState> {
+  const displayName = (formData.get("display_name") as string | null)?.trim() || null;
+
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return { error: "Not configured.", success: false };
+
+  const { error } = await supabase.auth.updateUser({ data: { display_name: displayName } });
+  if (error) return { error: error.message, success: false };
+  return { error: null, success: true };
 }
 
 export type ForgotPasswordState = {

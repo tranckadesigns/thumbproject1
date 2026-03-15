@@ -99,7 +99,7 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
             planId="yearly"
             className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'w-full justify-center')}
           >
-            Get started
+            Get access
             <ChevronRight className="h-4 w-4" />
           </CheckoutButton>
         </div>

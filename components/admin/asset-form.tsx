@@ -4,12 +4,11 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Upload, X, Loader2, FileArchive } from "lucide-react";
-import type { Asset, AssetCategory, PlatformType, StyleType } from "@/types/asset";
+import type { Asset, AssetCategory, StyleType } from "@/types/asset";
 import { siteConfig } from "@/lib/config/site";
 import { cn } from "@/lib/utils/cn";
 
-const PLATFORMS: PlatformType[] = ["YouTube", "General"];
-const STYLES: StyleType[] = ["Dark", "Light", "Minimal", "Bold", "Clean"];
+const STYLES: StyleType[] = ["Dark", "Light", "Minimal", "Bold", "Neon", "Gradient"];
 
 function toSlug(title: string): string {
   return title
@@ -58,9 +57,6 @@ export function AssetForm({ asset }: { asset?: Asset }) {
   const [category, setCategory] = useState<AssetCategory>(
     asset?.category ?? "Revenue"
   );
-  const [platform, setPlatform] = useState<PlatformType>(
-    asset?.platform_type ?? "YouTube"
-  );
   const [style, setStyle] = useState<StyleType>(asset?.style_type ?? "Dark");
   const [tags, setTags] = useState(asset?.tags.join(", ") ?? "");
   const [version, setVersion] = useState(asset?.version ?? "1.0");
@@ -100,7 +96,6 @@ export function AssetForm({ asset }: { asset?: Asset }) {
     fd.append("short_description", shortDesc);
     fd.append("full_description", fullDesc);
     fd.append("category", category);
-    fd.append("platform_type", platform);
     fd.append("style_type", style);
     fd.append("tags", tags);
     fd.append("version", version);
@@ -187,7 +182,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
           Classification
         </p>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <Field label="Category" required>
             <select
               className={selectClass}
@@ -197,20 +192,6 @@ export function AssetForm({ asset }: { asset?: Asset }) {
               {siteConfig.categories.map((c) => (
                 <option key={c} value={c}>
                   {c}
-                </option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Platform">
-            <select
-              className={selectClass}
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value as PlatformType)}
-            >
-              {PLATFORMS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
                 </option>
               ))}
             </select>

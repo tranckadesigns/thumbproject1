@@ -67,7 +67,7 @@ export function Footer() {
           </div>
 
           {/* Links */}
-          <div className="flex gap-16">
+          <div className="grid grid-cols-2 gap-10 sm:flex sm:gap-16">
             <FooterLinkGroup heading="Product"  links={productLinks} />
             <FooterLinkGroup heading="Legal"    links={legalLinks} />
           </div>

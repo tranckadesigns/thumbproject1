@@ -101,3 +101,35 @@ DROP TRIGGER IF EXISTS subscriptions_updated_at ON public.subscriptions;
 CREATE TRIGGER subscriptions_updated_at
   BEFORE UPDATE ON public.subscriptions
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- ─── Assets ────────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS public.assets (
+  id                UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug              TEXT          NOT NULL UNIQUE,
+  title             TEXT          NOT NULL,
+  short_description TEXT          NOT NULL DEFAULT '',
+  full_description  TEXT          NOT NULL DEFAULT '',
+  category          TEXT          NOT NULL,
+  style_type        TEXT          NOT NULL DEFAULT 'Dark',
+  thumbnail_url     TEXT          NOT NULL DEFAULT '',
+  preview_images    TEXT[]        NOT NULL DEFAULT '{}',
+  psd_file_key      TEXT          NOT NULL DEFAULT '',
+  file_size_mb      NUMERIC(8,2)  NOT NULL DEFAULT 0,
+  version           TEXT          NOT NULL DEFAULT '1.0',
+  is_featured       BOOLEAN       NOT NULL DEFAULT FALSE,
+  is_published      BOOLEAN       NOT NULL DEFAULT FALSE,
+  tags              TEXT[]        NOT NULL DEFAULT '{}',
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS assets_category_idx   ON public.assets (category);
+CREATE INDEX IF NOT EXISTS assets_published_idx  ON public.assets (is_published);
+CREATE INDEX IF NOT EXISTS assets_featured_idx   ON public.assets (is_featured);
+CREATE INDEX IF NOT EXISTS assets_created_at_idx ON public.assets (created_at DESC);
+
+DROP TRIGGER IF EXISTS assets_updated_at ON public.assets;
+CREATE TRIGGER assets_updated_at
+  BEFORE UPDATE ON public.assets
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();

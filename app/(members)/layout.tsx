@@ -24,10 +24,11 @@ export default async function MembersLayout({
   }
 
   const email = user?.email ?? "demo@psdfuel.com";
+  const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={email} hasSubscription={true} />
+      <AppNav email={email} hasSubscription={true} displayName={displayName} />
       <main className="pt-14">{children}</main>
     </div>
   );

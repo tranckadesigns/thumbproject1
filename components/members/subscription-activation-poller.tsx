@@ -42,11 +42,30 @@ export function SubscriptionActivationPoller() {
   }
 
   if (attempts >= MAX_ATTEMPTS) {
-    // Webhook took too long — just let them through
     return (
-      <Link href="/dashboard" className={cn(buttonVariants({ size: "lg" }), "mt-2")}>
-        Go to your dashboard
-      </Link>
+      <div className="mt-2 space-y-4 text-center">
+        <p className="text-sm text-content-muted">
+          Your payment was received — activation is taking a little longer than expected.
+          Try refreshing the page. If you still don&apos;t have access, we&apos;re here to help.
+        </p>
+        <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+          <button
+            onClick={() => window.location.reload()}
+            className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}
+          >
+            Refresh page
+          </button>
+          <a
+            href="mailto:support@psdfuel.com"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            Contact support
+          </a>
+        </div>
+        <Link href="/dashboard" className={cn(buttonVariants({ size: "lg" }))}>
+          Go to your dashboard
+        </Link>
+      </div>
     );
   }
 

@@ -4,6 +4,7 @@ import { LogOut, User, CreditCard, Calendar, AlertCircle } from "lucide-react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscription } from "@/lib/subscription";
 import { signOutAction } from "@/app/(auth)/actions";
+import { DisplayNameForm } from "@/components/account/display-name-form";
 import { Badge } from "@/components/ui/badge";
 import { BillingPortalButton } from "@/components/members/billing-portal-button";
 import { UnlockButton } from "@/components/ui/unlock-button";
@@ -67,6 +68,12 @@ export default async function AccountPage() {
             </div>
 
             <div className="space-y-4">
+              <div>
+                <p className="mb-1.5 text-xs text-content-muted">Display name</p>
+                <DisplayNameForm
+                  current={user?.user_metadata?.display_name ?? ""}
+                />
+              </div>
               <div>
                 <p className="mb-1 text-xs text-content-muted">Email address</p>
                 <p className="text-sm font-medium text-content-primary">

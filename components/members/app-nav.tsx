@@ -12,7 +12,18 @@ import { cn } from "@/lib/utils/cn";
 
 interface AppNavProps {
   email: string;
+  displayName?: string;
   hasSubscription?: boolean;
+}
+
+function getInitials(displayName?: string, email?: string): string {
+  const name = displayName?.trim();
+  if (name) {
+    const parts = name.split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  }
+  return (email ?? "ME").slice(0, 2).toUpperCase();
 }
 
 function NavLink({ href, label }: { href: string; label: string }) {
@@ -57,13 +68,13 @@ const MOBILE_NO_SUB_LINKS = [
   { href: "/account", label: "Account", icon: Settings },
 ];
 
-export function AppNav({ email, hasSubscription = false }: AppNavProps) {
+export function AppNav({ email, displayName, hasSubscription = false }: AppNavProps) {
   const mobileLinks = hasSubscription ? MOBILE_SUB_LINKS : MOBILE_NO_SUB_LINKS;
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const initials = email.slice(0, 2).toUpperCase();
+  const initials = getInitials(displayName, email);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -99,7 +110,6 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
               <>
                 <NavLink href="/dashboard" label="Dashboard" />
                 <LibraryNavLink />
-                <FavoritesNavButton />
               </>
             ) : (
               <UnlockButton size="sm" label="Get access" />
@@ -143,6 +153,9 @@ export function AppNav({ email, hasSubscription = false }: AppNavProps) {
                 </div>
               )}
             </div>
+
+            {/* Favorites — always far right */}
+            <FavoritesNavButton />
           </nav>
 
           {/* Mobile hamburger */}

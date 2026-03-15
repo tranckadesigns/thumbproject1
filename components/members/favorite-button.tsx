@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { showToast } from "@/components/ui/toast";
 
 interface FavoriteButtonProps {
   assetId: string;
@@ -25,17 +26,19 @@ export function FavoriteButton({ assetId, initialFavorited = false, alwaysVisibl
     setFavorited(next); // optimistic
 
     try {
-      if (next) {
-        await fetch("/api/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ assetId }),
-        });
-      } else {
-        await fetch(`/api/favorites?assetId=${assetId}`, { method: "DELETE" });
-      }
+      const res = next
+        ? await fetch("/api/favorites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ assetId }),
+          })
+        : await fetch(`/api/favorites?assetId=${assetId}`, { method: "DELETE" });
+
+      if (!res.ok) throw new Error("Failed");
+      showToast(next ? "Added to favorites" : "Removed from favorites", "success");
     } catch {
       setFavorited(!next); // revert on error
+      showToast("Couldn't update favorites — try again", "error");
     } finally {
       setLoading(false);
     }
@@ -55,11 +58,15 @@ export function FavoriteButton({ assetId, initialFavorited = false, alwaysVisibl
           ? "border-red-500/40 bg-red-500/15 text-red-400 hover:bg-red-500/25"
           : alwaysVisible
           ? "border-border bg-base-elevated text-content-muted hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
-          : "border-border bg-black/40 text-content-muted opacity-0 group-hover:opacity-100 hover:border-border-strong hover:text-content-primary",
+          : "border-border bg-black/40 text-content-muted opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:border-border-strong hover:text-content-primary",
         loading && "pointer-events-none opacity-50"
       )}
     >
-      <Heart className={cn(iconClass, favorited && "fill-current")} />
+      {loading ? (
+        <Loader2 className={cn(iconClass, "animate-spin")} />
+      ) : (
+        <Heart className={cn(iconClass, favorited && "fill-current")} />
+      )}
     </button>
   );
 }

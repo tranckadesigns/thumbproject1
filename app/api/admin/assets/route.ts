@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
 import { assetService } from "@/lib/services/index";
-import type { AssetCategory, PlatformType, StyleType } from "@/types/asset";
+import type { AssetCategory, StyleType } from "@/types/asset";
 
 async function assertAdmin() {
   const supabase = await getSupabaseServerClient();
@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
   const short_description = (fd.get("short_description") as string)?.trim() ?? "";
   const full_description = (fd.get("full_description") as string)?.trim() ?? "";
   const category = fd.get("category") as AssetCategory;
-  const platform_type = fd.get("platform_type") as PlatformType;
   const style_type = fd.get("style_type") as StyleType;
   const tagsRaw = (fd.get("tags") as string) ?? "";
   const version = (fd.get("version") as string) ?? "1.0";
@@ -88,7 +87,6 @@ export async function POST(request: NextRequest) {
     short_description,
     full_description,
     category,
-    platform_type,
     style_type,
     thumbnail_url,
     preview_images: [],

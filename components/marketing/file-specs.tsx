@@ -9,7 +9,7 @@ const specs = [
   },
   {
     icon: Layers,
-    value: '8–16 named layers',
+    value: 'Named layers',
     label: 'Every element fully separated',
   },
   {
@@ -29,14 +29,14 @@ const specs = [
   },
   {
     icon: CalendarPlus,
-    value: '+3–4 per month',
+    value: 'Monthly additions',
     label: 'New assets, auto-included',
   },
 ]
 
 export function FileSpecsSection() {
   return (
-    <section className="border-t border-border bg-base-surface px-6 py-24">
+    <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-5xl">
 
         <Reveal>

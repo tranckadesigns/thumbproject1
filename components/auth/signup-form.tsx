@@ -15,6 +15,19 @@ export function SignupForm() {
   return (
     <form action={formAction} className="space-y-4">
       <div className="space-y-1.5">
+        <Label htmlFor="display_name">
+          Display name <span className="text-content-muted font-normal">(optional)</span>
+        </Label>
+        <Input
+          id="display_name"
+          name="display_name"
+          type="text"
+          autoComplete="name"
+          placeholder="Your name or username"
+        />
+      </div>
+
+      <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"

@@ -139,7 +139,7 @@ export function TestimonialsSection() {
   const doubled = [...testimonials, ...testimonials];
 
   return (
-    <section className="border-t border-border-subtle py-20 overflow-hidden">
+    <section className="border-t border-border-subtle bg-base-surface py-20 overflow-hidden">
       <div className="px-6 mb-10 text-center">
         <p className="mb-3 text-xs font-medium tracking-widest text-content-muted uppercase">
           Trusted by creators

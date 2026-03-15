@@ -224,7 +224,7 @@ export function DemoWorkflowSection() {
   const Visual = visuals[steps[active].visual];
 
   return (
-    <section className="border-t border-border px-6 py-24">
+    <section className="border-t border-border bg-base-surface px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <div className="mb-14 text-center">

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { ToastContainer } from "@/components/ui/toast";
 import "./globals.css";
 import { siteConfig } from "@/lib/config/site";
 
@@ -10,6 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://psdfuel.com"),
   title: {
     default: siteConfig.name,
     template: `%s — ${siteConfig.name}`,
@@ -29,7 +32,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ToastContainer />
+        <Analytics />
+      </body>
     </html>
   );
 }

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileImage, Tag } from "lucide-react";
-import { BackButton } from "@/components/ui/back-button";
 import {
   YouTubeRevenueOverlay,
   StripePayoutOverlay,
@@ -49,6 +49,9 @@ import { assetService } from "@/lib/services/index";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { DownloadButton } from "@/components/members/download-button";
 import { FavoriteButton } from "@/components/members/favorite-button";
+import { CopyButton } from "@/components/ui/copy-button";
+import { TrackView } from "@/components/members/track-view";
+import { siteConfig } from "@/lib/config/site";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
 import { Badge } from "@/components/ui/badge";
 import { formatFileSize } from "@/lib/utils/format";
@@ -122,6 +125,19 @@ const categoryBadgeColors: Record<AssetCategory, string> = {
   Reactions: "bg-pink-500/15 text-pink-400",
 };
 
+// ─── Seeded download count ────────────────────────────────────────────────────
+// Gives every asset a consistent baseline between 407–1219 so the counter
+// never looks empty on a newly launched site. The offset is derived from the
+// asset ID so it's always the same for the same asset.
+function seededDownloadCount(id: string, real: number): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = Math.imul(h * 31 + id.charCodeAt(i), 1) | 0;
+  }
+  const offset = 407 + (Math.abs(h) % (1219 - 407 + 1));
+  return offset + real;
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 interface AssetPageProps {
@@ -131,7 +147,26 @@ interface AssetPageProps {
 export async function generateMetadata({ params }: AssetPageProps): Promise<Metadata> {
   const { slug } = await params;
   const asset = await assetService.getAsset(slug);
-  return { title: asset?.title ?? "Asset" };
+  if (!asset) return { title: "Asset" };
+
+  const description = `${asset.short_description} — Fully editable PSD file. Download instantly with a PSDfuel membership.`;
+
+  return {
+    title: asset.title,
+    description,
+    openGraph: {
+      title: `${asset.title} — PSDfuel`,
+      description,
+      ...(asset.thumbnail_url ? { images: [{ url: asset.thumbnail_url, width: 1200, height: 630, alt: asset.title }] } : {}),
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${asset.title} — PSDfuel`,
+      description,
+      ...(asset.thumbnail_url ? { images: [asset.thumbnail_url] } : {}),
+    },
+  };
 }
 
 export default async function AssetPage({ params }: AssetPageProps) {
@@ -154,11 +189,26 @@ export default async function AssetPage({ params }: AssetPageProps) {
 
   return (
     <div className="px-6 py-10">
+      <TrackView asset={{
+        id: asset.id,
+        slug: asset.slug,
+        title: asset.title,
+        short_description: asset.short_description,
+        category: asset.category,
+        style_type: asset.style_type,
+        thumbnail_url: asset.thumbnail_url,
+        file_size_mb: asset.file_size_mb,
+        is_featured: asset.is_featured,
+        created_at: asset.created_at,
+        download_count: asset.download_count,
+      }} />
       <div className="mx-auto max-w-5xl">
-        {/* Back link */}
-        <div className="mb-8">
-          <BackButton />
-        </div>
+        {/* Breadcrumb */}
+        <nav className="mb-8 flex items-center gap-1.5 text-xs text-content-muted">
+          <Link href="/library" className="hover:text-content-primary transition-colors">Library</Link>
+          <span>/</span>
+          <Link href={`/library?category=${asset.category}`} className="hover:text-content-primary transition-colors">{asset.category}</Link>
+        </nav>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {/* Preview */}
@@ -213,7 +263,7 @@ export default async function AssetPage({ params }: AssetPageProps) {
               </p>
             </div>
 
-            {/* Download + Favorite */}
+            {/* Download + Favorite + Copy */}
             <div className="flex items-center gap-3">
               <DownloadButton assetId={asset.id} slug={asset.slug} className="flex-1 sm:flex-none" />
               <FavoriteButton
@@ -222,6 +272,7 @@ export default async function AssetPage({ params }: AssetPageProps) {
                 alwaysVisible
                 size="md"
               />
+              <CopyButton url={`${siteConfig.url}/asset/${asset.slug}`} />
             </div>
 
             {/* Description */}
@@ -257,14 +308,16 @@ export default async function AssetPage({ params }: AssetPageProps) {
                 </p>
               </div>
 
-              <div className="col-span-2 rounded-xl border border-border bg-base-surface px-4 py-3">
-                <p className="text-xs font-medium text-content-muted uppercase tracking-wide mb-2">
-                  Style
+              <div className="rounded-xl border border-border bg-base-surface px-4 py-3">
+                <p className="text-xs font-medium text-content-muted uppercase tracking-wide mb-1">Style</p>
+                <p className="text-sm font-semibold text-content-primary">{asset.style_type}</p>
+              </div>
+
+              <div className="rounded-xl border border-border bg-base-surface px-4 py-3">
+                <p className="text-xs font-medium text-content-muted uppercase tracking-wide mb-1">Downloads</p>
+                <p className="text-sm font-semibold text-content-primary">
+                  {seededDownloadCount(asset.id, asset.download_count ?? 0).toLocaleString()}
                 </p>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{asset.style_type}</Badge>
-                  <Badge variant="secondary">{asset.platform_type}</Badge>
-                </div>
               </div>
             </div>
 
@@ -284,11 +337,11 @@ export default async function AssetPage({ params }: AssetPageProps) {
           </div>
         </div>
         {/* Related assets */}
-        {relatedAssets.length > 0 && (
-          <section className="mt-14">
-            <h2 className="mb-5 text-sm font-semibold uppercase tracking-widest text-content-muted">
-              More in {asset.category}
-            </h2>
+        <section className="mt-14">
+          <h2 className="mb-5 text-sm font-semibold uppercase tracking-widest text-content-muted">
+            More in {asset.category}
+          </h2>
+          {relatedAssets.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {relatedAssets.map((related) => (
                 <MemberAssetCard
@@ -298,8 +351,15 @@ export default async function AssetPage({ params }: AssetPageProps) {
                 />
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <p className="text-sm text-content-muted">
+              No other assets in this category yet.{" "}
+              <Link href="/library" className="underline underline-offset-2 hover:text-content-secondary transition-colors">
+                Browse full library →
+              </Link>
+            </p>
+          )}
+        </section>
       </div>
     </div>
   );
