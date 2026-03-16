@@ -123,7 +123,7 @@ export function ActivityToast({ assetTitles = [] }: ActivityToastProps) {
             <span className="text-content-secondary">from {activity.location}</span>
           </p>
           <p className="mt-0.5 text-xs text-content-secondary">{actionText}</p>
-          <p className="mt-1 text-[10px] text-content-muted">{activity.time}</p>
+          <p className="mt-1 text-xs text-content-muted">{activity.time}</p>
         </div>
 
         {/* Dismiss */}

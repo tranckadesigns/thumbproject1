@@ -13,13 +13,14 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
-import { readdir, readFile } from "fs/promises";
+import { readdir, readFile, rename, mkdir, rm } from "fs/promises";
 import { existsSync } from "fs";
 import { join, resolve } from "path";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
-const DONE_DIR = resolve("../psdfuel-assets/_done");
+const DONE_DIR     = resolve("../psdfuel-assets/_ready");
+const UPLOADED_DIR = resolve("../psdfuel-assets/_uploaded");
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -52,7 +53,7 @@ async function run() {
   const assets = folders.filter((f) => f.isDirectory());
 
   if (assets.length === 0) {
-    console.log("Geen assets gevonden in _done/");
+    console.log("Geen assets gevonden in _ready/");
     return;
   }
 
@@ -109,6 +110,12 @@ async function run() {
       }, { onConflict: "slug" });
 
       if (error) throw new Error(error.message);
+
+      // ── Verplaats naar _uploaded/ ─────────────────────────────────────────
+      await mkdir(UPLOADED_DIR, { recursive: true });
+      const dest = join(UPLOADED_DIR, slug);
+      if (existsSync(dest)) await rm(dest, { recursive: true, force: true });
+      await rename(dir, dest);
 
       console.log(`   ✅  klaar — ${thumbnailUrl}`);
       success++;

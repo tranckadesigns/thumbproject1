@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileImage, Tag } from "lucide-react";
@@ -48,6 +47,7 @@ import type { AssetCategory } from "@/types/asset";
 import { assetService } from "@/lib/services/index";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { DownloadButton } from "@/components/members/download-button";
+import { AssetPreviewTilt } from "@/components/members/asset-preview-tilt";
 import { FavoriteButton } from "@/components/members/favorite-button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { TrackView } from "@/components/members/track-view";
@@ -214,19 +214,11 @@ export default async function AssetPage({ params }: AssetPageProps) {
           {/* Preview */}
           <div className="space-y-4">
             <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10]">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
               {asset.thumbnail_url ? (
-                <Image
-                  src={asset.thumbnail_url}
-                  alt={asset.title}
-                  fill
-                  className="object-contain p-8"
-                  style={{ filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.6))" }}
-                  unoptimized
-                  priority
-                />
+                <AssetPreviewTilt src={asset.thumbnail_url} alt={asset.title} />
               ) : (
                 <>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#1a1a1a]" />
                   <div className="absolute inset-0 p-6 flex flex-col justify-end gap-1.5 opacity-20">
                     <div className="h-2.5 w-3/4 rounded bg-white/20" />
                     <div className="h-2 w-1/2 rounded bg-white/15" />
@@ -325,12 +317,13 @@ export default async function AssetPage({ params }: AssetPageProps) {
             {asset.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {asset.tags.map((tag) => (
-                  <span
+                  <Link
                     key={tag}
-                    className="rounded-full border border-border bg-base-elevated px-2.5 py-0.5 text-xs text-content-muted"
+                    href={`/library?q=${encodeURIComponent(tag)}`}
+                    className="rounded-full border border-border bg-base-elevated px-2.5 py-0.5 text-xs text-content-muted transition-colors hover:border-border-strong hover:text-content-secondary"
                   >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}

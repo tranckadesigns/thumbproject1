@@ -12,10 +12,10 @@ const config: Config = {
       colors: {
         // Base backgrounds — layered dark system
         base: {
-          DEFAULT: "#080808",
-          surface: "#0F0F0F",
-          elevated: "#161616",
-          overlay: "#1E1E1E",
+          DEFAULT: "#050505",
+          surface: "#0A0A0A",
+          elevated: "#181818",
+          overlay: "#282828",
         },
         // Borders
         border: {
@@ -26,8 +26,8 @@ const config: Config = {
         // Text
         content: {
           primary: "#F2F2F2",
-          secondary: "#8E8E8E",
-          muted: "#525252",
+          secondary: "#C0C0C0",
+          muted: "#A0A0A0",
           inverse: "#0A0A0A",
         },
         // Accent — warm muted gold, premium and restrained

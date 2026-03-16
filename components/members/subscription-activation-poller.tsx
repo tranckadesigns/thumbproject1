@@ -35,7 +35,7 @@ export function SubscriptionActivationPoller() {
 
   if (active) {
     return (
-      <Link href="/dashboard" className={cn(buttonVariants({ size: "lg" }), "mt-2")}>
+      <Link href="/dashboard?welcome=1" className={cn(buttonVariants({ size: "lg" }), "mt-2")}>
         Go to your dashboard
       </Link>
     );
@@ -62,7 +62,7 @@ export function SubscriptionActivationPoller() {
             Contact support
           </a>
         </div>
-        <Link href="/dashboard" className={cn(buttonVariants({ size: "lg" }))}>
+        <Link href="/dashboard?welcome=1" className={cn(buttonVariants({ size: "lg" }))}>
           Go to your dashboard
         </Link>
       </div>

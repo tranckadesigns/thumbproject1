@@ -307,7 +307,7 @@ export function Nav({ isLoggedIn, hasSubscription, email, displayName }: NavProp
 
       <header className="sticky top-0 z-50 h-14 w-full border-b border-border-subtle bg-base/80 backdrop-blur-md">
         <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" className="flex flex-shrink-0 items-center">
             <Wordmark />
           </Link>
 

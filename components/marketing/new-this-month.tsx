@@ -8,7 +8,7 @@ function assetTag(asset: Asset): { label: string; style: string } {
   const isUpdated = updated - created > 24 * 60 * 60 * 1000; // updated > 1 day after creation
   return isUpdated
     ? { label: "Updated", style: "rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400" }
-    : { label: "New",     style: "rounded-full border border-accent/25 bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent" };
+    : { label: "New",     style: "rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm" };
 }
 
 function currentMonthLabel(): string {

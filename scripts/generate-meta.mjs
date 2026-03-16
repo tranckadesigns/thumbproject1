@@ -17,7 +17,7 @@ import { readdir, writeFile, readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
 import { join, resolve } from "path";
 
-const DONE_DIR      = resolve("../psdfuel-assets/_done");
+const DONE_DIR      = resolve("../psdfuel-assets/_ready");
 const CATEGORIES_TS = resolve("lib/config/categories.ts");
 const ASSET_TYPE_TS = resolve("types/asset.ts");
 
@@ -77,14 +77,17 @@ async function generateMetaWithAI(client, slug, previewPath, categories) {
     .map((c) => `  - "${c.name}": ${c.description}`)
     .join("\n");
 
-  const prompt = `You are writing product copy for PSDfuel — a library of PSD overlay assets used by YouTube thumbnail designers.
+  const prompt = `You are writing product copy for PSDfuel — a premium library of fully editable PSD overlay assets for YouTube thumbnail designers.
 
-Every single asset in this library is a visual overlay element that gets placed on top of a thumbnail background in Photoshop. That is the only context. There is no other use case.
+Every asset is a layered PSD file. The text, numbers, and colors in the preview are placeholder values — the buyer will replace them with their own content in Photoshop.
 
-Because of this:
-- NEVER say "perfect for thumbnails", "great for YouTube", "ideal for designers" — that is 100% obvious and sounds amateurish
-- NEVER suggest other use cases like "financial dashboards", "app designs", "mockups", "interfaces" — these are thumbnail overlays, not UI kits
-- Just describe what the asset IS and what it visually shows. Nothing more.
+RULES for descriptions:
+- NEVER describe specific placeholder text, numbers, timestamps, or colors you see in the preview — those will be replaced by the user
+- NEVER describe individual sub-elements (e.g. "three stacked items with blue, red, and orange dots")
+- DO name what type of notification/overlay this IS (e.g. "Apple Reminders notification", "Stripe payout alert", "YouTube revenue card")
+- DO mention the visual style and what kind of thumbnail story it supports — in one confident sentence
+- NEVER say "perfect for", "ideal for", "great for" — that's filler
+- Keep it short, confident, and specific. Think premium product copy, not a visual alt-text description.
 
 Asset slug: "${slug}"
 
@@ -95,9 +98,9 @@ If the asset truly doesn't fit any existing category, suggest a new one.
 
 Return this JSON:
 {
-  "title": "Short, sharp title. Max 4 words.",
-  "short_description": "One sentence. What does this overlay show? Max 12 words. No use-case language.",
-  "full_description": "2 sentences. Describe what's visually shown — the UI elements, numbers, layout, style. Confident and minimal. Zero filler. Zero use-case suggestions.",
+  "title": "Short, sharp title. Max 4 words. Name the overlay type, not a feature.",
+  "short_description": "One sentence. Name what this overlay IS. Max 12 words. No filler.",
+  "full_description": "2 sentences. First: what this overlay represents and its visual style. Second: what thumbnail context it fits — without saying 'perfect for' or 'ideal for'. Zero visual blow-by-blow. Zero mention of placeholder values.",
   "category": "Exact name from the list above, or a new name if truly needed",
   "new_category_description": "Only include if category is new — one short sentence describing the category. Otherwise omit.",
   "style_type": "One of: Dark (dark background/theme) | Light (white or light background) | Minimal (stripped back, simple, lots of space) | Bold (high contrast, strong typography, heavy visuals) | Neon (bright glowing colors, vivid) | Gradient (gradient-heavy design)",
@@ -141,7 +144,7 @@ async function run() {
   const assets = folders.filter((f) => f.isDirectory());
 
   if (assets.length === 0) {
-    console.log("Geen assets gevonden in _done/");
+    console.log("Geen assets gevonden in _ready/");
     return;
   }
 

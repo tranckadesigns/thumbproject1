@@ -2,13 +2,12 @@
 
 import { useRef } from 'react'
 import { Check, ChevronRight } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { CheckoutButton } from '@/components/ui/checkout-button'
 import { cn } from '@/lib/utils/cn'
 import { siteConfig } from '@/lib/config/site'
 
-export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: number; categoryCount: number }) {
+export function MonthlyPlanCard({ assetCount, categoryCount }: { assetCount: number; categoryCount: number }) {
   const planFeatures = [
     `Full library — all ${assetCount}+ assets`,
     `All ${categoryCount} categories included`,
@@ -17,8 +16,7 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
     'New assets added every month',
     'Unlimited downloads, no credits',
   ]
-  const plan = siteConfig.plans.yearly
-  const cardRef = useRef<HTMLDivElement>(null)
+  const plan = siteConfig.plans.monthly
   const btnRef = useRef<HTMLDivElement>(null)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -49,22 +47,10 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
 
   return (
     <div
-      ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex flex-col rounded-xl border border-accent/40 bg-base-surface shadow-elevated overflow-hidden transition-colors"
-      style={{ animation: 'borderGlow 4s ease-in-out infinite' }}
+      className="relative flex flex-col rounded-xl border border-border bg-base-surface overflow-hidden transition-colors"
     >
-      {/* Top accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
-
-      {/* Badge */}
-      <div className="absolute top-4 right-4">
-        <Badge variant="default" className="px-3 py-1 text-xs">
-          Best value
-        </Badge>
-      </div>
-
       <div className="p-8">
         <p className="mb-1 text-xs font-medium tracking-widest text-content-muted uppercase">
           {plan.label}
@@ -78,23 +64,21 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
         </div>
 
         <div className="mt-2 space-y-0.5">
-          <p className="text-sm text-accent font-medium">
-            {siteConfig.plans.yearly.savings} — $12.42/mo equivalent
-          </p>
-          <p className="text-xs text-content-muted">Billed annually. Cancel anytime.</p>
+          <p className="text-sm text-content-secondary">Flexible month-to-month.</p>
+          <p className="text-xs text-content-muted">Cancel anytime.</p>
         </div>
 
         {/* Magnetic button */}
         <div
           ref={btnRef}
           style={{
-            transition: 'transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s ease',
+            transition: 'transform 0.25s cubic-bezier(0.23, 1, 0.32, 1)',
           }}
           className="mt-7"
         >
           <CheckoutButton
-            planId="yearly"
-            className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'w-full justify-center')}
+            planId="monthly"
+            className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }), 'w-full justify-center')}
           >
             Get access
             <ChevronRight className="h-4 w-4" />

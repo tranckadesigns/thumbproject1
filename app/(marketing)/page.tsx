@@ -26,6 +26,7 @@ import { EmailCaptureSection } from "@/components/marketing/email-capture";
 import { NewThisMonthSection } from "@/components/marketing/new-this-month";
 import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
 import { cn } from "@/lib/utils/cn";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 import { redirect } from "next/navigation";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
@@ -82,7 +83,7 @@ function ThumbnailMockup({
 
 // ─── 1. Hero ──────────────────────────────────────────────────────────────────
 
-function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibraryStats; heroAssets: Asset[]; hasSubscription: boolean }) {
+function HeroSection({ stats, heroAssets, hasSubscription, isLoggedIn }: { stats: LibraryStats; heroAssets: Asset[]; hasSubscription: boolean; isLoggedIn: boolean }) {
   const includes = [
     "Fully layered .PSD files",
     "Commercial license included",
@@ -99,14 +100,7 @@ function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibrarySta
             "radial-gradient(ellipse 80% 50% at 50% -5%, rgba(201,169,110,0.12) 0%, transparent 100%)",
         }}
       />
-      <div
-        className="pointer-events-none absolute left-[10%] top-[20%] h-72 w-72 rounded-full opacity-[0.035] blur-3xl animate-float"
-        style={{ background: "radial-gradient(circle, #C9A96E 0%, transparent 70%)" }}
-      />
-      <div
-        className="pointer-events-none absolute right-[8%] top-[35%] h-56 w-56 rounded-full opacity-[0.025] blur-3xl animate-float-delayed"
-        style={{ background: "radial-gradient(circle, #C9A96E 0%, transparent 70%)" }}
-      />
+
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.022]"
         style={{
@@ -152,7 +146,7 @@ function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibrarySta
 
           <Reveal delay={160}>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-content-secondary">
-              The only library built specifically for YouTube thumbnail overlays.
+              The only library built specifically for YouTube thumbnails.
               Fully layered PSDs. Customize in under 60 seconds.
             </p>
           </Reveal>
@@ -170,20 +164,24 @@ function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibrarySta
 
           <Reveal delay={300}>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                id="hero-get-access"
-                href="/signup"
-                className={cn(buttonVariants({ size: "lg" }), "active:scale-[0.97] transition-transform")}
-              >
-                Get access
-              </Link>
-              <Link
-                href="/pricing"
-                className={cn(buttonVariants({ variant: "ghost", size: "lg" }), "active:scale-[0.97] transition-transform")}
-              >
-                View pricing
-                <ChevronRight className="h-4 w-4" />
-              </Link>
+              <MagneticButton>
+                <Link
+                  id="hero-get-access"
+                  href="/signup"
+                  className={cn(buttonVariants({ size: "lg" }), "btn-shine active:scale-[0.97] transition-transform")}
+                >
+                  Get access
+                </Link>
+              </MagneticButton>
+              <MagneticButton>
+                <Link
+                  href="/pricing"
+                  className={cn(buttonVariants({ variant: "ghost", size: "lg" }), "active:scale-[0.97] transition-transform")}
+                >
+                  View pricing
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </MagneticButton>
             </div>
           </Reveal>
 
@@ -202,7 +200,7 @@ function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibrarySta
         {/* Product preview grid */}
         <div className="mt-20">
           <Reveal>
-            <p className="mb-6 text-center text-[11px] font-medium tracking-widest text-content-muted uppercase">
+            <p className="mb-6 text-center text-xs font-medium tracking-widest text-content-muted uppercase">
               From the library
             </p>
           </Reveal>
@@ -227,10 +225,10 @@ function HeroSection({ stats, heroAssets, hasSubscription }: { stats: LibrarySta
           <Reveal delay={400}>
             <div className="mt-10 flex justify-center">
               <a
-                href="/login"
+                href={hasSubscription ? "/library" : isLoggedIn ? "/pricing" : "/signup"}
                 className="inline-flex items-center gap-2.5 rounded-full border border-border bg-base-elevated px-6 py-3 text-sm font-medium text-content-primary transition-colors duration-200 hover:border-border-strong hover:bg-base-surface"
               >
-                Explore the full library
+                {hasSubscription ? "Explore the full library" : isLoggedIn ? "Upgrade to access the library" : "Get access to the full library"}
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-content-muted">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -726,7 +724,7 @@ export default async function HomePage({
   return (
     <>
       {/* 1 — Hook: headline + live preview */}
-      <HeroSection stats={stats} heroAssets={heroAssets} hasSubscription={hasSubscription} />
+      <HeroSection stats={stats} heroAssets={heroAssets} hasSubscription={hasSubscription} isLoggedIn={!!user} />
 
       {/* 2 — Quick credibility numbers */}
       <StatsStrip assetCount={stats.assetCount} categoryCount={stats.categoryCount} creatorCount={stats.creatorCount} />

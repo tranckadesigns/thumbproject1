@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ToastContainer } from "@/components/ui/toast";
+import { NavProgress } from "@/components/ui/nav-progress";
 import "./globals.css";
 import { siteConfig } from "@/lib/config/site";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body>
+        <NavProgress />
         {children}
         <ToastContainer />
         <Analytics />

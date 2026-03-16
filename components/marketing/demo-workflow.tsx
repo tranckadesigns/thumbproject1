@@ -108,7 +108,7 @@ function DownloadVisual() {
           </div>
         </div>
         <p className="text-xs font-medium text-content-secondary">Revenue_Alert.psd</p>
-        <p className="text-[10px] text-content-muted">18.4 MB</p>
+        <p className="text-xs text-content-muted">18.4 MB</p>
       </div>
 
       {/* Button */}
@@ -121,7 +121,7 @@ function DownloadVisual() {
         Download PSD
       </button>
 
-      <p className="text-[10px] text-content-muted">Instant · No credits · No queue</p>
+      <p className="text-xs text-content-muted">Instant · No credits · No queue</p>
     </div>
   );
 }
@@ -132,14 +132,14 @@ function DownloadVisual() {
 function EditVisual() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-center text-[10px] font-medium uppercase tracking-widest text-content-muted">
+      <p className="text-center text-xs font-medium uppercase tracking-widest text-content-muted">
         Double-click a text layer · Type your value
       </p>
 
       <div className="flex items-center gap-3">
         {/* Before */}
         <div className="flex-1 rounded-lg border border-border bg-base-elevated p-4 text-center">
-          <p className="mb-1 text-[9px] font-medium uppercase tracking-wide text-content-muted">Before</p>
+          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-content-muted">Before</p>
           <p className="text-xl font-bold text-content-muted/30">$0.00</p>
         </div>
 
@@ -152,7 +152,7 @@ function EditVisual() {
 
         {/* After */}
         <div className="flex-1 rounded-lg border border-accent/30 bg-accent/[0.06] p-4 text-center">
-          <p className="mb-1 text-[9px] font-medium uppercase tracking-wide text-accent/70">After</p>
+          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-accent/70">After</p>
           <p className="text-xl font-bold text-content-primary">$24,180</p>
         </div>
       </div>

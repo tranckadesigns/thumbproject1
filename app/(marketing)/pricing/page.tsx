@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Check, Layers, Zap, RefreshCw, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FeaturedPlanCard } from "@/components/marketing/featured-plan-card";
+import { MonthlyPlanCard } from "@/components/marketing/monthly-plan-card";
 import {
   MonthlyCheckoutButton,
   YearlyCheckoutButton,
@@ -242,15 +243,31 @@ function PricingHero({ stats }: { stats: LibraryStats }) {
           No tiers, no credits, no limits.
         </p>
 
-        {/* Founding member urgency */}
-        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/[0.06] px-4 py-2 text-xs text-accent">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
-          <span>
-            <span className="font-semibold">Founding member pricing</span>
-            {" — "}locked at $19/mo until we reach 2,000 members
-          </span>
+        {/* Founding member urgency + progress bar */}
+        <div className="mt-6 mx-auto w-full max-w-sm">
+          <div className="rounded-xl border border-accent/20 bg-accent/[0.04] px-5 py-4">
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-accent">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                Founding member pricing
+              </div>
+              <span className="text-xs text-content-muted tabular-nums">
+                {Math.min(stats.creatorCount, 1999).toLocaleString()} / 2,000
+              </span>
+            </div>
+            {/* Progress bar */}
+            <div className="h-1.5 w-full rounded-full bg-accent/10 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-accent transition-all duration-700"
+                style={{ width: `${Math.min((stats.creatorCount / 2000) * 100, 99.5)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-content-muted">
+              Price locks at $19/mo until all 2,000 founding spots are claimed.
+            </p>
+          </div>
         </div>
 
         <div className="mt-7 flex items-center justify-center gap-2 text-xs text-content-muted">
@@ -272,7 +289,7 @@ function PricingCards({ stats }: { stats: LibraryStats }) {
     <section className="px-6 pb-24">
       <div className="mx-auto max-w-2xl">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <PlanCard planId="monthly" stats={stats} />
+          <MonthlyPlanCard assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
           <FeaturedPlanCard assetCount={stats.assetCount} categoryCount={stats.categoryCount} />
         </div>
         {/* Trust strip */}
@@ -332,7 +349,7 @@ function PricingTestimonials() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-content-primary">{t.name}</p>
-                  <p className="text-[10px] text-content-muted">{t.handle}</p>
+                  <p className="text-xs text-content-muted">{t.handle}</p>
                 </div>
               </div>
             </div>
@@ -513,7 +530,7 @@ function PricingCta() {
               <p className="text-xs font-medium tracking-widest text-content-muted uppercase">
                 Yearly
               </p>
-              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-medium text-accent">
+              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent">
                 Save 35%
               </span>
             </div>

@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-meta": "node scripts/generate-meta.mjs",
-    "upload-assets": "node --env-file=.env.local scripts/upload-assets.mjs"
+    "generate-meta": "node --env-file=.env.local scripts/generate-meta.mjs",
+    "upload-assets": "node --env-file=.env.local scripts/upload-assets.mjs",
+    "watch": "node --env-file=.env.local scripts/watch.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

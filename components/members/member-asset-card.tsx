@@ -4,6 +4,7 @@ import type { Asset } from "@/types/asset";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/format";
 import { FavoriteButton } from "@/components/members/favorite-button";
+import { TiltCard } from "@/components/ui/tilt-card";
 
 interface MemberAssetCardProps {
   asset: Asset;
@@ -40,7 +41,13 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
   return (
     <Link href={`/asset/${asset.slug}`} className={cn("group block", className)}>
       {/* Preview */}
-      <div className="relative aspect-video overflow-hidden rounded-xl border border-border transition-all duration-300 group-hover:border-border-strong group-hover:shadow-elevated">
+      <TiltCard>
+      <div className={cn(
+        "relative aspect-video overflow-hidden rounded-xl border border-border transition-all duration-300 group-hover:border-border-strong",
+        asset.is_featured
+          ? "group-hover:shadow-[0_16px_40px_-8px_rgba(201,169,110,0.12)]"
+          : "group-hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)]"
+      )}>
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#161616]" />
 
         {/* Favorite button */}
@@ -81,6 +88,7 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
           </span>
         </div>
       </div>
+      </TiltCard>
 
       {/* Meta */}
       <div className="mt-3 flex items-start justify-between gap-2">

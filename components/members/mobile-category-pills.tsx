@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
 import { cn } from "@/lib/utils/cn";
 
 interface MobileCategoryPillsClientProps {
@@ -9,6 +7,7 @@ interface MobileCategoryPillsClientProps {
   categoryCounts: Record<string, number>;
   totalCount: number;
   activeCategory?: string;
+  onCategoryChange: (cat?: string) => void;
 }
 
 export function MobileCategoryPillsClient({
@@ -16,19 +15,8 @@ export function MobileCategoryPillsClient({
   categoryCounts,
   totalCount,
   activeCategory,
+  onCategoryChange,
 }: MobileCategoryPillsClientProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [, startTransition] = useTransition();
-
-  function navigate(category?: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (category) params.set("category", category);
-    else params.delete("category");
-    startTransition(() => router.push(`${pathname}?${params.toString()}`));
-  }
-
   const items = [
     { label: "All", count: totalCount },
     ...categories.map((cat) => ({ label: cat, count: categoryCounts[cat] ?? 0 })),
@@ -41,7 +29,7 @@ export function MobileCategoryPillsClient({
         return (
           <button
             key={label}
-            onClick={() => navigate(label === "All" ? undefined : label)}
+            onClick={() => onCategoryChange(label === "All" ? undefined : label)}
             className={cn(
               "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap",
               isActive

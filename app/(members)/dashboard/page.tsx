@@ -7,7 +7,10 @@ import { assetService } from "@/lib/services/index";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
 import { DashboardGreeting } from "@/components/members/dashboard-greeting";
 import { RecentlyViewed } from "@/components/members/recently-viewed";
+import { WelcomeCard } from "@/components/members/welcome-card";
+import { OnboardingBanner } from "@/components/members/onboarding-banner";
 import { formatDate } from "@/lib/utils/format";
+import { Suspense } from "react";
 import type { Asset } from "@/types/asset";
 
 export const metadata: Metadata = { title: "Dashboard" };
@@ -71,15 +74,41 @@ export default async function DashboardPage() {
   }
 
   const hasFavorites = favoriteAssets.length > 0;
-  const renewalDate = sub?.current_period_end ? formatDate(sub.current_period_end) : null;
-  const renewalLabel = sub?.cancel_at_period_end ? "Access until" : "Next renewal";
+
+  // Relative renewal copy — e.g. "Renews in 18 days" instead of a bare date
+  function getRelativeRenewal(iso: string | null, cancelAtEnd: boolean): { label: string; value: string | null } {
+    if (!iso) return { label: "Next renewal", value: null };
+    const diffDays = Math.ceil((new Date(iso).getTime() - Date.now()) / 86_400_000);
+    if (cancelAtEnd) {
+      if (diffDays <= 0) return { label: "Access expired", value: formatDate(iso) };
+      if (diffDays <= 60) return { label: "Expires in", value: `${diffDays} day${diffDays !== 1 ? "s" : ""}` };
+      return { label: "Access until", value: formatDate(iso) };
+    }
+    if (diffDays <= 0) return { label: "Renews", value: "today" };
+    if (diffDays === 1) return { label: "Renews", value: "tomorrow" };
+    if (diffDays <= 60) return { label: "Renews in", value: `${diffDays} days` };
+    return { label: "Next renewal", value: formatDate(iso) };
+  }
+
+  const { label: renewalLabel, value: renewalDate } = getRelativeRenewal(
+    sub?.current_period_end ?? null,
+    sub?.cancel_at_period_end ?? false
+  );
 
   return (
     <div className="px-6 py-10">
       <div className="mx-auto max-w-6xl space-y-12">
 
+        {/* Post-checkout welcome banner */}
+        <Suspense>
+          <OnboardingBanner />
+        </Suspense>
+
         {/* Greeting */}
         <DashboardGreeting email={email} displayName={displayName} renewalDate={renewalDate} renewalLabel={renewalLabel} />
+
+        {/* First-session welcome card — shown once when member has no activity */}
+        {!hasFavorites && <WelcomeCard />}
 
         {/* Recently viewed — reads localStorage, renders nothing if empty */}
         <RecentlyViewed favoriteIds={[...favoriteIds]} />

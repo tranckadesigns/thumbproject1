@@ -8,25 +8,22 @@ export const testimonials = [
       "I've been using PSDfuel for 3 months. My thumbnails went from looking amateur to agency-level. The PSD layers are clean and everything is editable in minutes.",
     name: "Marcus T.",
     handle: "@marcuscreates",
-    subscribers: "284K subscribers",
     initials: "MT",
     color: "#C9A96E",
   },
   {
     quote:
-      "The revenue notification overlays are exactly what I needed. My CTR jumped from 4.2% to 8.9% after switching to these assets. No other template site comes close.",
+      "My CTR jumped from 4.2% to 8.9% after switching to these assets. No other template site comes close to what PSDfuel has built.",
     name: "Sophie L.",
     handle: "@sophiemakesvids",
-    subscribers: "512K subscribers",
     initials: "SL",
     color: "#818CF8",
   },
   {
     quote:
-      "I was spending hours making these overlays from scratch. Now I just swap in the numbers and I'm done in five minutes. Worth every penny of the subscription.",
+      "I was spending hours making these from scratch. Now I just swap in the numbers and I'm done in five minutes. Worth every penny of the subscription.",
     name: "Dani R.",
     handle: "@danireviews",
-    subscribers: "98K subscribers",
     initials: "DR",
     color: "#34D399",
   },
@@ -35,16 +32,14 @@ export const testimonials = [
       "These look exactly like real platform notifications — not cheesy mockups. My audience actually thinks the revenue numbers shown in my thumbnails are real screenshots.",
     name: "Jordan K.",
     handle: "@jordankodes",
-    subscribers: "1.2M subscribers",
     initials: "JK",
     color: "#FB923C",
   },
   {
     quote:
-      "Subscriber milestone templates are insane. I hit 100K and used the PSDfuel milestone overlay in my video — that thumbnail got 2.4x my normal CTR. Crazy.",
+      "Subscriber milestone templates are insane. I used the PSDfuel milestone overlay and that thumbnail got 2.4x my normal CTR. Crazy what the right visual does.",
     name: "Priya M.",
     handle: "@priyamakes",
-    subscribers: "134K subscribers",
     initials: "PM",
     color: "#E879F9",
   },
@@ -53,16 +48,14 @@ export const testimonials = [
       "I manage thumbnails for 4 channels. This library is the only reason I can keep up with the volume. The categories make it fast to find exactly what a video needs.",
     name: "Alex B.",
     handle: "@alexbuilds",
-    subscribers: "670K subscribers",
     initials: "AB",
     color: "#60A5FA",
   },
   {
     quote:
-      "The Stripe payout overlays look so real. I use them for my 'how I made $X this month' videos and they consistently outperform my other thumbnails.",
+      "The payout overlays look so real. I use them for my 'how I made $X this month' videos and they consistently outperform every other thumbnail style I've tried.",
     name: "Tomás V.",
     handle: "@tomasvlogs",
-    subscribers: "445K subscribers",
     initials: "TV",
     color: "#F472B6",
   },
@@ -71,7 +64,6 @@ export const testimonials = [
       "Finally a library that understands what YouTube creators actually need. These aren't random UI elements — they're built for thumbnails and it shows.",
     name: "Nina C.",
     handle: "@ninacontent",
-    subscribers: "221K subscribers",
     initials: "NC",
     color: "#A78BFA",
   },
@@ -124,7 +116,7 @@ function TestimonialCard({ testimonial, className }: TestimonialCardProps) {
             {testimonial.name}
           </p>
           <p className="text-[10px] text-content-muted truncate">
-            {testimonial.subscribers}
+            YouTube Creator
           </p>
         </div>
       </div>

@@ -9,7 +9,7 @@ export function Wordmark({ className, size = "default" }: WordmarkProps) {
   const iconSize = size === "sm" ? 10 : size === "lg" ? 22 : 13;
 
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
+    <span className={cn("inline-flex items-center gap-2 leading-none", className)}>
       {/* Icon mark: stylised fuel spark — four-pointed star in accent gold */}
       <svg
         width={iconSize}
