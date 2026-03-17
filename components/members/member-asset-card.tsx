@@ -30,8 +30,8 @@ const categoryColors: Record<string, string> = {
 function isNew(createdAt: string): boolean {
   const created = new Date(createdAt).getTime();
   const now = Date.now();
-  const sixtyDays = 14 * 24 * 60 * 60 * 1000;
-  return now - created < sixtyDays;
+  const fourteenDays = 14 * 24 * 60 * 60 * 1000;
+  return now - created < fourteenDays;
 }
 
 export function MemberAssetCard({ asset, className, isFavorited = false }: MemberAssetCardProps) {

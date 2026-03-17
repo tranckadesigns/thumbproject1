@@ -33,14 +33,16 @@ export function RecentlyViewed({ favoriteIds = [] }: RecentlyViewedProps) {
       const raw: TrackedAsset[] = JSON.parse(
         localStorage.getItem(STORAGE_KEY) ?? "[]"
       );
-      // Filter out invalid entries and deduplicate by id (keep first occurrence = most recent)
+      // Deduplicate by id, drop invalid entries, cap at 4
       const seen = new Set<string>();
       const valid = raw.filter((a) => {
         if (!a.id || !a.slug || !a.category || typeof a.file_size_mb !== "number") return false;
         if (seen.has(a.id)) return false;
         seen.add(a.id);
         return true;
-      });
+      }).slice(0, 4);
+      // Write back so corrupted/duplicate data is permanently cleaned
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(valid));
       setAssets(valid);
     } catch {
       // localStorage not available

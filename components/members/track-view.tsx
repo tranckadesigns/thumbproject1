@@ -26,8 +26,14 @@ export function TrackView({ asset }: { asset: TrackedAsset }) {
       const existing: TrackedAsset[] = JSON.parse(
         localStorage.getItem(STORAGE_KEY) ?? "[]"
       );
-      const filtered = existing.filter((a) => a.id !== asset.id);
-      const updated = [asset, ...filtered].slice(0, MAX_ITEMS);
+      // Remove current asset + any pre-existing duplicates, then prepend
+      const seen = new Set<string>([asset.id]);
+      const deduped = existing.filter((a) => {
+        if (!a.id || seen.has(a.id)) return false;
+        seen.add(a.id);
+        return true;
+      });
+      const updated = [asset, ...deduped].slice(0, MAX_ITEMS);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     } catch {
       // localStorage not available — skip silently

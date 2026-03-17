@@ -10,17 +10,14 @@ export default async function AccountLayout({
 }) {
   const supabase = await getSupabaseServerClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  // Only requires auth — no subscription check
-  if (!demoMode && !user) redirect("/login");
+  if (!user) redirect("/login");
 
-  const email = user?.email ?? "demo@psdfuel.com";
-  const subscribed = demoMode || (user ? await hasActiveSubscription() : false);
+  const subscribed = await hasActiveSubscription();
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={email} hasSubscription={subscribed} />
+      <AppNav email={user.email ?? ""} hasSubscription={subscribed} />
       <main className="pt-14">{children}</main>
     </div>
   );

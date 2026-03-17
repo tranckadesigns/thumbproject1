@@ -21,7 +21,7 @@ const sections = [
   },
   {
     heading: "Cancellation and refunds",
-    body: `You may cancel your subscription at any time. Access continues until the end of the current billing period. We offer a 30-day money-back guarantee for first-time subscribers — email support@psdfuel.com within 30 days of your first charge to request a full refund, no questions asked.`,
+    body: `You may cancel your subscription at any time. Access continues until the end of the current billing period. We offer a 30-day money-back guarantee for first-time subscribers — email info@psdfuel.com within 30 days of your first charge to request a full refund, no questions asked.`,
   },
   {
     heading: "Intellectual property",
@@ -41,7 +41,7 @@ const sections = [
   },
   {
     heading: "Contact",
-    body: `Questions about these terms? Email us at legal@psdfuel.com. We aim to respond within 5 business days.`,
+    body: `Questions about these terms? Email us at info@psdfuel.com. We aim to respond within 5 business days.`,
   },
 ];
 
@@ -55,12 +55,13 @@ export default function TermsPage() {
         Terms of Service
       </h1>
       <p className="mt-3 text-sm text-content-muted">
-        Last updated: March 2026
+        Last updated: March 2026 · Trancka, Kennedylaan 51, 5571 KB Bergeijk, Netherlands
       </p>
 
       <p className="mt-8 text-sm leading-relaxed text-content-secondary">
-        These Terms of Service govern your access to and use of PSDfuel. Please
-        read them carefully before subscribing.
+        These Terms of Service govern your access to and use of PSDfuel, operated by
+        Trancka (Kennedylaan 51, 5571 KB Bergeijk, Netherlands). Please read them
+        carefully before subscribing.
       </p>
 
       <div className="mt-10 flex flex-col gap-8">

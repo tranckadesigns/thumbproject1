@@ -109,6 +109,29 @@ export async function POST(request: NextRequest) {
         break;
       }
 
+      // ── Payment succeeded (renewal recovery: past_due → active) ───────────
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as any;
+        if (!invoice.subscription) break;
+
+        const sub = await stripe.subscriptions.retrieve(
+          invoice.subscription as string
+        ) as any;
+        const userId = sub.metadata?.user_id;
+        if (!userId) break;
+
+        await upsertSubscription(supabase, {
+          userId,
+          stripeCustomerId:     sub.customer as string,
+          stripeSubscriptionId: sub.id,
+          status:               sub.status,
+          planId:               sub.metadata?.plan_id ?? null,
+          currentPeriodEnd:     getPeriodEnd(sub),
+          cancelAtPeriodEnd:    sub.cancel_at_period_end ?? false,
+        });
+        break;
+      }
+
       // ── Payment failed ─────────────────────────────────────────────────────
       case "invoice.payment_failed": {
         const invoice = event.data.object as any;

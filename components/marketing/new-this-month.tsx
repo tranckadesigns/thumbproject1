@@ -5,7 +5,7 @@ import type { Asset } from "@/types/asset";
 function assetTag(asset: Asset): { label: string; style: string } {
   const created = new Date(asset.created_at).getTime();
   const updated = asset.updated_at ? new Date(asset.updated_at).getTime() : created;
-  const isUpdated = updated - created > 24 * 60 * 60 * 1000; // updated > 1 day after creation
+  const isUpdated = updated - created > 24 * 60 * 60 * 1000;
   return isUpdated
     ? { label: "Updated", style: "rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400" }
     : { label: "New",     style: "rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm" };
@@ -18,9 +18,11 @@ function currentMonthLabel(): string {
 export function NewThisMonthSection({
   assetCount,
   recentAssets,
+  thisMonthCount,
 }: {
   assetCount: number;
   recentAssets: Asset[];
+  thisMonthCount: number;
 }) {
   if (recentAssets.length === 0) return null;
 
@@ -28,7 +30,7 @@ export function NewThisMonthSection({
     <section className="border-t border-border px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <div className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+          <div className="mb-12 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
             <div>
               <div className="mb-3 flex items-center gap-2.5">
                 <p className="text-xs font-medium uppercase tracking-widest text-content-muted">
@@ -46,9 +48,20 @@ export function NewThisMonthSection({
                 automatically — no extra charge.
               </p>
             </div>
-            <p className="shrink-0 text-sm text-content-muted">
-              {assetCount}+ total assets
-            </p>
+
+            {/* Month count stat */}
+            <div className="shrink-0 rounded-xl border border-border bg-base-surface px-6 py-4 text-right">
+              <p className="text-3xl font-semibold tracking-tight text-content-primary">
+                {thisMonthCount}
+                <span className="ml-1 text-accent">+</span>
+              </p>
+              <p className="mt-0.5 text-xs text-content-muted">
+                assets added this month
+              </p>
+              <p className="mt-2 text-[11px] text-content-muted/60">
+                {assetCount}+ total in library
+              </p>
+            </div>
           </div>
         </Reveal>
 
@@ -95,8 +108,7 @@ export function NewThisMonthSection({
 
         <Reveal delay={320}>
           <p className="mt-8 text-center text-sm text-content-muted">
-            New assets are added every month and available instantly to all
-            subscribers.
+            New assets are added every month and available instantly to all subscribers.
           </p>
         </Reveal>
       </div>

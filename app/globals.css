@@ -45,8 +45,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
     scroll-behavior: smooth;
   }
+}
 
   body {
     background-color: #050505;
@@ -165,4 +170,51 @@
   10%       { opacity: 1; }
   40%       { left: 130%; opacity: 0; }
   41%, 99%  { left: 130%; opacity: 0; }
+}
+
+@keyframes pricePop {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.94); }
+  60%  { opacity: 1; transform: translateY(-2px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Aurora rotating border (yearly plan card) ──────────────────────────────── */
+/* Animates the conic-gradient start angle via @property so only the gradient   */
+/* angle moves — no element rotation, no rectangle, perfect rounded corners.    */
+@property --aurora-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.aurora-border {
+  position: relative;
+}
+.aurora-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--aurora-angle) at 50% 50%,
+    rgba(201,169,110,0.35) 0deg,
+    rgba(201,169,110,0.35) 155deg,
+    rgba(201,169,110,0.60) 168deg,
+    rgba(255,228,140,0.98) 180deg,
+    rgba(201,169,110,0.60) 192deg,
+    rgba(201,169,110,0.35) 205deg,
+    rgba(201,169,110,0.35) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  animation: auroraComet 8s linear infinite;
+}
+@keyframes auroraComet {
+  to { --aurora-angle: 360deg; }
 }

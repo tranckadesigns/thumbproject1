@@ -56,7 +56,7 @@ export function SubscriptionActivationPoller() {
             Refresh page
           </button>
           <a
-            href="mailto:support@psdfuel.com"
+            href="mailto:info@psdfuel.com"
             className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
           >
             Contact support

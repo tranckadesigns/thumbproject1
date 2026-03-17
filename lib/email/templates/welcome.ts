@@ -2,7 +2,7 @@ const ACCENT = "#C9A96E";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.psdfuel.com";
 
 export function welcomeEmailHtml({
-  email,
+  email: _email,
   plan,
 }: {
   email: string;

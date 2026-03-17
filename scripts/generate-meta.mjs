@@ -34,19 +34,21 @@ async function readCategories() {
 // ─── Voeg nieuwe categorie toe aan categories.ts en types/asset.ts ────────────
 
 async function addCategory(name, description) {
-  // categories.ts
+  // 1. Voeg toe aan categories.ts
   let cats = await readFile(CATEGORIES_TS, "utf8");
   const lastEntry = cats.lastIndexOf("},");
   const newEntry = `\n  { name: "${name}", description: "${description}" },`;
   cats = cats.slice(0, lastEntry + 2) + newEntry + cats.slice(lastEntry + 2);
   await writeFile(CATEGORIES_TS, cats);
 
-  // types/asset.ts — voeg toe aan de AssetCategory union
+  // 2. Herbouw de AssetCategory union volledig vanuit de bijgewerkte categories.ts
+  //    (robust: werkt ook als er al eerder nieuwe categorieën zijn toegevoegd)
+  const updated = await readCategories();
+  const unionLines = updated.map((c) => `  | "${c.name}"`).join("\n");
+  const newUnion = `export type AssetCategory =\n${unionLines};`;
+
   let types = await readFile(ASSET_TYPE_TS, "utf8");
-  types = types.replace(
-    /(\|\s*"Reactions";)/,
-    `| "Reactions"\n  | "${name}";`
-  );
+  types = types.replace(/export type AssetCategory =[\s\S]*?;/, newUnion);
   await writeFile(ASSET_TYPE_TS, types);
 
   console.log(`   🆕  Nieuwe categorie aangemaakt: "${name}"`);

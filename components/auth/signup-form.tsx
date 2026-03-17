@@ -9,11 +9,18 @@ import { Label } from "@/components/ui/label";
 
 const initialState: AuthFormState = { error: null };
 
-export function SignupForm() {
+interface SignupFormProps {
+  plan?: string;
+}
+
+export function SignupForm({ plan }: SignupFormProps) {
   const [state, formAction, isPending] = useActionState(signUpAction, initialState);
 
   return (
     <form action={formAction} className="space-y-4">
+      {/* Hidden plan field — preserved through signup → verify → checkout */}
+      {plan && <input type="hidden" name="plan" value={plan} />}
+
       <div className="space-y-1.5">
         <Label htmlFor="display_name">
           Display name <span className="text-content-muted font-normal">(optional)</span>

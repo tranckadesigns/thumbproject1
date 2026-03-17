@@ -9,7 +9,7 @@ export async function sendWelcomeEmail({
   plan: "monthly" | "yearly" | null;
 }) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "PSDfuel <hello@psdfuel.com>";
+  const from = process.env.RESEND_FROM_EMAIL ?? "PSDfuel <info@psdfuel.com>";
 
   if (!apiKey) {
     console.warn("RESEND_API_KEY not set — skipping welcome email");

@@ -10,6 +10,7 @@ export const testimonials = [
     handle: "@marcuscreates",
     initials: "MT",
     color: "#C9A96E",
+    role: "Finance Creator",
   },
   {
     quote:
@@ -18,6 +19,7 @@ export const testimonials = [
     handle: "@sophiemakesvids",
     initials: "SL",
     color: "#818CF8",
+    role: "Lifestyle Creator",
   },
   {
     quote:
@@ -26,6 +28,7 @@ export const testimonials = [
     handle: "@danireviews",
     initials: "DR",
     color: "#34D399",
+    role: "Product Reviewer",
   },
   {
     quote:
@@ -34,6 +37,7 @@ export const testimonials = [
     handle: "@jordankodes",
     initials: "JK",
     color: "#FB923C",
+    role: "Tech Creator",
   },
   {
     quote:
@@ -42,6 +46,7 @@ export const testimonials = [
     handle: "@priyamakes",
     initials: "PM",
     color: "#E879F9",
+    role: "Growth Creator",
   },
   {
     quote:
@@ -50,6 +55,7 @@ export const testimonials = [
     handle: "@alexbuilds",
     initials: "AB",
     color: "#60A5FA",
+    role: "Multi-Channel Manager",
   },
   {
     quote:
@@ -58,6 +64,7 @@ export const testimonials = [
     handle: "@tomasvlogs",
     initials: "TV",
     color: "#F472B6",
+    role: "Vlog Creator",
   },
   {
     quote:
@@ -66,6 +73,7 @@ export const testimonials = [
     handle: "@ninacontent",
     initials: "NC",
     color: "#A78BFA",
+    role: "Content Strategist",
   },
 ];
 
@@ -116,7 +124,7 @@ function TestimonialCard({ testimonial, className }: TestimonialCardProps) {
             {testimonial.name}
           </p>
           <p className="text-[10px] text-content-muted truncate">
-            YouTube Creator
+            {testimonial.role}
           </p>
         </div>
       </div>

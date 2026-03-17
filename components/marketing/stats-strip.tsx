@@ -29,13 +29,14 @@ function AnimatedStat({ raw, label }: AnimatedStatProps) {
 
         if (isNaN(target)) { setDisplayed(raw); return; }
 
-        const duration = 1800;
+        const duration = 1400;
         const startTime = performance.now();
 
         function tick(now: number) {
           const t = Math.min((now - startTime) / duration, 1);
-          const eased = 1 - Math.pow(1 - t, 3);
-          const current = Math.round(eased * target);
+          // ease-out-expo: snappy acceleration that slams into the final value
+          const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+          const current = Math.min(Math.round(eased * target), target);
           const formatted = current >= 1000 ? current.toLocaleString("en-US") : String(current);
           setDisplayed(prefix + formatted + suffix);
           if (t < 1) requestAnimationFrame(tick);

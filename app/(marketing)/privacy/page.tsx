@@ -25,7 +25,7 @@ const sections = [
   },
   {
     heading: "Your rights (GDPR)",
-    body: `If you are in the EEA you have the right to access, correct, export, or delete your personal data at any time. You also have the right to object to processing and to withdraw consent. To exercise any of these rights, email us at privacy@psdfuel.com.`,
+    body: `If you are in the EEA you have the right to access, correct, export, or delete your personal data at any time. You also have the right to object to processing and to withdraw consent. To exercise any of these rights, email us at info@psdfuel.com.`,
   },
   {
     heading: "Changes to this policy",
@@ -33,7 +33,7 @@ const sections = [
   },
   {
     heading: "Contact",
-    body: `Questions about privacy? Email us at privacy@psdfuel.com. We aim to respond within 5 business days.`,
+    body: `Questions about privacy? Email us at info@psdfuel.com. We aim to respond within 5 business days.`,
   },
 ];
 
@@ -47,11 +47,12 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="mt-3 text-sm text-content-muted">
-        Last updated: March 2026
+        Last updated: March 2026 · Data controller: Trancka, Kennedylaan 51, 5571 KB Bergeijk, Netherlands
       </p>
 
       <p className="mt-8 text-sm leading-relaxed text-content-secondary">
-        PSDfuel (&ldquo;we&rdquo;, &ldquo;our&rdquo;) is committed to protecting your privacy. This
+        PSDfuel is operated by Trancka (&ldquo;we&rdquo;, &ldquo;our&rdquo;), Kennedylaan 51,
+        5571 KB Bergeijk, Netherlands. We are committed to protecting your privacy. This
         policy explains what data we collect, how we use it, and your rights.
       </p>
 

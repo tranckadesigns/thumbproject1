@@ -31,9 +31,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: "success" | "error"
 export default async function AccountPage() {
   const supabase = await getSupabaseServerClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-  if (!user && !demoMode) {
+  if (!user) {
     redirect("/login");
   }
 

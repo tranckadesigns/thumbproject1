@@ -6,9 +6,12 @@ import { Separator } from "@/components/ui/separator";
 
 const productLinks = [
   { label: "Pricing",         href: "/pricing" },
-  { label: "Library",         href: "/app/library" },
   { label: "Sign in",         href: "/login" },
   { label: "Get access",      href: "/signup" },
+];
+
+const supportLinks = [
+  { label: "info@psdfuel.com", href: "mailto:info@psdfuel.com" },
 ];
 
 const legalLinks = [
@@ -70,6 +73,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-10 sm:flex sm:gap-16">
             <FooterLinkGroup heading="Product"  links={productLinks} />
             <FooterLinkGroup heading="Legal"    links={legalLinks} />
+            <FooterLinkGroup heading="Support"  links={supportLinks} />
           </div>
         </div>
 
@@ -87,7 +91,10 @@ export function Footer() {
               Payments secured by Stripe
             </div>
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => {
+                const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                window.scrollTo({ top: 0, behavior: reduced ? "instant" : "smooth" });
+              }}
               className="flex items-center gap-1.5 text-xs text-content-muted/40 transition-colors hover:text-content-muted"
               aria-label="Scroll to top"
             >

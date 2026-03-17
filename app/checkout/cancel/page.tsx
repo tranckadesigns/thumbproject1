@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Checkout cancelled",
+  title: "Checkout canceled",
 };
 
 export default function CheckoutCancelPage() {
@@ -31,7 +31,7 @@ export default function CheckoutCancelPage() {
           No worries — nothing was charged.
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-content-secondary">
-          You cancelled before completing checkout. Your card was not charged.
+          You canceled before completing checkout. Your card was not charged.
           You can start a new subscription whenever you&apos;re ready.
         </p>
 
@@ -53,10 +53,10 @@ export default function CheckoutCancelPage() {
         <p className="mt-6 text-xs text-content-muted">
           Have a question?{" "}
           <a
-            href="mailto:hello@psdfuel.com"
+            href="mailto:info@psdfuel.com"
             className="text-content-secondary underline-offset-2 hover:underline"
           >
-            hello@psdfuel.com
+            info@psdfuel.com
           </a>
         </p>
       </div>

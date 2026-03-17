@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
-const STORAGE_KEY = "psdfuel-announcement-v1"
+const STORAGE_KEY = "psdfuel-announcement-v2"
 
 export function AnnouncementBar() {
   const [visible, setVisible] = useState(false)
@@ -20,7 +20,7 @@ export function AnnouncementBar() {
   if (!visible) return null
 
   return (
-    <div className="flex items-center justify-center gap-2.5 border-b border-accent/15 bg-accent/[0.06] px-4 py-2 text-xs">
+    <div className="relative flex items-center justify-center gap-2.5 border-b border-accent/15 bg-accent/[0.06] px-4 py-2 text-xs">
       {/* Pulsing dot */}
       <span className="relative flex h-1.5 w-1.5 shrink-0">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
@@ -29,12 +29,12 @@ export function AnnouncementBar() {
 
       <p className="text-content-secondary">
         <span className="font-medium text-content-primary">Founding member pricing</span>
-        {" — "}lock in <span className="font-semibold text-accent">$19/mo</span> forever before we raise prices.{" "}
+        {" — "}lock in <span className="font-semibold text-accent">$19/mo</span> before April 30, 2026.{" "}
         <Link
           href="/pricing"
           className="font-medium text-content-primary underline underline-offset-2 transition-colors hover:text-accent"
         >
-          Claim your spot →
+          Get access →
         </Link>
       </p>
 

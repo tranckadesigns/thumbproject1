@@ -30,16 +30,12 @@ async function getFavoriteAssets(): Promise<{ assets: Asset[]; ids: Set<string> 
 export default async function DashboardPage() {
   const supabase = await getSupabaseServerClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
-
   const sub = user ? await getSubscription() : null;
-  const email = user?.email ?? (demoMode ? "demo@psdfuel.com" : "");
+  const email = user?.email ?? "";
   const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
 
   // Favorites
-  const { assets: favoriteAssets, ids: favoriteIds } = demoMode
-    ? { assets: [] as Asset[], ids: new Set<string>() }
-    : await getFavoriteAssets();
+  const { assets: favoriteAssets, ids: favoriteIds } = await getFavoriteAssets();
 
   // All published assets, newest first
   const allAssets = await assetService.getLibrary();

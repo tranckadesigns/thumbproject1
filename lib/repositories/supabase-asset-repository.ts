@@ -2,18 +2,23 @@ import { createClient } from "@supabase/supabase-js";
 import type { Asset, AssetCategory } from "@/types/asset";
 import type { IAssetRepository, AssetFilters } from "./asset-repository";
 
-function getClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
+function makeClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) throw new Error("Missing Supabase environment variables");
+  return createClient(url, key, { auth: { persistSession: false } });
+}
+
+// Module-level singleton — one client per server process
+let _client: ReturnType<typeof makeClient> | null = null;
+function sb() {
+  if (!_client) _client = makeClient();
+  return _client;
 }
 
 export class SupabaseAssetRepository implements IAssetRepository {
   async getAll(filters?: AssetFilters): Promise<Asset[]> {
-    const sb = getClient();
-    let q = sb.from("assets").select("*").eq("is_published", true);
+    let q = sb().from("assets").select("*").eq("is_published", true);
 
     if (filters?.category) q = q.eq("category", filters.category);
     if (filters?.featured) q = q.eq("is_featured", true);
@@ -29,8 +34,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async getAllAdmin(): Promise<Asset[]> {
-    const sb = getClient();
-    const { data, error } = await sb
+    const { data, error } = await sb()
       .from("assets")
       .select("*")
       .order("created_at", { ascending: false });
@@ -39,8 +43,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async getBySlug(slug: string): Promise<Asset | null> {
-    const sb = getClient();
-    const { data } = await sb
+    const { data } = await sb()
       .from("assets")
       .select("*")
       .eq("slug", slug)
@@ -49,8 +52,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async getById(id: string): Promise<Asset | null> {
-    const sb = getClient();
-    const { data } = await sb
+    const { data } = await sb()
       .from("assets")
       .select("*")
       .eq("id", id)
@@ -59,8 +61,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async getFeatured(): Promise<Asset[]> {
-    const sb = getClient();
-    const { data, error } = await sb
+    const { data, error } = await sb()
       .from("assets")
       .select("*")
       .eq("is_featured", true)
@@ -71,20 +72,18 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async getRecent(limit: number): Promise<Asset[]> {
-    const sb = getClient();
-    const { data, error } = await sb
+    const { data, error } = await sb()
       .from("assets")
       .select("*")
       .eq("is_published", true)
-      .order("updated_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .limit(limit);
     if (error) throw new Error(`getRecent failed: ${error.message}`);
     return data ?? [];
   }
 
   async getByCategory(category: AssetCategory): Promise<Asset[]> {
-    const sb = getClient();
-    const { data, error } = await sb
+    const { data, error } = await sb()
       .from("assets")
       .select("*")
       .eq("category", category)
@@ -95,8 +94,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async create(data: Omit<Asset, "id" | "created_at">): Promise<Asset> {
-    const sb = getClient();
-    const { data: created, error } = await sb
+    const { data: created, error } = await sb()
       .from("assets")
       .insert(data)
       .select()
@@ -109,8 +107,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
     id: string,
     data: Partial<Omit<Asset, "id" | "created_at">>
   ): Promise<Asset> {
-    const sb = getClient();
-    const { data: updated, error } = await sb
+    const { data: updated, error } = await sb()
       .from("assets")
       .update(data)
       .eq("id", id)
@@ -121,8 +118,7 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const sb = getClient();
-    const { error } = await sb.from("assets").delete().eq("id", id);
+    const { error } = await sb().from("assets").delete().eq("id", id);
     if (error) throw new Error(`delete failed: ${error.message}`);
   }
 }

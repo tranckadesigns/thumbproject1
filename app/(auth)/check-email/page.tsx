@@ -5,7 +5,16 @@ export const metadata: Metadata = {
   title: "Check your email",
 };
 
-export default function CheckEmailPage() {
+interface CheckEmailPageProps {
+  searchParams: Promise<{ plan?: string }>;
+}
+
+export default async function CheckEmailPage({ searchParams }: CheckEmailPageProps) {
+  const { plan } = await searchParams;
+  const isYearly = plan === "yearly";
+  const isMonthly = plan === "monthly";
+  const hasPlan = isYearly || isMonthly;
+
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="mx-auto max-w-md text-center">
@@ -32,14 +41,29 @@ export default function CheckEmailPage() {
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-content-secondary">
           We&apos;ve sent you a confirmation email. Click the link inside to
-          activate your account, then come back here to sign in.
+          verify your account — it only takes a second.
         </p>
+
+        {hasPlan && (
+          <div className="mt-4 flex items-center justify-center gap-2 rounded-lg border border-accent/20 bg-accent/[0.06] px-4 py-3">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-accent">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <p className="text-xs text-content-secondary">
+              Once verified, you&apos;ll be taken directly to checkout for the{" "}
+              <span className="font-semibold text-content-primary">
+                {isYearly ? "Yearly plan" : "Monthly plan"}
+              </span>
+              .
+            </p>
+          </div>
+        )}
 
         <div className="mt-4 rounded-lg border border-border bg-base-elevated px-4 py-3">
           <p className="text-xs text-content-muted">
             Didn&apos;t receive anything? Check your spam folder, or{" "}
             <Link
-              href="/signup"
+              href={`/signup${plan ? `?plan=${plan}` : ""}`}
               className="text-content-secondary underline-offset-2 hover:underline"
             >
               try again with a different address

@@ -13,7 +13,13 @@ import { AssetCard } from "@/components/marketing/asset-overlays";
 import { TestimonialsSection } from "@/components/marketing/testimonials";
 import { PsdShowcase } from "@/components/marketing/psd-showcase";
 import { FAQSection } from "@/components/marketing/faq";
-import { CategoryIcon, CategoryIconStyles } from "@/components/marketing/category-icons";
+import { CategoryIconStyles } from "@/components/marketing/category-icons"
+// ── Category card variant — swap this one import to test different concepts ──
+// A (current):  @/components/marketing/category-card          → strip reveal
+// B (3D folder):@/components/marketing/category-card-folder   → lid opens, cards fan
+// C (polaroid): @/components/marketing/category-card-polaroid → polaroid spread
+// D (flip):     @/components/marketing/category-card-flip     → 3D flip reveal
+import { CategoryCardFolder as CategoryCard } from "@/components/marketing/category-card-folder";
 import { StatsStrip } from "@/components/marketing/stats-strip"
 import { CreatorsMarquee } from "@/components/marketing/creators-marquee"
 ;
@@ -21,7 +27,7 @@ import { CtrImpactSection } from "@/components/marketing/ctr-impact";
 import { PricingPreviewSection } from "@/components/marketing/pricing-preview";
 import { TimeReclaimedSection } from "@/components/marketing/time-reclaimed";
 import { FileSpecsSection } from "@/components/marketing/file-specs";
-import { EmailCaptureSection } from "@/components/marketing/email-capture";
+// import { EmailCaptureSection } from "@/components/marketing/email-capture";
 
 import { NewThisMonthSection } from "@/components/marketing/new-this-month";
 import { DemoWorkflowSection } from "@/components/marketing/demo-workflow";
@@ -42,32 +48,20 @@ interface ThumbnailMockupProps {
   videoTitle: string;
   channel: string;
   views: string;
-  gradient: string;
-  accentColor: string;
 }
 
 function ThumbnailMockup({
   videoTitle,
   channel,
   views,
-  gradient,
-  accentColor,
 }: ThumbnailMockupProps) {
 
   return (
     <div>
-      <div className="relative aspect-video overflow-hidden rounded-xl border border-border transition-colors duration-300 hover:border-border-strong">
-        <div className="absolute inset-0" style={{ background: gradient }} />
-        <div
-          className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full opacity-30"
-          style={{ background: `radial-gradient(circle, ${accentColor}50 0%, transparent 70%)` }}
-        />
+      <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated transition-colors duration-300 hover:border-border-strong">
       </div>
       <div className="mt-3 flex items-start gap-2.5 px-0.5">
-        <div
-          className="h-8 w-8 flex-shrink-0 rounded-full border border-border"
-          style={{ background: `linear-gradient(135deg, ${accentColor}25 0%, transparent 100%)` }}
-        />
+        <div className="h-8 w-8 flex-shrink-0 rounded-full border border-border bg-base-elevated" />
         <div className="min-w-0 flex-1">
           <p className="line-clamp-2 text-sm font-medium leading-tight text-content-primary">
             {videoTitle}
@@ -167,21 +161,23 @@ function HeroSection({ stats, heroAssets, hasSubscription, isLoggedIn }: { stats
               <MagneticButton>
                 <Link
                   id="hero-get-access"
-                  href="/signup"
+                  href={hasSubscription ? "/library" : isLoggedIn ? "/pricing" : "/signup"}
                   className={cn(buttonVariants({ size: "lg" }), "btn-shine active:scale-[0.97] transition-transform")}
                 >
-                  Get access
+                  {hasSubscription ? "Open library" : "Get access"}
                 </Link>
               </MagneticButton>
-              <MagneticButton>
-                <Link
-                  href="/pricing"
-                  className={cn(buttonVariants({ variant: "ghost", size: "lg" }), "active:scale-[0.97] transition-transform")}
-                >
-                  View pricing
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </MagneticButton>
+              {!hasSubscription && (
+                <MagneticButton>
+                  <Link
+                    href="/pricing"
+                    className={cn(buttonVariants({ variant: "ghost", size: "lg" }), "active:scale-[0.97] transition-transform")}
+                  >
+                    {isLoggedIn ? "See plans" : "View pricing"}
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </MagneticButton>
+              )}
             </div>
           </Reveal>
 
@@ -356,9 +352,9 @@ function ComparisonSection() {
           </div>
         </Reveal>
 
-        <Reveal delay={80}>
-          <div className="overflow-hidden rounded-2xl border border-border">
-            {/* Column headers */}
+        <div className="overflow-hidden rounded-2xl border border-border">
+          {/* Column headers */}
+          <Reveal direction="fade">
             <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_1fr] border-b border-border bg-base-surface">
               <div className="hidden sm:block px-6 py-4" />
               <div className="border-l border-border px-4 sm:px-6 py-4">
@@ -368,42 +364,39 @@ function ComparisonSection() {
                 <p className="text-xs font-semibold text-accent">PSDfuel</p>
               </div>
             </div>
+          </Reveal>
 
-            {/* Rows */}
-            {comparisonRows.map((row, i) => (
-              <div
-                key={row.label}
-                className={cn(
-                  "border-b border-border last:border-b-0",
-                  i % 2 === 0 ? "bg-base" : "bg-base-surface"
-                )}
-              >
-                <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_1fr]">
-                  {/* Attribute label — full width on mobile, first col on desktop */}
-                  <div className="col-span-2 sm:col-span-1 flex items-center border-b border-border sm:border-b-0 px-4 sm:px-6 py-3 sm:py-4">
-                    <p className="text-sm font-medium text-content-primary">{row.label}</p>
-                  </div>
-
-                  {/* Theirs */}
-                  <div className="flex items-start gap-2 border-l border-border px-4 sm:px-6 py-3 sm:py-4">
-                    <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-error/10 text-[9px] font-bold text-error">
-                      ✕
-                    </span>
-                    <p className="text-xs sm:text-sm leading-relaxed text-content-muted">{row.theirs}</p>
-                  </div>
-
-                  {/* Ours */}
-                  <div className="flex items-start gap-2 border-l border-accent/20 bg-accent/[0.04] px-4 sm:px-6 py-3 sm:py-4">
-                    <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-accent/15 text-[9px] font-bold text-accent">
-                      ✓
-                    </span>
-                    <p className="text-xs sm:text-sm leading-relaxed text-content-secondary">{row.ours}</p>
-                  </div>
+          {/* Rows — each stagger-reveals on scroll */}
+          {comparisonRows.map((row, i) => (
+            <Reveal
+              key={row.label}
+              delay={i * 55}
+              direction="fade"
+              className={cn(
+                i < comparisonRows.length - 1 ? "border-b border-border" : "",
+                i % 2 === 0 ? "bg-base" : "bg-base-surface"
+              )}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_1fr]">
+                <div className="col-span-2 sm:col-span-1 flex items-center border-b border-border sm:border-b-0 px-4 sm:px-6 py-3 sm:py-4">
+                  <p className="text-sm font-medium text-content-primary">{row.label}</p>
+                </div>
+                <div className="flex items-start gap-2 border-l border-border px-4 sm:px-6 py-3 sm:py-4">
+                  <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-error/10 text-[9px] font-bold text-error">
+                    ✕
+                  </span>
+                  <p className="text-xs sm:text-sm leading-relaxed text-content-muted">{row.theirs}</p>
+                </div>
+                <div className="flex items-start gap-2 border-l border-accent/20 bg-accent/[0.04] px-4 sm:px-6 py-3 sm:py-4">
+                  <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-accent/15 text-[9px] font-bold text-accent">
+                    ✓
+                  </span>
+                  <p className="text-xs sm:text-sm leading-relaxed text-content-secondary">{row.ours}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </Reveal>
+            </Reveal>
+          ))}
+        </div>
 
         <Reveal delay={160}>
           <div className="mt-10 flex justify-center">
@@ -425,7 +418,13 @@ function ComparisonSection() {
 
 // ─── 6. Category Showcase ─────────────────────────────────────────────────────
 
-function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
+function CategoryShowcaseSection({
+  stats,
+  categoryPreviews,
+}: {
+  stats: LibraryStats
+  categoryPreviews: Record<string, string[]>
+}) {
   return (
     <section className="border-t border-border bg-base-surface px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -450,15 +449,11 @@ function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {categoriesConfig.map(({ name, description }, i) => (
             <Reveal key={name} delay={i * 40}>
-              <div className="group">
-                <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-border bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818] transition-all duration-300 group-hover:border-accent/25 group-hover:shadow-elevated">
-                  <CategoryIcon name={name} />
-                </div>
-                <div className="mt-2.5">
-                  <p className="text-sm font-semibold text-content-primary">{name}</p>
-                  <p className="mt-0.5 text-xs text-content-muted/70 leading-relaxed">{description}</p>
-                </div>
-              </div>
+              <CategoryCard
+                name={name}
+                description={description}
+                previews={categoryPreviews[name] ?? []}
+              />
             </Reveal>
           ))}
         </div>
@@ -470,7 +465,7 @@ function CategoryShowcaseSection({ stats }: { stats: LibraryStats }) {
         </Reveal>
       </div>
     </section>
-  );
+  )
 }
 
 
@@ -481,29 +476,21 @@ const thumbnailData: ThumbnailMockupProps[] = [
     videoTitle: "How I Made $24,180 From YouTube This Month (Full Revenue Breakdown)",
     channel: "MarkBuilds",
     views: "1.2M views",
-    gradient: "linear-gradient(135deg, #180d00 0%, #2a1400 55%, #120a00 100%)",
-    accentColor: "#FF8C00",
   },
   {
     videoTitle: "I Did This Every Day For 30 Days Straight — Here's What Happened",
     channel: "SophieDaily",
     views: "847K views",
-    gradient: "linear-gradient(135deg, #000d18 0%, #001625 55%, #000a14 100%)",
-    accentColor: "#FB923C",
   },
   {
     videoTitle: "I Tested Every YouTube Growth Strategy — Here's What Actually Works",
     channel: "JordanKodes",
     views: "2.4M views",
-    gradient: "linear-gradient(135deg, #050d05 0%, #091509 55%, #040b04 100%)",
-    accentColor: "#4ADE80",
   },
   {
     videoTitle: "LIVE in 24 Hours — Don't Miss This (Biggest Stream of the Year)",
     channel: "NinaLive",
     views: "430K views",
-    gradient: "linear-gradient(135deg, #06040e 0%, #0a0820 55%, #060414 100%)",
-    accentColor: "#818CF8",
   },
 ];
 
@@ -517,12 +504,12 @@ function RealThumbnailsSection() {
               The library in action
             </p>
             <h2 className="text-3xl font-semibold tracking-tight text-content-primary md:text-4xl">
-              Real thumbnails.
-              <br />Real assets.
+              Designed to stop the scroll.
+              <br />Built to get clicks.
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-content-secondary">
-              Every asset is built to look platform-native — like a real YouTube
-              notification, not a widget dropped from a dashboard.
+              Every asset is built from the ground up for YouTube thumbnails —
+              authentic overlays that look intentional in the feed, not templated.
             </p>
           </div>
         </Reveal>
@@ -695,15 +682,30 @@ export default async function HomePage({
 
   const supabase = await getSupabaseServerClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
   const sub = user ? await getSubscription() : null;
-  const hasSubscription = demoMode || sub?.status === "active" || sub?.status === "trialing";
+  const hasSubscription = sub?.status === "active" || sub?.status === "trialing";
 
   const [stats, allAssets, recentAssets] = await Promise.all([
     getLibraryStats(),
     assetService.getLibrary(),
     assetService.getRecent(4),
   ]);
+
+  // Count assets added in the current calendar month
+  const now = new Date();
+  const thisMonthCount = allAssets.filter((a) => {
+    const d = new Date(a.created_at);
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  }).length;
+
+  // Build preview thumbnail URLs per category (max 3 per category, reuses allAssets — no extra query)
+  const categoryPreviews: Record<string, string[]> = {}
+  for (const asset of allAssets) {
+    if (!asset.thumbnail_url) continue
+    const cat = asset.category
+    if (!categoryPreviews[cat]) categoryPreviews[cat] = []
+    if (categoryPreviews[cat].length < 3) categoryPreviews[cat].push(asset.thumbnail_url)
+  }
 
   // Pick one asset per category for hero variety, up to 6
   const seen = new Set<string>();
@@ -736,10 +738,10 @@ export default async function HomePage({
       <CreatorsMarquee creatorCount={stats.creatorCount} />
 
       {/* 5 — Show the full library breadth */}
-      <CategoryShowcaseSection stats={stats} />
+      <CategoryShowcaseSection stats={stats} categoryPreviews={categoryPreviews} />
 
       {/* 6 — Freshness signal: active product, new assets this month */}
-      <NewThisMonthSection assetCount={stats.assetCount} recentAssets={recentAssets} />
+      <NewThisMonthSection assetCount={stats.assetCount} recentAssets={recentAssets} thisMonthCount={thisMonthCount} />
 
       {/* 7 — Now that they've seen it, the problem lands harder */}
       <ProblemSection />
@@ -775,7 +777,7 @@ export default async function HomePage({
       <FAQSection />
 
       {/* 19 — Lead capture for non-buyers (before final CTA) */}
-      <EmailCaptureSection />
+      {/* EmailCaptureSection temporarily hidden — Resend integration pending */}
 
       {/* 20 — Close */}
       <CtaSection creatorCount={stats.creatorCount} />

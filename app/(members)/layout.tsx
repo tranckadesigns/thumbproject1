@@ -11,24 +11,16 @@ export default async function MembersLayout({
   const supabase = await getSupabaseServerClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
 
-  // No Supabase configured → demo mode, skip auth + subscription checks
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!user) redirect("/login");
 
-  if (!demoMode) {
-    // Not logged in → send to login
-    if (!user) redirect("/login");
+  const subscribed = await hasActiveSubscription();
+  if (!subscribed) redirect("/pricing");
 
-    // Logged in but no active subscription → send to pricing
-    const subscribed = await hasActiveSubscription();
-    if (!subscribed) redirect("/pricing");
-  }
-
-  const email = user?.email ?? "demo@psdfuel.com";
   const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={email} hasSubscription={true} displayName={displayName} />
+      <AppNav email={user.email ?? ""} hasSubscription={true} displayName={displayName} />
       <main className="pt-14">{children}</main>
     </div>
   );

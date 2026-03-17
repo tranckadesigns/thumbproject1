@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Check, Layers, Zap, RefreshCw, ShieldCheck } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { FeaturedPlanCard } from "@/components/marketing/featured-plan-card";
 import { MonthlyPlanCard } from "@/components/marketing/monthly-plan-card";
 import {
-  MonthlyCheckoutButton,
-  YearlyCheckoutButton,
   MonthlyCtaButton,
   YearlyCtaButton,
 } from "@/components/marketing/plan-checkout-buttons";
@@ -13,7 +10,6 @@ import { Separator } from "@/components/ui/separator";
 import { AssetCard } from "@/components/marketing/asset-overlays";
 import { siteConfig } from "@/lib/config/site";
 import { categoriesConfig } from "@/lib/config/categories";
-import { cn } from "@/lib/utils/cn";
 import { getLibraryStats } from "@/lib/services/stats-service";
 import type { LibraryStats } from "@/lib/services/stats-service";
 import { assetService } from "@/lib/services";
@@ -24,17 +20,6 @@ export const metadata: Metadata = {
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-
-function getPlanFeatures(stats: LibraryStats) {
-  return [
-    `Full library — all ${stats.assetCount}+ assets`,
-    `All ${stats.categoryCount} categories included`,
-    "Fully layered Adobe Photoshop PSD",
-    "Commercial license included",
-    "New assets added every month",
-    "Unlimited downloads, no credits",
-  ];
-}
 
 const includedFeatures = [
   "Full library access — all assets, always",
@@ -135,95 +120,6 @@ function Stars() {
   );
 }
 
-function PlanCard({
-  planId,
-  featured,
-  stats,
-}: {
-  planId: keyof typeof siteConfig.plans;
-  featured?: boolean;
-  stats: LibraryStats;
-}) {
-  const plan = siteConfig.plans[planId];
-  const isYearly = planId === "yearly";
-  const planFeatures = getPlanFeatures(stats);
-
-  return (
-    <div
-      className={cn(
-        "relative flex flex-col rounded-xl border overflow-hidden transition-colors",
-        featured
-          ? "border-accent/40 bg-base-surface shadow-elevated"
-          : "border-border bg-base-surface"
-      )}
-      style={featured ? { animation: "borderGlow 4s ease-in-out infinite" } : undefined}
-    >
-      {/* Top accent bar on featured card */}
-      {featured && (
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
-      )}
-
-      {featured && (
-        <div className="absolute top-4 right-4">
-          <Badge variant="default" className="px-3 py-1 text-xs">
-            Best value
-          </Badge>
-        </div>
-      )}
-
-      <div className="p-8">
-
-        <p className="mb-1 text-xs font-medium tracking-widest text-content-muted uppercase">
-          {plan.label}
-        </p>
-
-        <div className="flex items-end gap-1.5">
-          <span className="text-4xl font-semibold tracking-tighter text-content-primary">
-            ${plan.price}
-          </span>
-          <span className="mb-1 text-sm text-content-muted">/{plan.interval}</span>
-        </div>
-
-        {isYearly ? (
-          <div className="mt-2 space-y-0.5">
-            <p className="text-sm text-accent font-medium">
-              {siteConfig.plans.yearly.savings} — $12.42/mo equivalent
-            </p>
-            <p className="text-xs text-content-muted">Billed annually. Cancel anytime.</p>
-          </div>
-        ) : (
-          <div className="mt-2 space-y-0.5">
-            <p className="text-sm text-content-secondary">Flexible month-to-month.</p>
-            <p className="text-xs text-content-muted">Cancel anytime.</p>
-          </div>
-        )}
-
-        <div className="mt-7">
-          {featured ? (
-            <YearlyCheckoutButton />
-          ) : (
-            <MonthlyCheckoutButton />
-          )}
-        </div>
-      </div>
-
-      {/* Feature list */}
-      <div className="border-t border-border/60 px-8 pb-8 pt-6">
-        <ul className="space-y-3">
-          {planFeatures.map((feature) => (
-            <li key={feature} className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-accent/15">
-                <Check className="h-2.5 w-2.5 text-accent" />
-              </div>
-              <span className="text-sm text-content-secondary">{feature}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
 // ─── Sections ─────────────────────────────────────────────────────────────────
 
 function PricingHero({ stats }: { stats: LibraryStats }) {
@@ -243,29 +139,15 @@ function PricingHero({ stats }: { stats: LibraryStats }) {
           No tiers, no credits, no limits.
         </p>
 
-        {/* Founding member urgency + progress bar */}
+        {/* Founding member badge */}
         <div className="mt-6 mx-auto w-full max-w-sm">
-          <div className="rounded-xl border border-accent/20 bg-accent/[0.04] px-5 py-4">
-            <div className="flex items-center justify-between mb-2.5">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-accent">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                </svg>
-                Founding member pricing
-              </div>
-              <span className="text-xs text-content-muted tabular-nums">
-                {Math.min(stats.creatorCount, 1999).toLocaleString()} / 2,000
-              </span>
-            </div>
-            {/* Progress bar */}
-            <div className="h-1.5 w-full rounded-full bg-accent/10 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-accent transition-all duration-700"
-                style={{ width: `${Math.min((stats.creatorCount / 2000) * 100, 99.5)}%` }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-content-muted">
-              Price locks at $19/mo until all 2,000 founding spots are claimed.
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-accent/20 bg-accent/[0.04] px-5 py-3.5">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent shrink-0">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <p className="text-xs text-content-secondary">
+              <span className="font-semibold text-accent">Founding member pricing</span>
+              {" — "}available until April 30, 2026
             </p>
           </div>
         </div>

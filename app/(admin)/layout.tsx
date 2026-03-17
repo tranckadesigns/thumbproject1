@@ -7,28 +7,25 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
   const adminEmail = process.env.ADMIN_EMAIL;
 
-  let email = "admin@psdfuel.com";
+  // ADMIN_EMAIL must be configured — without it, block all access to /admin
+  if (!adminEmail) {
+    redirect("/dashboard");
+  }
 
-  if (!demoMode) {
-    const supabase = await getSupabaseServerClient();
-    const user = supabase ? (await supabase.auth.getUser()).data.user : null;
+  const supabase = await getSupabaseServerClient();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
 
-    if (!user) redirect("/login");
+  if (!user) redirect("/login");
 
-    // If ADMIN_EMAIL is configured, enforce it
-    if (adminEmail && user.email !== adminEmail) {
-      redirect("/dashboard");
-    }
-
-    email = user.email ?? email;
+  if (user.email !== adminEmail) {
+    redirect("/dashboard");
   }
 
   return (
     <div className="min-h-screen bg-base">
-      <AdminNav email={email} />
+      <AdminNav email={user.email ?? adminEmail} />
       <main className="pl-56">
         <div className="px-8 py-8">{children}</div>
       </main>

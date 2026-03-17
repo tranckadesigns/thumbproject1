@@ -24,17 +24,12 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const btn = btnRef.current
     if (!btn) return
-
     const rect = btn.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    const dx = e.clientX - cx
-    const dy = e.clientY - cy
+    const dx = e.clientX - (rect.left + rect.width / 2)
+    const dy = e.clientY - (rect.top + rect.height / 2)
     const dist = Math.hypot(dx, dy)
-    const proximity = 180
-
-    if (dist < proximity) {
-      const pull = 1 - dist / proximity
+    if (dist < 180) {
+      const pull = 1 - dist / 180
       btn.style.transform = `translate(${dx * 0.15 * pull}px, ${dy * 0.15 * pull}px)`
     } else {
       btn.style.transform = 'translate(0px, 0px)'
@@ -52,8 +47,7 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex flex-col rounded-xl border border-accent/40 bg-base-surface shadow-elevated overflow-hidden transition-colors"
-      style={{ animation: 'borderGlow 4s ease-in-out infinite' }}
+      className="aurora-border relative flex flex-col rounded-xl bg-base-surface shadow-elevated overflow-hidden transition-colors"
     >
       {/* Top accent bar */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
@@ -87,9 +81,7 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
         {/* Magnetic button */}
         <div
           ref={btnRef}
-          style={{
-            transition: 'transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s ease',
-          }}
+          style={{ transition: 'transform 0.25s cubic-bezier(0.23, 1, 0.32, 1)' }}
           className="mt-7"
         >
           <CheckoutButton

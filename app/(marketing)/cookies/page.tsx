@@ -33,7 +33,7 @@ const sections = [
   },
   {
     heading: "Contact",
-    body: `Questions about our use of cookies? Email privacy@psdfuel.com.`,
+    body: `Questions about our use of cookies? Email info@psdfuel.com.`,
   },
 ];
 

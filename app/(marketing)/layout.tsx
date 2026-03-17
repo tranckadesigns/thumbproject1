@@ -11,7 +11,6 @@ import { AuthErrorBanner } from "@/components/marketing/auth-error-banner";
 import { Suspense } from "react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSubscription } from "@/lib/subscription";
-import { assetService } from "@/lib/services";
 
 export default async function MarketingLayout({
   children,
@@ -20,26 +19,22 @@ export default async function MarketingLayout({
 }) {
   const supabase = await getSupabaseServerClient();
   const user = supabase ? (await supabase.auth.getUser()).data.user : null;
-  const demoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   const sub = user ? await getSubscription() : null;
-  const hasSubscription = demoMode || sub?.status === "active" || sub?.status === "trialing";
-  const email = user?.email ?? (demoMode ? "demo@psdfuel.com" : undefined);
+  const hasSubscription = sub?.status === "active" || sub?.status === "trialing";
+  const email = user?.email ?? undefined;
   const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
-
-  const liveAssets = await assetService.getLibrary();
-  const assetTitles = liveAssets.map((a) => a.title);
 
   return (
     <>
       <ReadingProgress />
       <Suspense><AuthErrorBanner /></Suspense>
       <AnnouncementBar />
-      <Nav isLoggedIn={!!user || demoMode} hasSubscription={hasSubscription} email={email} displayName={displayName} />
+      <Nav isLoggedIn={!!user} hasSubscription={hasSubscription} email={email} displayName={displayName} />
       <MagneticLiquid targetId="hero-get-access" />
       <main>{children}</main>
       <Footer />
-      <ActivityToast assetTitles={assetTitles} />
+      <ActivityToast />
       <StickyCTABar hasSubscription={hasSubscription} />
       <ScrollToTop />
       <CookieConsent />

@@ -53,7 +53,6 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { TrackView } from "@/components/members/track-view";
 import { siteConfig } from "@/lib/config/site";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
-import { Badge } from "@/components/ui/badge";
 import { formatFileSize } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 
