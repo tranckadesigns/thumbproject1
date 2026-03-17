@@ -62,7 +62,7 @@ export function ActivityToast() {
     return () => clearTimeout(hide)
   }, [visible, index, dismissed, events.length])
 
-  if (events.length === 0) return null
+  if (events.length < 5) return null
 
   const event = events[index]
   const elapsedMinutes = Math.floor((Date.now() - shownAtRef.current) / 60000)
