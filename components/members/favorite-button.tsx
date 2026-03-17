@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { showToast } from "@/components/ui/toast";
@@ -12,9 +12,28 @@ interface FavoriteButtonProps {
   size?: "sm" | "md";
 }
 
+// Custom event so all FavoriteButtons for the same asset sync instantly
+const FAVORITE_EVENT = "psdfuel:favorite-changed";
+
+function broadcastFavorite(assetId: string, favorited: boolean) {
+  window.dispatchEvent(
+    new CustomEvent(FAVORITE_EVENT, { detail: { assetId, favorited } })
+  );
+}
+
 export function FavoriteButton({ assetId, initialFavorited = false, alwaysVisible = false, size = "sm" }: FavoriteButtonProps) {
   const [favorited, setFavorited] = useState(initialFavorited);
   const [loading, setLoading] = useState(false);
+
+  // Listen for changes broadcast by other FavoriteButtons with the same assetId
+  useEffect(() => {
+    function onFavoriteChanged(e: Event) {
+      const { assetId: id, favorited: val } = (e as CustomEvent).detail;
+      if (id === assetId) setFavorited(val);
+    }
+    window.addEventListener(FAVORITE_EVENT, onFavoriteChanged);
+    return () => window.removeEventListener(FAVORITE_EVENT, onFavoriteChanged);
+  }, [assetId]);
 
   async function toggle(e: React.MouseEvent) {
     e.preventDefault();
@@ -24,6 +43,7 @@ export function FavoriteButton({ assetId, initialFavorited = false, alwaysVisibl
     setLoading(true);
     const next = !favorited;
     setFavorited(next); // optimistic
+    broadcastFavorite(assetId, next); // sync all other cards instantly
 
     try {
       const res = next
@@ -38,6 +58,7 @@ export function FavoriteButton({ assetId, initialFavorited = false, alwaysVisibl
       showToast(next ? "Added to favorites" : "Removed from favorites", "success");
     } catch {
       setFavorited(!next); // revert on error
+      broadcastFavorite(assetId, !next); // revert all other cards too
       showToast("Couldn't update favorites — try again", "error");
     } finally {
       setLoading(false);
