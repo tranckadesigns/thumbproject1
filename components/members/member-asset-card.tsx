@@ -55,24 +55,28 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
           <FavoriteButton assetId={asset.id} initialFavorited={isFavorited} />
         </div>
 
-        {/* Staff Pick — top left */}
-        {asset.is_featured && (
+        {/* Badge — top left, single slot */}
+        {(asset.is_featured || fresh) && (
           <div className="absolute left-2.5 top-2.5 z-10">
-            <span className="inline-flex items-center gap-1 rounded-full border border-accent/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-accent backdrop-blur-sm">
-              <svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-                <path d="M6 0l1.5 4H12l-3.7 2.7 1.4 4.3L6 8.4l-3.7 2.6 1.4-4.3L0 4h4.5z" />
-              </svg>
-              Staff Pick
-            </span>
-          </div>
-        )}
-
-        {/* New — top right */}
-        {fresh && (
-          <div className="absolute right-2.5 top-2.5 z-10">
-            <span className="rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm">
-              New
-            </span>
+            {asset.is_featured && fresh ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-accent/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-accent backdrop-blur-sm">
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+                  <path d="M6 0l1.5 4H12l-3.7 2.7 1.4 4.3L6 8.4l-3.7 2.6 1.4-4.3L0 4h4.5z" />
+                </svg>
+                New
+              </span>
+            ) : asset.is_featured ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-accent/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-accent backdrop-blur-sm">
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+                  <path d="M6 0l1.5 4H12l-3.7 2.7 1.4 4.3L6 8.4l-3.7 2.6 1.4-4.3L0 4h4.5z" />
+                </svg>
+                Staff Pick
+              </span>
+            ) : (
+              <span className="rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm">
+                New
+              </span>
+            )}
           </div>
         )}
 
