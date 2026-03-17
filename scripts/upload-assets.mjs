@@ -1,23 +1,38 @@
 /**
  * PSDfuel — Asset Upload Script
  *
- * Leest alle klare assets uit psdfuel-assets/_done/, uploadt bestanden
- * naar Supabase Storage en maakt records aan in de assets-tabel.
+ * Leest alle klare assets uit ../psdfuel-assets/_ready/, uploadt bestanden
+ * naar Supabase Storage, categoriseert automatisch via Claude API,
+ * en maakt records aan in de database.
  *
  * Gebruik:
- *   node scripts/upload-assets.mjs
+ *   npm run upload-assets
  *
  * Vereiste env vars in .env.local:
  *   NEXT_PUBLIC_SUPABASE_URL
- *   SUPABASE_SERVICE_ROLE_KEY   ← niet de anon key, de service role key
+ *   SUPABASE_SERVICE_ROLE_KEY
+ *   ANTHROPIC_API_KEY           ← voor automatische categorisatie
+ *
+ * Asset mapstructuur (in ../psdfuel-assets/_ready/<slug>/):
+ *   meta.json     ← title, short_description, full_description, tags, style_type, etc.
+ *   preview.png   ← thumbnail afbeelding
+ *   <slug>.psd    ← het PSD bestand
+ *
+ * meta.json heeft GEEN category veld meer — dat wordt automatisch bepaald.
  */
 
 import { createClient } from "@supabase/supabase-js";
 import { readdir, readFile, rename, mkdir, rm } from "fs/promises";
 import { existsSync } from "fs";
 import { join, resolve } from "path";
+import {
+  categorizeAsset,
+  findOrCreateNiches,
+  getBroadCategoryId,
+  assignCategories,
+} from "./lib/auto-categorize.mjs";
 
-// ─── Config ──────────────────────────────────────────────────────────────────
+// ─── Config ───────────────────────────────────────────────────────────────────
 
 const DONE_DIR     = resolve("../psdfuel-assets/_ready");
 const UPLOADED_DIR = resolve("../psdfuel-assets/_uploaded");
@@ -29,9 +44,13 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.warn("⚠️  ANTHROPIC_API_KEY niet gevonden — keyword-fallback wordt gebruikt voor categorisatie");
+}
+
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 async function uploadFile(bucket, storagePath, localPath, contentType) {
   const file = await readFile(localPath);
@@ -69,7 +88,7 @@ async function run() {
     const previewPath = join(dir, "preview.png");
     const psdPath     = join(dir, `${slug}.psd`);
 
-    // ── Validatie ────────────────────────────────────────────────────────────
+    // ── Validatie ─────────────────────────────────────────────────────────────
     const missing = [metaPath, previewPath, psdPath].filter((p) => !existsSync(p));
     if (missing.length > 0) {
       console.log(`⚠️  ${slug} — overgeslagen (ontbreekt: ${missing.map((p) => p.split(/[\\/]/).pop()).join(", ")})`);
@@ -78,38 +97,61 @@ async function run() {
     }
 
     const meta = JSON.parse(await readFile(metaPath, "utf8"));
-
     console.log(`⬆️  ${slug}`);
 
     try {
-      // ── Upload preview.png → thumbnails bucket ───────────────────────────
+      // ── Auto-categorisatie ────────────────────────────────────────────────
+      const { primary, niches } = await categorizeAsset(
+        meta.title ?? slug,
+        meta.short_description ?? "",
+        meta.tags ?? []
+      );
+      console.log(`   🏷  Primair: ${primary}${niches.length ? ` | Niches: ${niches.join(", ")}` : ""}`);
+
+      // ── Haal broad category ID op ─────────────────────────────────────────
+      const primaryId = await getBroadCategoryId(supabase, primary);
+      if (!primaryId) throw new Error(`Broad category '${primary}' niet gevonden in DB — voer eerst migration 002 uit`);
+
+      // ── Maak niche-categorieën aan indien nodig ───────────────────────────
+      const nicheMap = await findOrCreateNiches(supabase, niches);
+      const nicheIds = Object.values(nicheMap);
+
+      // ── Upload preview.png → thumbnails bucket ────────────────────────────
       const previewStoragePath = `${slug}/preview.png`;
       await uploadFile("thumbnails", previewStoragePath, previewPath, "image/png");
       const thumbnailUrl = getPublicUrl("thumbnails", previewStoragePath);
 
-      // ── Upload PSD → psds bucket ─────────────────────────────────────────
+      // ── Upload PSD → psds bucket ──────────────────────────────────────────
       const psdStoragePath = `${slug}.psd`;
       await uploadFile("psds", psdStoragePath, psdPath, "application/octet-stream");
 
       // ── Upsert asset record ───────────────────────────────────────────────
-      const { error } = await supabase.from("assets").upsert({
-        slug,
-        title:             meta.title             ?? slug,
-        short_description: meta.short_description ?? "",
-        full_description:  meta.full_description  ?? "",
-        category:          meta.category          ?? "General",
-        style_type:        meta.style_type        ?? "Dark",
-        thumbnail_url:     thumbnailUrl,
-        preview_images:    [],
-        psd_file_key:      psdStoragePath,
-        file_size_mb:      meta.file_size_mb      ?? 0,
-        version:           meta.version           ?? "1.0",
-        is_featured:       meta.is_featured       ?? false,
-        is_published:      meta.is_published      ?? false,
-        tags:              meta.tags              ?? [],
-      }, { onConflict: "slug" });
+      // category kolom = naam van de primaire categorie (backwards-compat)
+      const { data: asset, error: assetError } = await supabase
+        .from("assets")
+        .upsert({
+          slug,
+          title:             meta.title             ?? slug,
+          short_description: meta.short_description ?? "",
+          full_description:  meta.full_description  ?? "",
+          category:          primary,
+          style_type:        meta.style_type        ?? "Dark",
+          thumbnail_url:     thumbnailUrl,
+          preview_images:    [],
+          psd_file_key:      psdStoragePath,
+          file_size_mb:      meta.file_size_mb      ?? 0,
+          version:           meta.version           ?? "1.0",
+          is_featured:       meta.is_featured       ?? false,
+          is_published:      meta.is_published      ?? true,
+          tags:              meta.tags              ?? [],
+        }, { onConflict: "slug" })
+        .select("id")
+        .single();
 
-      if (error) throw new Error(error.message);
+      if (assetError) throw new Error(assetError.message);
+
+      // ── Schrijf asset_categories junction records ─────────────────────────
+      await assignCategories(supabase, asset.id, primaryId, nicheIds);
 
       // ── Verplaats naar _uploaded/ ─────────────────────────────────────────
       await mkdir(UPLOADED_DIR, { recursive: true });
