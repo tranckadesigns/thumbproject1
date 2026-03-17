@@ -76,8 +76,22 @@ export async function POST(request: NextRequest) {
       // ── Subscription updated (renewal, plan change, cancel scheduled) ──────
       case "customer.subscription.updated": {
         const sub = event.data.object as any;
-        const userId = sub.metadata?.user_id;
-        if (!userId) break;
+        let userId = sub.metadata?.user_id || null;
+
+        // Fallback: look up user_id by stripe_subscription_id in our DB
+        if (!userId) {
+          const { data: existing } = await supabase
+            .from("subscriptions")
+            .select("user_id")
+            .eq("stripe_subscription_id", sub.id)
+            .single();
+          userId = existing?.user_id ?? null;
+        }
+
+        if (!userId) {
+          console.warn("subscription.updated: could not resolve user_id for sub", sub.id);
+          break;
+        }
 
         await upsertSubscription(supabase, {
           userId,
@@ -94,8 +108,22 @@ export async function POST(request: NextRequest) {
       // ── Subscription canceled / deleted ────────────────────────────────────
       case "customer.subscription.deleted": {
         const sub = event.data.object as any;
-        const userId = sub.metadata?.user_id;
-        if (!userId) break;
+        let userId = sub.metadata?.user_id || null;
+
+        // Fallback: look up user_id by stripe_subscription_id in our DB
+        if (!userId) {
+          const { data: existing } = await supabase
+            .from("subscriptions")
+            .select("user_id")
+            .eq("stripe_subscription_id", sub.id)
+            .single();
+          userId = existing?.user_id ?? null;
+        }
+
+        if (!userId) {
+          console.warn("subscription.deleted: could not resolve user_id for sub", sub.id);
+          break;
+        }
 
         await upsertSubscription(supabase, {
           userId,

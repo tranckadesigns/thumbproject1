@@ -11,6 +11,8 @@ import { UnlockButton } from "@/components/ui/unlock-button";
 import { BackButton } from "@/components/ui/back-button";
 import { formatDate } from "@/lib/utils/format";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Account",
 };
