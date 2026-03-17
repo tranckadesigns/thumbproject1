@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Premium PSD Thumbnail Assets for YouTube Creators",
+  title: {
+    absolute: "PSDfuel — Premium PSD Thumbnail Assets for YouTube Creators",
+  },
 };
 import {
   ChevronRight,
