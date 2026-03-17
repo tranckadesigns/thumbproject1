@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 import { CategoryIcon } from '@/components/marketing/category-icons'
 
@@ -21,9 +22,11 @@ export function CategoryCardFolder({ name, description, previews }: Props) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div
+    <Link
+      href={`/library?category=${encodeURIComponent(name)}`}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      className="block cursor-pointer"
     >
       {/* ── Card shell — overflow:visible so cards can fan outside bounds ── */}
       <div className="relative overflow-visible" style={{ aspectRatio: '16/9' }}>
@@ -130,10 +133,18 @@ export function CategoryCardFolder({ name, description, previews }: Props) {
       </div>
 
       {/* ── Text ─────────────────────────────────────────────────────────── */}
-      <div className="mt-2.5">
-        <p className="text-sm font-semibold text-content-primary">{name}</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-content-muted/70">{description}</p>
+      <div className="mt-2.5 flex items-start justify-between gap-2">
+        <div>
+          <p className="text-sm font-semibold text-content-primary">{name}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-content-muted/70">{description}</p>
+        </div>
+        <span
+          className="mt-0.5 shrink-0 text-xs text-accent/60 transition-opacity duration-200"
+          style={{ opacity: open ? 1 : 0 }}
+        >
+          Browse →
+        </span>
       </div>
-    </div>
+    </Link>
   )
 }
