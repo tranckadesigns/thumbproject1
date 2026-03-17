@@ -7,8 +7,8 @@ function assetTag(asset: Asset): { label: string; style: string } {
   const updated = asset.updated_at ? new Date(asset.updated_at).getTime() : created;
   const isUpdated = updated - created > 24 * 60 * 60 * 1000;
   return isUpdated
-    ? { label: "Updated", style: "rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400" }
-    : { label: "New",     style: "rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm" };
+    ? { label: "Updated", style: "rounded-full border border-blue-500/20 bg-black/60 px-2.5 py-1 text-[10px] font-semibold leading-none text-blue-400 backdrop-blur-sm" }
+    : { label: "New",     style: "rounded-full border border-emerald-500/25 bg-black/60 px-2.5 py-1 text-[10px] font-semibold leading-none text-emerald-400 backdrop-blur-sm" };
 }
 
 function currentMonthLabel(): string {
@@ -72,7 +72,7 @@ export function NewThisMonthSection({
               <Reveal key={asset.id} delay={i * 70}>
                 <div className="group relative overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
                   {/* Badge */}
-                  <div className="absolute right-3 top-3 z-10">
+                  <div className="absolute left-2.5 top-2.5 z-10 flex items-center">
                     <span className={tag.style}>{tag.label}</span>
                   </div>
 
