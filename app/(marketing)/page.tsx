@@ -484,25 +484,25 @@ const thumbnailData: ThumbnailMockupProps[] = [
   {
     videoTitle: "7 Side Hustles Students Can Start In 2026",
     channel: "Mark Tilbury",
-    views: "1,8 mln. weergaven",
+    views: "1.8M views",
     image: "/thumbnails/thumb-1.jpeg",
   },
   {
     videoTitle: "everything you need to know about selling digital products in 2026",
     channel: "Yale Jeannette",
-    views: "38K weergaven",
+    views: "38K views",
     image: "/thumbnails/thumb-2.jpeg",
   },
   {
     videoTitle: "How To Make Money Online as a Teenager…",
     channel: "Boris & Lonny",
-    views: "30K weergaven",
+    views: "30K views",
     image: "/thumbnails/thumb-3.jpeg",
   },
   {
     videoTitle: "I Tested The Worst Rated Restaurants...",
     channel: "Calfreezy",
-    views: "2 mln. weergaven",
+    views: "2M views",
     image: "/thumbnails/thumb-4.jpeg",
   },
 ];
