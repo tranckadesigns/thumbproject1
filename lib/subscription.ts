@@ -14,6 +14,7 @@ interface Subscription {
   current_period_end: string | null;
   cancel_at_period_end: boolean;
   stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
 }
 
 /**
@@ -33,7 +34,7 @@ export async function getSubscription(): Promise<Subscription | null> {
   const { data } = await supabase
     .from("subscriptions")
     .select(
-      "status, plan_id, current_period_end, cancel_at_period_end, stripe_customer_id"
+      "status, plan_id, current_period_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id"
     )
     .eq("user_id", user.id)
     .single();
