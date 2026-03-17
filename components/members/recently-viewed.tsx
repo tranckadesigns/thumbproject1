@@ -7,6 +7,8 @@ import type { TrackedAsset } from "@/components/members/track-view";
 import type { Asset } from "@/types/asset";
 
 const STORAGE_KEY = "psdfuel_recently_viewed";
+const VERSION_KEY = "psdfuel_rv_version";
+const CURRENT_VERSION = "2";
 
 // TrackedAsset has all fields MemberAssetCard needs — cast via spread
 function toAsset(t: TrackedAsset): Asset {
@@ -30,18 +32,23 @@ export function RecentlyViewed({ favoriteIds = [] }: RecentlyViewedProps) {
 
   useEffect(() => {
     try {
+      // Version check — wipe stale data from old storage format
+      if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+        return;
+      }
       const raw: TrackedAsset[] = JSON.parse(
         localStorage.getItem(STORAGE_KEY) ?? "[]"
       );
-      // Deduplicate by id, drop invalid entries, cap at 4
+      // Deduplicate by slug (stable identifier), drop invalid entries, cap at 4
       const seen = new Set<string>();
       const valid = raw.filter((a) => {
-        if (!a.id || !a.slug || !a.category || typeof a.file_size_mb !== "number") return false;
-        if (seen.has(a.id)) return false;
-        seen.add(a.id);
+        if (!a.slug || !a.category || typeof a.file_size_mb !== "number") return false;
+        if (seen.has(a.slug)) return false;
+        seen.add(a.slug);
         return true;
       }).slice(0, 4);
-      // Write back so corrupted/duplicate data is permanently cleaned
       localStorage.setItem(STORAGE_KEY, JSON.stringify(valid));
       setAssets(valid);
     } catch {
