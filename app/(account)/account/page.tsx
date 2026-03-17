@@ -44,31 +44,52 @@ export default async function AccountPage() {
 
   // Sync live status from Stripe so the page is always accurate,
   // regardless of webhook delivery timing.
-  if (sub?.stripe_subscription_id && process.env.STRIPE_SECRET_KEY) {
+  if (process.env.STRIPE_SECRET_KEY && (sub?.stripe_subscription_id || sub?.stripe_customer_id)) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id) as any;
-      const periodTs =
-        stripeSub.current_period_end ??
-        stripeSub.items?.data?.[0]?.current_period_end ??
-        null;
-      const liveData = {
-        status:               stripeSub.status as typeof sub.status,
-        current_period_end:   periodTs ? new Date(periodTs * 1000).toISOString() : sub.current_period_end,
-        cancel_at_period_end: stripeSub.cancel_at_period_end ?? false,
-      };
+      let stripeSub: any = null;
 
-      // Persist to DB in the background so webhooks catch up
-      const sbService = getSupabaseServiceClient();
-      sbService
-        .from("subscriptions")
-        .update({ ...liveData, updated_at: new Date().toISOString() })
-        .eq("stripe_subscription_id", sub.stripe_subscription_id)
-        .then(() => {/* fire-and-forget */});
+      if (sub.stripe_subscription_id) {
+        stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id);
+      } else if (sub.stripe_customer_id) {
+        // Fallback: find the most recent subscription by customer
+        const list = await stripe.subscriptions.list({
+          customer: sub.stripe_customer_id,
+          limit: 1,
+          status: "all",
+        });
+        stripeSub = list.data[0] ?? null;
+      }
 
-      sub = { ...sub, ...liveData };
-    } catch {
-      // Stripe unreachable — fall back to DB data silently
+      if (stripeSub) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const s = stripeSub as any;
+        const periodTs =
+          s.current_period_end ??
+          s.items?.data?.[0]?.current_period_end ??
+          null;
+        // cancel_at_period_end OR cancel_at (scheduled cancellation) = will not renew
+        const willCancel = s.cancel_at_period_end === true || !!s.cancel_at;
+        const liveData = {
+          status:               s.status as typeof sub.status,
+          current_period_end:   periodTs ? new Date(periodTs * 1000).toISOString() : sub.current_period_end,
+          cancel_at_period_end: willCancel,
+          stripe_subscription_id: s.id as string,
+        };
+
+        // Persist to DB in the background
+        const sbService = getSupabaseServiceClient();
+        sbService
+          .from("subscriptions")
+          .update({ ...liveData, updated_at: new Date().toISOString() })
+          .eq("user_id", user.id)
+          .then(() => {/* fire-and-forget */});
+
+        sub = { ...sub, ...liveData };
+      }
+    } catch (err) {
+      console.error("Stripe live sync failed:", err);
+      // Fall back to DB data
     }
   }
 
