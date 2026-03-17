@@ -55,6 +55,7 @@ interface ThumbnailMockupProps {
   channel: string;
   views: string;
   image: string;
+  profileImage: string;
 }
 
 function ThumbnailMockup({
@@ -62,6 +63,7 @@ function ThumbnailMockup({
   channel,
   views,
   image,
+  profileImage,
 }: ThumbnailMockupProps) {
 
   return (
@@ -70,7 +72,9 @@ function ThumbnailMockup({
         <Image src={image} alt={videoTitle} fill className="object-cover" />
       </div>
       <div className="mt-3 flex items-start gap-2.5 px-0.5">
-        <div className="h-8 w-8 flex-shrink-0 rounded-full border border-border bg-base-elevated" />
+        <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border">
+          <Image src={profileImage} alt={channel} fill className="object-cover" />
+        </div>
         <div className="min-w-0 flex-1">
           <p className="line-clamp-2 text-sm font-medium leading-tight text-content-primary">
             {videoTitle}
@@ -486,24 +490,28 @@ const thumbnailData: ThumbnailMockupProps[] = [
     channel: "Mark Tilbury",
     views: "1.8M views",
     image: "/thumbnails/thumb-1.jpeg",
+    profileImage: "/thumbnails/pf-1.jpg",
   },
   {
     videoTitle: "everything you need to know about selling digital products in 2026",
     channel: "Yale Jeannette",
     views: "38K views",
     image: "/thumbnails/thumb-2.jpeg",
+    profileImage: "/thumbnails/pf-2.jpg",
   },
   {
     videoTitle: "How To Make Money Online as a Teenager…",
     channel: "Boris & Lonny",
     views: "30K views",
     image: "/thumbnails/thumb-3.jpeg",
+    profileImage: "/thumbnails/pf-3.jpg",
   },
   {
     videoTitle: "I Tested The Worst Rated Restaurants...",
     channel: "Calfreezy",
     views: "2M views",
     image: "/thumbnails/thumb-4.jpeg",
+    profileImage: "/thumbnails/pf-4.jpg",
   },
 ];
 
