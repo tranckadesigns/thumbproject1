@@ -16,7 +16,7 @@ export function NavProgress() {
       const link = (e.target as Element).closest("a");
       if (!link) return;
       const href = link.getAttribute("href");
-      if (!href || href.startsWith("#") || href.startsWith("http") || href.startsWith("mailto")) return;
+      if (!href || href.startsWith("#") || href.startsWith("http") || href.startsWith("mailto") || href.startsWith("blob:")) return;
       // Don't start for same-page links
       const dest = href.split("?")[0];
       const curr = window.location.pathname;
