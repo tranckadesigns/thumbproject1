@@ -154,6 +154,11 @@ async function run() {
       await assignCategories(supabase, asset.id, primaryId, nicheIds);
 
       // ── Verplaats naar _uploaded/ ─────────────────────────────────────────
+      if (!existsSync(dir)) {
+        console.log(`   ↩  Map al verplaatst door een eerdere run — overgeslagen`);
+        success++;
+        continue;
+      }
       await mkdir(UPLOADED_DIR, { recursive: true });
       const dest = join(UPLOADED_DIR, slug);
       if (existsSync(dest)) await rm(dest, { recursive: true, force: true });

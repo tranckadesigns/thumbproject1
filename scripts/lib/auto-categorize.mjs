@@ -110,7 +110,9 @@ Tags: ${tags.length ? tags.join(", ") : "(none)"}`;
       messages: [{ role: "user", content: prompt }],
     });
 
-    const text = message.content[0].text.trim();
+    const raw = message.content[0].text.trim();
+    // Strip markdown code blocks if present (```json ... ``` or ``` ... ```)
+    const text = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
     const json = JSON.parse(text);
 
     // Validate primary is a known broad category
@@ -124,7 +126,8 @@ Tags: ${tags.length ? tags.join(", ") : "(none)"}`;
         ? json.niches.filter((n) => typeof n === "string" && n.trim().length > 0)
         : [],
     };
-  } catch {
+  } catch (err) {
+    console.log(`   ⚠️  Claude API fout: ${err.message}`);
     return null;
   }
 }
@@ -208,11 +211,17 @@ export async function assignCategories(supabase, assetId, primaryId, nicheIds) {
   // Verwijder bestaande toewijzingen
   await supabase.from("asset_categories").delete().eq("asset_id", assetId);
 
+  // Deduplicate niche IDs and exclude primary to avoid duplicate key errors
+  const uniqueNicheIds = [...new Set(nicheIds)].filter((id) => id !== primaryId);
+
   const records = [
     { asset_id: assetId, category_id: primaryId, is_primary: true },
-    ...nicheIds.map((id) => ({ asset_id: assetId, category_id: id, is_primary: false })),
+    ...uniqueNicheIds.map((id) => ({ asset_id: assetId, category_id: id, is_primary: false })),
   ];
 
-  const { error } = await supabase.from("asset_categories").insert(records);
+  const { error } = await supabase.from("asset_categories").upsert(records, {
+    onConflict: "asset_id,category_id",
+    ignoreDuplicates: true,
+  });
   if (error) throw new Error(`assignCategories mislukt: ${error.message}`);
 }
