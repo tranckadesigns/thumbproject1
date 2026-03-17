@@ -53,17 +53,20 @@ interface ThumbnailMockupProps {
   videoTitle: string;
   channel: string;
   views: string;
+  image: string;
 }
 
 function ThumbnailMockup({
   videoTitle,
   channel,
   views,
+  image,
 }: ThumbnailMockupProps) {
 
   return (
     <div>
       <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated transition-colors duration-300 hover:border-border-strong">
+        <Image src={image} alt={videoTitle} fill className="object-cover" />
       </div>
       <div className="mt-3 flex items-start gap-2.5 px-0.5">
         <div className="h-8 w-8 flex-shrink-0 rounded-full border border-border bg-base-elevated" />
@@ -481,21 +484,25 @@ const thumbnailData: ThumbnailMockupProps[] = [
     videoTitle: "How I Made $24,180 From YouTube This Month (Full Revenue Breakdown)",
     channel: "MarkBuilds",
     views: "1.2M views",
+    image: "/thumbnails/thumb-1.jpeg",
   },
   {
     videoTitle: "I Did This Every Day For 30 Days Straight — Here's What Happened",
     channel: "SophieDaily",
     views: "847K views",
+    image: "/thumbnails/thumb-2.jpeg",
   },
   {
     videoTitle: "I Tested Every YouTube Growth Strategy — Here's What Actually Works",
     channel: "JordanKodes",
     views: "2.4M views",
+    image: "/thumbnails/thumb-3.jpeg",
   },
   {
     videoTitle: "LIVE in 24 Hours — Don't Miss This (Biggest Stream of the Year)",
     channel: "NinaLive",
     views: "430K views",
+    image: "/thumbnails/thumb-4.jpeg",
   },
 ];
 
