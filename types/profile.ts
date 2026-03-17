@@ -3,7 +3,7 @@ export type UserRole = "member" | "admin";
 export type SubscriptionStatus =
   | "active"
   | "inactive"
-  | "cancelled"
+  | "canceled"
   | "past_due";
 
 export type PlanType = "monthly" | "yearly" | null;
