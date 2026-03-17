@@ -140,14 +140,18 @@ function PricingHero({ stats }: { stats: LibraryStats }) {
         </p>
 
         {/* Founding member badge */}
-        <div className="mt-6 mx-auto w-full max-w-sm">
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-accent/20 bg-accent/[0.04] px-5 py-3.5">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent shrink-0">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-            <p className="text-xs text-content-secondary">
-              <span className="font-semibold text-accent">Founding member pricing</span>
-              {" — "}available until April 30, 2026
+        <div className="mt-6 mx-auto w-full max-w-xs">
+          <div className="rounded-xl border border-accent/20 bg-accent/[0.04] px-5 py-4 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-1">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent shrink-0">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-accent">
+                Founding member pricing
+              </span>
+            </div>
+            <p className="text-xs text-content-muted">
+              Available until April 30, 2026
             </p>
           </div>
         </div>
