@@ -30,6 +30,7 @@ export function LibraryShell({
 }: LibraryShellProps) {
   const favSet = useMemo(() => new Set(favoriteIds), [favoriteIds]);
   const [category, setCategory] = useState(initialCategory);
+  const [niche, setNiche] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState(initialSort ?? "newest");
   const [search, setSearch] = useState(initialSearch ?? "");
 
@@ -44,6 +45,7 @@ export function LibraryShell({
 
   function handleCategoryChange(cat?: string) {
     setCategory(cat);
+    setNiche(undefined); // reset niche when primary category changes
     syncURL(cat, sort, search);
   }
 
@@ -57,8 +59,23 @@ export function LibraryShell({
     syncURL(category, sort, q);
   }
 
+  // Niches available within the selected primary category
+  const availableNiches = useMemo(() => {
+    const base = category ? allAssets.filter((a) => a.category === category) : allAssets;
+    const counts: Record<string, number> = {};
+    for (const asset of base) {
+      for (const n of asset.niche_categories ?? []) {
+        counts[n] = (counts[n] ?? 0) + 1;
+      }
+    }
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name]) => name);
+  }, [allAssets, category]);
+
   const filtered = useMemo(() => {
     let result = category ? allAssets.filter((a) => a.category === category) : allAssets;
+    if (niche) result = result.filter((a) => a.niche_categories?.includes(niche));
 
     if (sort === "featured") {
       result = [...result].sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
@@ -120,6 +137,35 @@ export function LibraryShell({
             activeSort={sort}
             onSortChange={handleSortChange}
           />
+
+          {/* Niche sub-filters — only shown when a primary category is selected and niches exist */}
+          {category && availableNiches.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setNiche(undefined)}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  !niche
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-border text-content-muted hover:border-content-muted hover:text-content-primary"
+                }`}
+              >
+                All {category}
+              </button>
+              {availableNiches.map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setNiche(niche === n ? undefined : n)}
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    niche === n
+                      ? "border-accent bg-accent/10 text-accent"
+                      : "border-border text-content-muted hover:border-content-muted hover:text-content-primary"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+          )}
 
           {filtered.length > 0 ? (
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

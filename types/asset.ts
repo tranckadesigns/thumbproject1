@@ -33,4 +33,5 @@ export interface Asset {
   created_at: string;
   updated_at?: string;
   download_count?: number;
+  niche_categories?: string[]; // populated via asset_categories join
 }

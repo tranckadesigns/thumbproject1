@@ -1,20 +1,18 @@
 /**
- * PSDfuel — Asset Watcher
+ * PSDfuel — Asset Pipeline
  *
- * Bewaakt _ready/ op nieuwe asset-mappen. Zodra bestanden stabiel zijn
- * (klaar met kopiëren), draait het automatisch:
+ * Verwerkt alle assets in ../psdfuel-assets/_ready/:
  *   1. generate-meta.mjs  — AI schrijft meta.json
- *   2. upload-assets.mjs  — uploadt naar Supabase + verplaatst naar _uploaded/
- *
- * Er draait altijd maar één pipeline tegelijk (geen parallelisme).
+ *   2. upload-assets.mjs  — categoriseert, uploadt naar Supabase, verplaatst naar _uploaded/
  *
  * Gebruik:
  *   npm run watch
+ *
+ * Voer dit handmatig uit wanneer je assets klaar hebt in _ready/.
+ * Het script draait één keer en stopt.
  */
 
-import { watch } from "fs";
 import { readdir, stat } from "fs/promises";
-import { existsSync } from "fs";
 import { join, resolve } from "path";
 import { spawn } from "child_process";
 import { fileURLToPath } from "url";
@@ -23,11 +21,6 @@ import { dirname } from "path";
 const __dirname   = dirname(fileURLToPath(import.meta.url));
 const PROJECT_DIR = resolve(__dirname, "..");
 const READY_DIR   = resolve(PROJECT_DIR, "../psdfuel-assets/_ready");
-
-// Pipeline-state
-let pipelineRunning = false;
-let pipelinePending = false;
-let debounceTimer   = null;
 
 // ─── Bestandsstabiliteit ──────────────────────────────────────────────────────
 
@@ -54,10 +47,9 @@ async function waitUntilAllStable() {
 
   return new Promise((resolve) => {
     let stableCount = 0;
-    let lastSnapshot = "";
+    let lastSnapshot = null;
 
     const timer = setInterval(async () => {
-      // Snapshot van alle map-groottes samen
       let snapshot = "";
       try {
         const entries = await readdir(READY_DIR, { withFileTypes: true });
@@ -69,7 +61,7 @@ async function waitUntilAllStable() {
         }
       } catch {}
 
-      if (snapshot && snapshot === lastSnapshot) {
+      if (snapshot === lastSnapshot) {
         stableCount++;
         if (stableCount >= REQUIRED) {
           clearInterval(timer);
@@ -99,26 +91,26 @@ function runScript(name) {
   });
 }
 
-// ─── Pipeline ─────────────────────────────────────────────────────────────────
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
-async function runPipeline() {
-  if (pipelineRunning) {
-    // Komt er nog een trigger binnen terwijl we draaien → daarna opnieuw
-    pipelinePending = true;
-    return;
-  }
-
-  // Check of er überhaupt nog assets in _ready staan
+async function run() {
+  // Check of er assets in _ready staan
   let pendingAssets = [];
   try {
     const entries = await readdir(READY_DIR, { withFileTypes: true });
     pendingAssets = entries.filter((e) => e.isDirectory());
-  } catch {}
+  } catch {
+    console.error(`❌  _ready/ map niet gevonden: ${READY_DIR}`);
+    process.exit(1);
+  }
 
-  if (pendingAssets.length === 0) return;
+  if (pendingAssets.length === 0) {
+    console.log("Geen assets gevonden in _ready/ — klaar.");
+    process.exit(0);
+  }
 
-  pipelineRunning = true;
-  console.log(`\n⏳  Wachten tot bestanden klaar zijn met kopiëren...`);
+  console.log(`\n📦  ${pendingAssets.length} asset(s) gevonden in _ready/`);
+  console.log(`⏳  Wachten tot bestanden klaar zijn met kopiëren...`);
 
   await waitUntilAllStable();
 
@@ -127,55 +119,19 @@ async function runPipeline() {
     await runScript("generate-meta.mjs");
   } catch (err) {
     console.error(`❌  generate-meta mislukt: ${err.message}`);
-    pipelineRunning = false;
-    return;
+    process.exit(1);
   }
 
   console.log(`⬆️  Uploaden naar Supabase...`);
   try {
     await runScript("upload-assets.mjs");
-    console.log(`\n✅  Klaar! Watcher luistert weer...\n`);
   } catch (err) {
-    console.error(`❌  upload-assets mislukt: ${err.message}\n`);
+    console.error(`❌  upload-assets mislukt: ${err.message}`);
+    process.exit(1);
   }
 
-  pipelineRunning = false;
-
-  // Was er een nieuwe trigger binnengekomen terwijl we draaiden?
-  if (pipelinePending) {
-    pipelinePending = false;
-    runPipeline();
-  }
+  console.log(`\n✅  Klaar!\n`);
+  process.exit(0);
 }
 
-// ─── Trigger met debounce ─────────────────────────────────────────────────────
-
-function trigger() {
-  if (debounceTimer) clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    debounceTimer = null;
-    runPipeline();
-  }, 1000);
-}
-
-// ─── Start ────────────────────────────────────────────────────────────────────
-
-console.log(`\n👁  PSDfuel watcher actief`);
-console.log(`📁  ${READY_DIR}`);
-console.log(`\nSleep een asset-map in _ready/ — de rest gaat automatisch.\n`);
-
-watch(READY_DIR, { persistent: true }, async (_, filename) => {
-  if (!filename) return;
-  const dir = join(READY_DIR, filename);
-
-  setTimeout(async () => {
-    if (!existsSync(dir)) return;
-    try {
-      const s = await stat(dir);
-      if (s.isDirectory()) trigger();
-    } catch {}
-  }, 500);
-});
-
-// Scan bij opstarten — staan er al assets klaar?
-trigger();
+run();

@@ -87,14 +87,19 @@ async function claudeCategorize(title, description, tags) {
 
 Given an asset's metadata, return a JSON object with:
 - "primary": exactly one name from BROAD_CATEGORIES (copy it exactly as written)
-- "niches": array of specific niche category names this asset belongs to (can be new, can be empty)
+- "niches": array of 0–3 niche category names representing the DOMAIN or ECOSYSTEM this asset belongs to
 
 BROAD_CATEGORIES: ${BROAD_CATEGORIES.join(", ")}
 
-Rules:
-- "primary" MUST be one of the broad categories listed above, copied exactly
-- "niches" are specific sub-topics (e.g. "Trading", "PayPal", "Crypto", "Forex", "Shopify")
-- Only add niches that are genuinely specific and useful as a filter label
+Rules for "primary":
+- MUST be one of the broad categories listed above, copied exactly
+
+Rules for "niches":
+- A niche is a recognizable DOMAIN or PLATFORM ECOSYSTEM, not a feature or screen name
+- Good niches: "Apple", "iOS", "Android", "Trading", "Crypto", "Forex", "Shopify", "Fitness", "Gaming"
+- Bad niches: "Screen Time", "Weekly Stats", "MetaTrader", "Usage Tracking", "Notification" (too specific or just a feature)
+- Ask yourself: "Would someone search for MORE assets in this niche?" If no, skip it
+- Maximum 3 niches. Often 1 or 2 is enough. Empty is fine if no clear domain applies
 - Return valid JSON only, nothing else
 
 Asset:
