@@ -228,7 +228,7 @@ export default async function AssetPage({ params }: AssetPageProps) {
             </div>
 
             <p className="text-xs text-center text-content-muted">
-              {asset.thumbnail_url ? "Preview" : "Live preview — overlay shown at scale"}
+              {asset.thumbnail_url ? "Preview" : "Live preview — asset shown at scale"}
             </p>
           </div>
 

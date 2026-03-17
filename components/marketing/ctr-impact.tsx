@@ -123,7 +123,7 @@ export function CtrImpactSection() {
               <br />They drive clicks.
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-content-secondary">
-              Thumbnails with platform-native overlays consistently outperform
+              Thumbnails with platform-native assets consistently outperform
               plain thumbnails in click-through rate — directly translating to more views.
             </p>
           </div>

@@ -5,7 +5,7 @@ const personas = [
   {
     num: "01",
     title: "The consistent creator",
-    body: "You publish 3+ videos a week and every thumbnail needs to land. Spending 2 hours per video on overlay graphics isn't a system — it's a bottleneck. You need something fast, repeatable, and professional every time.",
+    body: "You publish 3+ videos a week and every thumbnail needs to land. Spending 2 hours per video on custom thumbnail graphics isn't a system — it's a bottleneck. You need something fast, repeatable, and professional every time.",
     tags: ["High upload frequency", "Tight turnaround", "Repeatable workflow"],
   },
   {

@@ -41,7 +41,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Subscriber milestone templates are insane. I used the PSDfuel milestone overlay and that thumbnail got 2.4x my normal CTR. Crazy what the right visual does.",
+      "Subscriber milestone templates are insane. I used the PSDfuel milestone asset and that thumbnail got 2.4x my normal CTR. Crazy what the right visual does.",
     name: "Priya M.",
     handle: "@priyamakes",
     initials: "PM",

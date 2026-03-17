@@ -101,7 +101,7 @@ export default function OgImage() {
             letterSpacing: "-0.3px",
           }}
         >
-          Fully editable PSD thumbnail overlays · New assets every month · From $19/mo
+          Fully editable PSD thumbnail assets · New assets every month · From $19/mo
         </div>
 
         {/* Feature pills */}

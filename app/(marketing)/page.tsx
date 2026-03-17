@@ -243,7 +243,7 @@ function ProblemSection() {
   const pains = [
     {
       title: "Building from scratch",
-      desc: "Custom overlay graphics take 1–2 hours per video — time that compounds fast across a busy upload schedule.",
+      desc: "Custom thumbnail graphics take 1–2 hours per video — time that compounds fast across a busy upload schedule.",
     },
     {
       title: "Generic template sites",
@@ -268,7 +268,7 @@ function ProblemSection() {
               <br className="hidden sm:block" /> most creators don&apos;t have.
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-content-secondary">
-              Revenue overlays, subscriber milestones, countdown timers — these
+              Revenue assets, subscriber milestones, countdown timers — these
               details drive clicks. But making them look authentic is exactly
               where most creators get stuck.
             </p>

@@ -11,8 +11,8 @@ const faqs = [
     a: "Yes — these are fully layered .PSD files designed for Adobe Photoshop CC and above. Most assets also open in Affinity Photo, though layer compatibility may vary.",
   },
   {
-    q: "What exactly is a PSD overlay?",
-    a: "A PSD overlay is a Photoshop file you place on top of your thumbnail photo. It's pre-designed to look like a real platform notification — revenue card, subscriber milestone, countdown timer, and more. You swap in your numbers and export. Done.",
+    q: "What exactly is a PSD asset?",
+    a: "A PSD asset is a fully layered Photoshop file designed to look like a real platform notification — revenue card, subscriber milestone, countdown timer, and more. Place it on your thumbnail, swap in your numbers, and export. Done.",
   },
   {
     q: "How long does it take to customize an asset?",
