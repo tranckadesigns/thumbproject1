@@ -45,7 +45,7 @@ export function LibraryShell({
 
   function handleCategoryChange(cat?: string) {
     setCategory(cat);
-    setNiche(undefined); // reset niche when primary category changes
+    // niches are independent — do NOT reset niche here
     syncURL(cat, sort, search);
   }
 
@@ -59,18 +59,30 @@ export function LibraryShell({
     syncURL(category, sort, q);
   }
 
-  // Niches available within the selected primary category
-  const availableNiches = useMemo(() => {
-    const base = category ? allAssets.filter((a) => a.category === category) : allAssets;
-    const counts: Record<string, number> = {};
-    for (const asset of base) {
+  // All niches across ALL assets, sorted by how many assets they have.
+  // Count shown per niche reflects the current primary-category filter
+  // so the user sees how many results they'd get.
+  const allNiches = useMemo(() => {
+    const globalCounts: Record<string, number> = {};
+    const filteredCounts: Record<string, number> = {};
+    const categoryFiltered = category
+      ? allAssets.filter((a) => a.category === category)
+      : allAssets;
+
+    for (const asset of allAssets) {
       for (const n of asset.niche_categories ?? []) {
-        counts[n] = (counts[n] ?? 0) + 1;
+        globalCounts[n] = (globalCounts[n] ?? 0) + 1;
       }
     }
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([name]) => name);
+    for (const asset of categoryFiltered) {
+      for (const n of asset.niche_categories ?? []) {
+        filteredCounts[n] = (filteredCounts[n] ?? 0) + 1;
+      }
+    }
+
+    return Object.keys(globalCounts)
+      .sort((a, b) => globalCounts[b] - globalCounts[a])
+      .map((name) => ({ name, count: filteredCounts[name] ?? 0 }));
   }, [allAssets, category]);
 
   const filtered = useMemo(() => {
@@ -101,7 +113,7 @@ export function LibraryShell({
     }
 
     return result;
-  }, [allAssets, category, sort, search]);
+  }, [allAssets, category, niche, sort, search]);
 
   return (
     <>
@@ -130,7 +142,7 @@ export function LibraryShell({
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1 space-y-6">
+        <div className="min-w-0 flex-1 space-y-4">
           <LibrarySearch
             value={search}
             onSearchChange={handleSearchChange}
@@ -138,32 +150,38 @@ export function LibraryShell({
             onSortChange={handleSortChange}
           />
 
-          {/* Niche sub-filters — only shown when a primary category is selected and niches exist */}
-          {category && availableNiches.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setNiche(undefined)}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                  !niche
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-border text-content-muted hover:border-content-muted hover:text-content-primary"
-                }`}
-              >
-                All {category}
-              </button>
-              {availableNiches.map((n) => (
+          {/* Niche filters — always visible when niches exist, independent of primary category.
+              Counts update to reflect the current primary-category filter. */}
+          {allNiches.length > 0 && (
+            <div className="flex flex-wrap gap-2 pb-2">
+              {niche && (
                 <button
-                  key={n}
-                  onClick={() => setNiche(niche === n ? undefined : n)}
-                  className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                    niche === n
-                      ? "border-accent bg-accent/10 text-accent"
-                      : "border-border text-content-muted hover:border-content-muted hover:text-content-primary"
-                  }`}
+                  onClick={() => setNiche(undefined)}
+                  className="flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
                 >
-                  {n}
+                  {niche}
+                  <span className="opacity-60">×</span>
                 </button>
-              ))}
+              )}
+              {allNiches
+                .filter((n) => n.name !== niche)
+                .map(({ name, count }) => (
+                  <button
+                    key={name}
+                    onClick={() => setNiche(name)}
+                    className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                      count === 0
+                        ? "cursor-default border-border/40 text-content-subtle opacity-40"
+                        : "border-border text-content-muted hover:border-content-muted hover:text-content-primary"
+                    }`}
+                    disabled={count === 0}
+                  >
+                    {name}
+                    {count > 0 && (
+                      <span className="ml-1.5 tabular-nums opacity-50">{count}</span>
+                    )}
+                  </button>
+                ))}
             </div>
           )}
 
