@@ -26,7 +26,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-base">
-      <AdminNav email={user.email ?? adminEmail} />
+      <AdminNav email={user.email ?? adminEmails[0]} />
       <main className="pl-56">
         <div className="px-8 py-8">{children}</div>
       </main>
