@@ -15,7 +15,9 @@ function formatMinutesAgo(minutes: number): string {
   if (minutes <= 1) return "just now"
   if (minutes < 60) return `${minutes} min ago`
   const h = Math.floor(minutes / 60)
-  return h === 1 ? "1 hour ago" : `${h} hours ago`
+  if (h < 12) return h === 1 ? "1 hour ago" : `${h} hours ago`
+  if (h < 24) return "today"
+  return "yesterday"
 }
 
 // Small fallback set shown when the DB has no data yet

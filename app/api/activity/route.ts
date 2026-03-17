@@ -28,25 +28,27 @@ function nameFromEmail(email: string): string {
 
 export async function GET() {
   const sb = getSupabaseServiceClient();
+  const now = Date.now();
+  // Only fetch events from the last 48 hours
+  const cutoff = new Date(now - 48 * 60 * 60 * 1000).toISOString();
 
   const [downloadsResult, subscriptionsResult] = await Promise.all([
-    // Last 15 downloads, joined with asset title and profile email
     sb
       .from("downloads")
       .select("downloaded_at, asset_id, user_id, assets(title), profiles(email)")
+      .gte("downloaded_at", cutoff)
       .order("downloaded_at", { ascending: false })
-      .limit(15),
+      .limit(40), // fetch more, then dedup per user below
 
-    // Last 10 newly active subscriptions
     sb
       .from("subscriptions")
       .select("created_at, user_id, profiles(email)")
       .eq("status", "active")
+      .gte("created_at", cutoff)
       .order("created_at", { ascending: false })
       .limit(10),
   ]);
 
-  const now = Date.now();
   const events: {
     type: "download" | "subscription";
     maskedName: string;
@@ -55,17 +57,20 @@ export async function GET() {
     color: string;
   }[] = [];
 
+  // Deduplicate downloads by user_id — keep only the most recent per user
+  const seenDownloadUsers = new Set<string>();
   for (const d of downloadsResult.data ?? []) {
+    if (seenDownloadUsers.has(d.user_id)) continue;
+    seenDownloadUsers.add(d.user_id);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const email = (d as any).profiles?.email as string | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const assetTitle = (d as any).assets?.title as string | undefined;
     if (!email) continue;
-    const name = nameFromEmail(email);
     const minutesAgo = Math.max(1, Math.floor((now - new Date(d.downloaded_at).getTime()) / 60000));
     events.push({
       type: "download",
-      maskedName: maskName(name),
+      maskedName: maskName(nameFromEmail(email)),
       assetTitle,
       minutesAgo,
       color: colorFromString(d.user_id),
@@ -76,18 +81,18 @@ export async function GET() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const email = (s as any).profiles?.email as string | undefined;
     if (!email) continue;
-    const name = nameFromEmail(email);
     const minutesAgo = Math.max(1, Math.floor((now - new Date(s.created_at).getTime()) / 60000));
     events.push({
       type: "subscription",
-      maskedName: maskName(name),
+      maskedName: maskName(nameFromEmail(email)),
       minutesAgo,
       color: colorFromString(s.user_id),
     });
   }
 
-  // Sort by most recent first
+  // Sort by most recent first, cap at 15
   events.sort((a, b) => a.minutesAgo - b.minutesAgo);
 
-  return NextResponse.json(events.slice(0, 20));
+  // Return empty array if no recent activity → client falls back to static set
+  return NextResponse.json(events.slice(0, 15));
 }
