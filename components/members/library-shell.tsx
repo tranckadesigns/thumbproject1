@@ -16,6 +16,7 @@ interface LibraryShellProps {
   initialCategory?: string;
   initialSort?: string;
   initialSearch?: string;
+  initialNiche?: string;
 }
 
 export function LibraryShell({
@@ -27,36 +28,37 @@ export function LibraryShell({
   initialCategory,
   initialSort,
   initialSearch,
+  initialNiche,
 }: LibraryShellProps) {
   const favSet = useMemo(() => new Set(favoriteIds), [favoriteIds]);
   const [category, setCategory] = useState(initialCategory);
-  const [niche, setNiche] = useState<string | undefined>(undefined);
+  const [niche, setNiche] = useState<string | undefined>(initialNiche);
   const [sort, setSort] = useState(initialSort ?? "newest");
   const [search, setSearch] = useState(initialSearch ?? "");
 
-  function syncURL(cat?: string, s?: string, q?: string) {
+  function syncURL(cat?: string, s?: string, q?: string, n?: string) {
     const params = new URLSearchParams();
     if (cat) params.set("category", cat);
     if (s && s !== "newest") params.set("sort", s);
     if (q) params.set("q", q);
+    if (n) params.set("niche", n);
     const qs = params.toString();
     window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
   }
 
   function handleCategoryChange(cat?: string) {
     setCategory(cat);
-    // niches are independent — do NOT reset niche here
-    syncURL(cat, sort, search);
+    syncURL(cat, sort, search, niche);
   }
 
   function handleSortChange(s: string) {
     setSort(s);
-    syncURL(category, s, search);
+    syncURL(category, s, search, niche);
   }
 
   function handleSearchChange(q: string) {
     setSearch(q);
-    syncURL(category, sort, q);
+    syncURL(category, sort, q, niche);
   }
 
   // All niches across ALL assets, sorted by how many assets they have.
@@ -156,7 +158,7 @@ export function LibraryShell({
             <div className="flex flex-wrap gap-2 pb-2">
               {niche && (
                 <button
-                  onClick={() => setNiche(undefined)}
+                  onClick={() => { setNiche(undefined); syncURL(category, sort, search, undefined); }}
                   className="flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
                 >
                   {niche}
@@ -168,7 +170,7 @@ export function LibraryShell({
                 .map(({ name, count }) => (
                   <button
                     key={name}
-                    onClick={() => setNiche(name)}
+                    onClick={() => { setNiche(name); syncURL(category, sort, search, name); }}
                     className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                       count === 0
                         ? "cursor-default border-border/40 text-content-subtle opacity-40"

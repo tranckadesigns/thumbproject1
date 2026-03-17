@@ -13,6 +13,7 @@ import { formatDate } from "@/lib/utils/format";
 import { Suspense } from "react";
 import type { Asset } from "@/types/asset";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Dashboard" };
 
 async function getFavoriteAssets(): Promise<{ assets: Asset[]; ids: Set<string> }> {

@@ -4,10 +4,11 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LibraryShell } from "@/components/members/library-shell";
 import { siteConfig } from "@/lib/config/site";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Library" };
 
 interface LibraryPageProps {
-  searchParams: Promise<{ category?: string; q?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; q?: string; sort?: string; niche?: string }>;
 }
 
 async function getFavoriteIds(): Promise<string[]> {
@@ -20,7 +21,7 @@ async function getFavoriteIds(): Promise<string[]> {
 }
 
 export default async function LibraryPage({ searchParams }: LibraryPageProps) {
-  const { category, q, sort } = await searchParams;
+  const { category, q, sort, niche } = await searchParams;
 
   const [allAssets, favoriteIds] = await Promise.all([
     assetService.getLibrary(),
@@ -52,6 +53,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
         initialCategory={category}
         initialSort={sort}
         initialSearch={q}
+        initialNiche={niche}
       />
     </div>
   );

@@ -6,8 +6,7 @@ import { Loader2 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 
-const MAX_ATTEMPTS = 10;
-const INTERVAL_MS = 2000;
+const MAX_ATTEMPTS = 15;
 
 export function SubscriptionActivationPoller() {
   const [active, setActive] = useState(false);
@@ -28,7 +27,8 @@ export function SubscriptionActivationPoller() {
       } catch {
         setAttempts(a => a + 1);
       }
-    }, attempts === 0 ? 1000 : INTERVAL_MS);
+    // Exponential backoff: 1s, 2s, 4s, 8s… capped at 15s
+  }, Math.min(1000 * Math.pow(2, attempts), 15000));
 
     return () => clearTimeout(timer);
   }, [active, attempts]);

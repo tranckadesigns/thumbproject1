@@ -5,6 +5,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { assetService } from "@/lib/services/index";
 import { MemberAssetCard } from "@/components/members/member-asset-card";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Favorites" };
 
 interface FavoritesPageProps {

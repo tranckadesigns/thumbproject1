@@ -7,10 +7,11 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const adminEmail = process.env.ADMIN_EMAIL;
+  // Support single email or comma-separated list: ADMIN_EMAIL=a@x.com,b@x.com
+  const adminEmailsRaw = process.env.ADMIN_EMAIL ?? "";
+  const adminEmails = adminEmailsRaw.split(",").map((e) => e.trim()).filter(Boolean);
 
-  // ADMIN_EMAIL must be configured — without it, block all access to /admin
-  if (!adminEmail) {
+  if (adminEmails.length === 0) {
     redirect("/dashboard");
   }
 
@@ -19,7 +20,7 @@ export default async function AdminLayout({
 
   if (!user) redirect("/login");
 
-  if (user.email !== adminEmail) {
+  if (!user.email || !adminEmails.includes(user.email)) {
     redirect("/dashboard");
   }
 

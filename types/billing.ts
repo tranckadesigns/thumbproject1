@@ -1,7 +1,7 @@
 export type BillingStatus =
   | "active"
   | "inactive"
-  | "cancelled"
+  | "canceled"
   | "past_due"
   | "trialing";
 

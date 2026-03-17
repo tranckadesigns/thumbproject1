@@ -58,20 +58,22 @@ export class SupabaseAssetRepository implements IAssetRepository {
   }
 
   async getBySlug(slug: string): Promise<Asset | null> {
-    const { data } = await sb()
+    const { data, error } = await sb()
       .from("assets")
       .select("*")
       .eq("slug", slug)
       .single();
+    if (error && error.code !== "PGRST116") throw new Error(`getBySlug failed: ${error.message}`);
     return data ?? null;
   }
 
   async getById(id: string): Promise<Asset | null> {
-    const { data } = await sb()
+    const { data, error } = await sb()
       .from("assets")
       .select("*")
       .eq("id", id)
       .single();
+    if (error && error.code !== "PGRST116") throw new Error(`getById failed: ${error.message}`);
     return data ?? null;
   }
 

@@ -23,7 +23,8 @@ function getInitials(displayName?: string, email?: string): string {
     if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
     return name.slice(0, 2).toUpperCase();
   }
-  return (email ?? "ME").slice(0, 2).toUpperCase();
+  const emailBase = (email ?? "user").split("@")[0];
+  return emailBase.slice(0, 2).toUpperCase();
 }
 
 function NavLink({ href, label }: { href: string; label: string }) {

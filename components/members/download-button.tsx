@@ -31,6 +31,10 @@ export function DownloadButton({ assetId, slug: _slug, className }: DownloadButt
     try {
       const res = await fetch(`/api/download/${assetId}`);
       if (!res.ok) {
+        if (res.status === 401) {
+          window.location.href = "/login";
+          return;
+        }
         if (res.status === 403) {
           setStatus("idle");
           setShowUpgrade(true);

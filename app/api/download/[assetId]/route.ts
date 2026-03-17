@@ -46,9 +46,9 @@ export async function GET(
       // Log the download and increment counter (both fire-and-forget)
       sb.from("downloads")
         .insert({ user_id: user.id, asset_id: asset.id })
-        .then(() => null);
+        .then(({ error }) => { if (error) console.error("Download log failed:", error.message); });
       sb.rpc("increment_download_count", { asset_id: asset.id })
-        .then(() => null);
+        .then(({ error }) => { if (error) console.error("Download count increment failed:", error.message); });
 
       // Return signed URL + pretty filename as JSON.
       // Client fetches the URL as a blob and triggers download with the correct

@@ -160,6 +160,22 @@ export async function POST(request: NextRequest) {
         break;
       }
 
+      // ── Trial ending in 3 days ─────────────────────────────────────────────
+      case "customer.subscription.trial_will_end": {
+        const sub = event.data.object as any;
+        console.warn("Trial ending soon for customer:", sub.customer, "— send reminder email");
+        // TODO: send trial-ending reminder email via Resend
+        break;
+      }
+
+      // ── Chargeback / dispute ────────────────────────────────────────────────
+      case "charge.dispute.created": {
+        const dispute = event.data.object as any;
+        console.error("DISPUTE CREATED — charge:", dispute.charge, "amount:", dispute.amount, "reason:", dispute.reason);
+        // TODO: notify admin via email
+        break;
+      }
+
       // ── Payment failed ─────────────────────────────────────────────────────
       case "invoice.payment_failed": {
         const invoice = event.data.object as any;

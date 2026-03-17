@@ -12,7 +12,7 @@ export async function sendWelcomeEmail({
   const from = process.env.RESEND_FROM_EMAIL ?? "PSDfuel <info@psdfuel.com>";
 
   if (!apiKey) {
-    console.warn("RESEND_API_KEY not set — skipping welcome email");
+    console.error("RESEND_API_KEY not set — welcome email NOT sent to", to);
     return;
   }
 
@@ -27,6 +27,6 @@ export async function sendWelcomeEmail({
   });
 
   if (error) {
-    console.error("Failed to send welcome email:", error);
+    console.error("Failed to send welcome email to", to, ":", error);
   }
 }

@@ -9,10 +9,14 @@ export async function GET(request: NextRequest) {
   const plan = searchParams.get("plan");
 
   const rawNext = searchParams.get("next") ?? "/library";
-  // Validate next to prevent open redirect — must be a relative path
-  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.includes("://")
-    ? rawNext
-    : "/library";
+  // Validate next to prevent open redirect — must resolve to the same origin
+  let next = "/library";
+  try {
+    const resolved = new URL(rawNext, origin);
+    if (resolved.origin === origin) next = resolved.pathname + resolved.search;
+  } catch {
+    // Invalid URL — keep default
+  }
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=missing_code`);

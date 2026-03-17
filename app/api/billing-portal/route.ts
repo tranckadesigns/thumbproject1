@@ -18,7 +18,10 @@ export async function POST(request: NextRequest) {
 
   const sub = await getSubscription();
   if (!sub?.stripe_customer_id) {
-    return NextResponse.json({ error: "No billing account found" }, { status: 404 });
+    return NextResponse.json(
+      { error: "No billing account found. If you believe this is an error, contact info@psdfuel.com." },
+      { status: 404 }
+    );
   }
 
   const baseUrl = siteConfig.url || request.nextUrl.origin;

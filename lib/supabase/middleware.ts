@@ -9,8 +9,9 @@ export async function refreshSessionInMiddleware(
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    // No Supabase configured — demo mode, treat as authenticated.
-    return { user: { id: "demo", email: "demo@psdfuel.com" } };
+    // In production, missing Supabase config is a hard error — never grant access.
+    // In development, treat as unauthenticated (not demo-authenticated).
+    return { user: null };
   }
 
   const supabase = createServerClient(url, key, {
