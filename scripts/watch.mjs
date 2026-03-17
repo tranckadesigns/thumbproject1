@@ -112,9 +112,7 @@ async function runPipeline() {
   let pendingAssets = [];
   try {
     const entries = await readdir(READY_DIR, { withFileTypes: true });
-    pendingAssets = entries.filter(
-      (e) => e.isDirectory() && !existsSync(join(READY_DIR, e.name, "meta.json"))
-    );
+    pendingAssets = entries.filter((e) => e.isDirectory());
   } catch {}
 
   if (pendingAssets.length === 0) return;
