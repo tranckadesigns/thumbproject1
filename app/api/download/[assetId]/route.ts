@@ -50,23 +50,14 @@ export async function GET(
       sb.rpc("increment_download_count", { asset_id: asset.id })
         .then(() => null);
 
-      // Stream the file through our own domain so the browser's native
-      // download works without opening a new tab (cross-origin URLs ignore
-      // the `download` attribute).
-      const fileRes = await fetch(data.signedUrl);
-      if (!fileRes.ok) {
-        return NextResponse.json({ error: "File fetch failed" }, { status: 502 });
-      }
-
-      const filename = `${asset.title}.psd`;
-      const headers = new Headers({
-        "Content-Type": "application/octet-stream",
-        "Content-Disposition": `attachment; filename="${filename}"`,
+      // Return signed URL + pretty filename as JSON.
+      // Client fetches the URL as a blob and triggers download with the correct
+      // name — this avoids both the cross-origin `download` attribute limitation
+      // and streaming large files through a serverless function.
+      return NextResponse.json({
+        url: data.signedUrl,
+        filename: `${asset.title}.psd`,
       });
-      const contentLength = fileRes.headers.get("Content-Length");
-      if (contentLength) headers.set("Content-Length", contentLength);
-
-      return new NextResponse(fileRes.body, { headers });
     }
   }
 
