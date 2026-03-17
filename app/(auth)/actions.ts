@@ -41,13 +41,17 @@ export async function signInAction(
     return { error: "Authentication is not configured." };
   }
 
+  const next = formData.get("next") as string | null;
+
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     return { error: friendlyError(error.message) };
   }
 
-  redirect("/library");
+  // Sanitize: only allow relative paths starting with /
+  const destination = next && next.startsWith("/") && !next.startsWith("//") ? next : "/library";
+  redirect(destination);
 }
 
 export async function signUpAction(

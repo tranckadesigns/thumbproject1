@@ -5,7 +5,8 @@ export const metadata: Metadata = {
   title: "Sign in",
 };
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+  const { next } = await searchParams;
   return (
     <div>
       <div className="mb-8 text-center">
@@ -18,7 +19,7 @@ export default function LoginPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-base-surface p-6">
-        <LoginForm />
+        <LoginForm next={next} />
       </div>
     </div>
   );
