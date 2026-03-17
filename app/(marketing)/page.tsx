@@ -482,27 +482,27 @@ function CategoryShowcaseSection({
 
 const thumbnailData: ThumbnailMockupProps[] = [
   {
-    videoTitle: "How I Made $24,180 From YouTube This Month (Full Revenue Breakdown)",
-    channel: "MarkBuilds",
-    views: "1.2M views",
+    videoTitle: "7 Side Hustles Students Can Start In 2026",
+    channel: "Mark Tilbury",
+    views: "1,8 mln. weergaven",
     image: "/thumbnails/thumb-1.jpeg",
   },
   {
-    videoTitle: "I Did This Every Day For 30 Days Straight — Here's What Happened",
-    channel: "SophieDaily",
-    views: "847K views",
+    videoTitle: "everything you need to know about selling digital products in 2026",
+    channel: "Yale Jeannette",
+    views: "38K weergaven",
     image: "/thumbnails/thumb-2.jpeg",
   },
   {
-    videoTitle: "I Tested Every YouTube Growth Strategy — Here's What Actually Works",
-    channel: "JordanKodes",
-    views: "2.4M views",
+    videoTitle: "How To Make Money Online as a Teenager…",
+    channel: "Boris & Lonny",
+    views: "30K weergaven",
     image: "/thumbnails/thumb-3.jpeg",
   },
   {
-    videoTitle: "LIVE in 24 Hours — Don't Miss This (Biggest Stream of the Year)",
-    channel: "NinaLive",
-    views: "430K views",
+    videoTitle: "I Tested The Worst Rated Restaurants...",
+    channel: "Calfreezy",
+    views: "2 mln. weergaven",
     image: "/thumbnails/thumb-4.jpeg",
   },
 ];
