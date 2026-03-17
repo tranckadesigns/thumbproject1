@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/reveal";
-import { cn } from "@/lib/utils/cn";
 import type { Asset } from "@/types/asset";
 
 function assetTag(asset: Asset): { label: string; style: string } {
@@ -72,10 +71,13 @@ export function NewThisMonthSection({
             return (
               <Reveal key={asset.id} delay={i * 70}>
                 <div className="group relative overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
+                  {/* Badge */}
+                  <div className="absolute right-3 top-3 z-10">
+                    <span className={tag.style}>{tag.label}</span>
+                  </div>
+
                   {/* Preview area */}
                   <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#0d0d0d] via-[#111] to-[#181818]">
-                    {/* Badge */}
-                    <span className={cn(tag.style, "absolute right-2.5 top-2.5 z-10")}>{tag.label}</span>
                     {asset.thumbnail_url ? (
                       <Image
                         src={asset.thumbnail_url}

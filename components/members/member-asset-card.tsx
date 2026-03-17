@@ -66,7 +66,7 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
             </span>
           )}
           {fresh && (
-            <span className="inline-flex items-center rounded-full border border-emerald-500/25 bg-black/60 px-2.5 py-1 text-[10px] font-semibold leading-none text-emerald-400 backdrop-blur-sm">
+            <span className="rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm">
               New
             </span>
           )}
