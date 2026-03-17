@@ -18,16 +18,6 @@ function formatMinutesAgo(minutes: number): string {
   return h === 1 ? "1 hour ago" : `${h} hours ago`
 }
 
-// Small fallback set shown when the DB has no data yet
-const FALLBACK: ActivityEvent[] = [
-  { type: "subscription", maskedName: "svenv***",     minutesAgo: 2,  color: "#C9A96E" },
-  { type: "download",     maskedName: "JakeCr******", assetTitle: "PayPal Notification", minutesAgo: 4,  color: "#818CF8" },
-  { type: "subscription", maskedName: "sophieC*****", minutesAgo: 6,  color: "#34D399" },
-  { type: "download",     maskedName: "tyler**",      assetTitle: "Stripe Revenue Chart", minutesAgo: 9,  color: "#4ADE80" },
-  { type: "subscription", maskedName: "lena**",       minutesAgo: 12, color: "#A78BFA" },
-  { type: "download",     maskedName: "jordan*****",  assetTitle: "YouTube Analytics Dashboard", minutesAgo: 15, color: "#38BDF8" },
-]
-
 const SHOW_DELAY  = 4000  // delay before first toast
 const VISIBLE_MS  = 5500  // how long each toast stays visible
 const BETWEEN_MS  = 9000  // gap between toasts
@@ -43,10 +33,8 @@ export function ActivityToast() {
   useEffect(() => {
     fetch("/api/activity")
       .then((r) => r.ok ? r.json() : Promise.reject())
-      .then((data: ActivityEvent[]) => {
-        setEvents(data.length > 0 ? data : FALLBACK)
-      })
-      .catch(() => setEvents(FALLBACK))
+      .then((data: ActivityEvent[]) => setEvents(data))
+      .catch(() => {/* no data = no toast */})
   }, [])
 
   // Start cycling once we have events
