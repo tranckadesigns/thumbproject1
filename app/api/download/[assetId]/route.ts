@@ -34,45 +34,34 @@ export async function GET(
     return NextResponse.json({ error: "Asset not found" }, { status: 404 });
   }
 
-  // If a real PSD is stored in Supabase Storage, return a signed URL as JSON
-  // (client creates anchor tag — avoids loading entire file into browser memory)
-  if (asset.psd_file_key) {
-    const sb = getSupabaseServiceClient();
-    const { data, error } = await sb.storage
-      .from("psds")
-      .createSignedUrl(asset.psd_file_key, 300); // 5 minutes — enough for slow connections
-
-    if (!error && data?.signedUrl) {
-      // Log the download and increment counter (both fire-and-forget)
-      sb.from("downloads")
-        .insert({ user_id: user.id, asset_id: asset.id })
-        .then(() => null);
-      sb.rpc("increment_download_count", { asset_id: asset.id })
-        .then(() => null);
-
-      // Stream the file through our own domain so the browser's native
-      // download works without opening a new tab (cross-origin URLs ignore
-      // the `download` attribute).
-      const fileRes = await fetch(data.signedUrl);
-      if (!fileRes.ok) {
-        return NextResponse.json({ error: "File fetch failed" }, { status: 502 });
-      }
-
-      const filename = `${asset.slug}.psd`;
-      const headers = new Headers({
-        "Content-Type": "application/octet-stream",
-        "Content-Disposition": `attachment; filename="${filename}"`,
-      });
-      const contentLength = fileRes.headers.get("Content-Length");
-      if (contentLength) headers.set("Content-Length", contentLength);
-
-      return new NextResponse(fileRes.body, { headers });
-    }
+  if (!asset.psd_file_key) {
+    return NextResponse.json(
+      { error: "No file available for this asset yet — check back soon." },
+      { status: 404 }
+    );
   }
 
-  // Fallback — no PSD file attached yet
-  return NextResponse.json(
-    { error: "No file available for this asset yet — check back soon." },
-    { status: 404 }
-  );
+  const sb = getSupabaseServiceClient();
+
+  // Create a signed URL with download filename set — Supabase Storage returns
+  // Content-Disposition: attachment, which triggers a download even cross-origin.
+  const { data, error } = await sb.storage
+    .from("psds")
+    .createSignedUrl(asset.psd_file_key, 300, {
+      download: `${asset.title}.psd`,
+    });
+
+  if (error || !data?.signedUrl) {
+    return NextResponse.json({ error: "Could not generate download link." }, { status: 502 });
+  }
+
+  // Log the download and increment counter (fire-and-forget)
+  sb.from("downloads")
+    .insert({ user_id: user.id, asset_id: asset.id })
+    .then(() => null);
+  sb.rpc("increment_download_count", { asset_id: asset.id })
+    .then(() => null);
+
+  // Return signed URL — client opens it directly, no server-side file proxying
+  return NextResponse.json({ url: data.signedUrl });
 }
