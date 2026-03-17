@@ -21,7 +21,7 @@ const sections = [
   },
   {
     heading: "Cancellation and refunds",
-    body: `You may cancel your subscription at any time. Access continues until the end of the current billing period. We offer a 30-day money-back guarantee for first-time subscribers — email info@psdfuel.com within 30 days of your first charge to request a full refund, no questions asked.`,
+    body: `You may cancel your subscription at any time. Access continues until the end of the current billing period. Because PSDfuel provides immediate access to downloadable digital content, all purchases are final and non-refundable. If you have a question about your subscription, contact us at info@psdfuel.com.`,
   },
   {
     heading: "Intellectual property",

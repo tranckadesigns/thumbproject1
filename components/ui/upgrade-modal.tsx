@@ -46,7 +46,7 @@ export function UpgradeModal({ onClose }: UpgradeModalProps) {
             "Full library access — all categories",
             "Unlimited downloads, no credits",
             "New assets added every month",
-            "30-day money-back guarantee",
+            "Cancel anytime",
           ].map((item) => (
             <li key={item} className="flex items-center gap-2.5 text-xs text-content-secondary">
               <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">

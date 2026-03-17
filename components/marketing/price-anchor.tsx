@@ -111,7 +111,7 @@ export function PriceAnchorSection() {
               Start for $19/mo
             </Link>
             <p className="text-xs text-content-muted">
-              30-day money-back guarantee · Cancel anytime
+              Cancel anytime · No questions asked
             </p>
           </div>
         </Reveal>
