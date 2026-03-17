@@ -72,7 +72,7 @@ export function NewThisMonthSection({
               <Reveal key={asset.id} delay={i * 70}>
                 <div className="group relative overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
                   {/* Badge */}
-                  <div className="absolute left-2.5 top-2.5 z-10 flex items-center">
+                  <div className="absolute right-3 top-3 z-10 flex items-center">
                     <span className={tag.style}>{tag.label}</span>
                   </div>
 
