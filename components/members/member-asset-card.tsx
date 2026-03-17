@@ -55,23 +55,21 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
           <FavoriteButton assetId={asset.id} initialFavorited={isFavorited} />
         </div>
 
-        {/* Staff Pick — top left, icon only */}
-        {asset.is_featured && (
-          <div className="absolute left-2.5 top-2.5 z-10">
-            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-accent/30 bg-black/60 text-accent backdrop-blur-sm" title="Staff Pick">
-              <svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-                <path d="M6 0l1.5 4H12l-3.7 2.7 1.4 4.3L6 8.4l-3.7 2.6 1.4-4.3L0 4h4.5z" />
-              </svg>
-            </span>
-          </div>
-        )}
-
-        {/* New — top right */}
-        {fresh && (
-          <div className="absolute right-2.5 top-2.5 z-10">
-            <span className="rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm">
-              New
-            </span>
+        {/* Badges — top left */}
+        {(asset.is_featured || fresh) && (
+          <div className="absolute left-2.5 top-2.5 z-10 flex items-center gap-1">
+            {asset.is_featured && (
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-accent/30 bg-black/60 text-accent backdrop-blur-sm" title="Staff Pick">
+                <svg width="8" height="8" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+                  <path d="M6 0l1.5 4H12l-3.7 2.7 1.4 4.3L6 8.4l-3.7 2.6 1.4-4.3L0 4h4.5z" />
+                </svg>
+              </span>
+            )}
+            {fresh && (
+              <span className="rounded-full border border-emerald-500/25 bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 backdrop-blur-sm">
+                New
+              </span>
+            )}
           </div>
         )}
 
