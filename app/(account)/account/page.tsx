@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LogOut, User, CreditCard, Calendar, AlertCircle } from "lucide-react";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getSupabaseServiceClient } from "@/lib/supabase/service";
 import { getSubscription } from "@/lib/subscription";
+import { stripe } from "@/lib/stripe";
 import { signOutAction } from "@/app/(auth)/actions";
 import { DisplayNameForm } from "@/components/account/display-name-form";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +40,37 @@ export default async function AccountPage() {
   }
 
   const memberSince = user?.created_at ? formatDate(user.created_at) : "—";
-  const sub = user ? await getSubscription() : null;
+  let sub = user ? await getSubscription() : null;
+
+  // Sync live status from Stripe so the page is always accurate,
+  // regardless of webhook delivery timing.
+  if (sub?.stripe_subscription_id && process.env.STRIPE_SECRET_KEY) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id) as any;
+      const periodTs =
+        stripeSub.current_period_end ??
+        stripeSub.items?.data?.[0]?.current_period_end ??
+        null;
+      const liveData = {
+        status:               stripeSub.status as typeof sub.status,
+        current_period_end:   periodTs ? new Date(periodTs * 1000).toISOString() : sub.current_period_end,
+        cancel_at_period_end: stripeSub.cancel_at_period_end ?? false,
+      };
+
+      // Persist to DB in the background so webhooks catch up
+      const sbService = getSupabaseServiceClient();
+      sbService
+        .from("subscriptions")
+        .update({ ...liveData, updated_at: new Date().toISOString() })
+        .eq("stripe_subscription_id", sub.stripe_subscription_id)
+        .then(() => {/* fire-and-forget */});
+
+      sub = { ...sub, ...liveData };
+    } catch {
+      // Stripe unreachable — fall back to DB data silently
+    }
+  }
 
   const statusInfo = sub?.status
     ? STATUS_BADGE[sub.status] ?? { label: sub.status, variant: "secondary" as const }
