@@ -52,7 +52,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           Cancel anytime
         </span>
         <span className="opacity-30">·</span>
-        <span>Cancel anytime</span>
+        <span>Secured by Stripe</span>
       </div>
     </div>
   );

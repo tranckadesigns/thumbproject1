@@ -9,7 +9,14 @@ const SCROLL_THRESHOLD = 700
 
 export function StickyCTABar({ hasSubscription }: { hasSubscription?: boolean }) {
   const [visible,   setVisible]   = useState(false)
-  const [dismissed, setDismissed] = useState(false)
+  const [dismissed, setDismissed] = useState(() =>
+    typeof window !== "undefined" && sessionStorage.getItem("cta-bar-dismissed") === "1"
+  )
+
+  function dismiss() {
+    sessionStorage.setItem("cta-bar-dismissed", "1")
+    setDismissed(true)
+  }
 
   useEffect(() => {
     const onScroll = () => {
@@ -54,7 +61,7 @@ export function StickyCTABar({ hasSubscription }: { hasSubscription?: boolean })
         </div>
 
         <button
-          onClick={() => setDismissed(true)}
+          onClick={dismiss}
           className="shrink-0 text-content-muted/40 transition-colors hover:text-content-muted"
           aria-label="Dismiss"
         >

@@ -194,8 +194,6 @@ function PricingCards({ stats }: { stats: LibraryStats }) {
               </svg>
               Secured by Stripe
             </span>
-            <span className="opacity-30">·</span>
-            <span>Cancel anytime</span>
           </div>
         </div>
       </div>
