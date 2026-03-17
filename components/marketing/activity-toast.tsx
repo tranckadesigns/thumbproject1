@@ -3,10 +3,12 @@
 import { useEffect, useState, useRef } from "react"
 import { cn } from "@/lib/utils/cn"
 
-function maskUsername(name: string): string {
-  const maskCount = Math.ceil(name.length * 0.4)
-  const visibleCount = name.length - maskCount
-  return name.slice(0, visibleCount) + "*".repeat(maskCount)
+interface ActivityEvent {
+  type: "download" | "subscription"
+  maskedName: string
+  assetTitle?: string
+  minutesAgo: number
+  color: string
 }
 
 function formatMinutesAgo(minutes: number): string {
@@ -16,101 +18,69 @@ function formatMinutesAgo(minutes: number): string {
   return h === 1 ? "1 hour ago" : `${h} hours ago`
 }
 
-// isDownload: true means the action uses a real asset title at runtime
-const activities = [
-  { name: "svenvlogs",      location: "Amsterdam",    isDownload: false, minutesAgo: 1,  color: "#C9A96E" },
-  { name: "JakeCreates",    location: "London",       isDownload: true,  minutesAgo: 3,  color: "#818CF8" },
-  { name: "SophieCreates",  location: "Toronto",      isDownload: false, minutesAgo: 2,  color: "#34D399" },
-  { name: "tyler_yt",       location: "Austin",       isDownload: true,  minutesAgo: 7,  color: "#4ADE80" },
-  { name: "lena.yt",        location: "Munich",       isDownload: false, minutesAgo: 4,  color: "#A78BFA" },
-  { name: "jordan.builds",  location: "New York",     isDownload: true,  minutesAgo: 5,  color: "#38BDF8" },
-  { name: "MarcusBuilds",   location: "Berlin",       isDownload: false, minutesAgo: 6,  color: "#FB923C" },
-  { name: "RyanFilms",      location: "Melbourne",    isDownload: true,  minutesAgo: 8,  color: "#FB923C" },
-  { name: "aria_edits",     location: "Sydney",       isDownload: false, minutesAgo: 9,  color: "#F472B6" },
-  { name: "mia_creates",    location: "Copenhagen",   isDownload: true,  minutesAgo: 10, color: "#F472B6" },
-  { name: "nate.creator",   location: "Chicago",      isDownload: false, minutesAgo: 11, color: "#38BDF8" },
-  { name: "sam.studio",     location: "Vancouver",    isDownload: true,  minutesAgo: 12, color: "#34D399" },
-  { name: "YukiMedia",      location: "Tokyo",        isDownload: false, minutesAgo: 13, color: "#4ADE80" },
-  { name: "AishaVlogs",     location: "Nairobi",      isDownload: true,  minutesAgo: 14, color: "#A78BFA" },
-  { name: "priya_makes",    location: "Bangalore",    isDownload: false, minutesAgo: 16, color: "#F59E0B" },
-  { name: "TariqMakes",     location: "Amsterdam",    isDownload: true,  minutesAgo: 15, color: "#10B981" },
-  { name: "TobiasYT",       location: "Zurich",       isDownload: false, minutesAgo: 19, color: "#818CF8" },
-  { name: "isabella_yt",    location: "Milan",        isDownload: true,  minutesAgo: 17, color: "#EC4899" },
-  { name: "ChloeVlogs",     location: "Paris",        isDownload: false, minutesAgo: 25, color: "#10B981" },
-  { name: "KenjiMedia",     location: "Osaka",        isDownload: true,  minutesAgo: 18, color: "#38BDF8" },
-  { name: "diego_fx",       location: "Barcelona",    isDownload: false, minutesAgo: 28, color: "#F97316" },
-  { name: "ingrid.yt",      location: "Oslo",         isDownload: true,  minutesAgo: 21, color: "#34D399" },
-  { name: "EliasEdits",     location: "Stockholm",    isDownload: false, minutesAgo: 31, color: "#6366F1" },
-  { name: "zoe.content",    location: "Edinburgh",    isDownload: true,  minutesAgo: 23, color: "#818CF8" },
-  { name: "amara.content",  location: "Lagos",        isDownload: false, minutesAgo: 34, color: "#84CC16" },
-  { name: "SimoneYT",       location: "Brussels",     isDownload: true,  minutesAgo: 24, color: "#E879F9" },
-  { name: "OwenFilms",      location: "Dublin",       isDownload: false, minutesAgo: 37, color: "#14B8A6" },
-  { name: "AndreYT",        location: "São Paulo",    isDownload: true,  minutesAgo: 26, color: "#6366F1" },
-  { name: "hana_yt",        location: "Seoul",        isDownload: false, minutesAgo: 40, color: "#E879F9" },
-  { name: "kim_creates",    location: "Auckland",     isDownload: true,  minutesAgo: 27, color: "#84CC16" },
-  { name: "FelixMakes",     location: "Vienna",       isDownload: false, minutesAgo: 43, color: "#FB7185" },
-  { name: "lukas_edits",    location: "Prague",       isDownload: true,  minutesAgo: 33, color: "#FB923C" },
-  { name: "nia.studio",     location: "London",       isDownload: false, minutesAgo: 46, color: "#FBBF24" },
-  { name: "layla_edits",    location: "Cairo",        isDownload: true,  minutesAgo: 35, color: "#F59E0B" },
-  { name: "CalebCreates",   location: "Houston",      isDownload: true,  minutesAgo: 38, color: "#F472B6" },
-  { name: "NoahBuilds",     location: "Toronto",      isDownload: true,  minutesAgo: 41, color: "#4ADE80" },
-  { name: "mateus.edits",   location: "Lisbon",       isDownload: true,  minutesAgo: 44, color: "#14B8A6" },
-  { name: "LinCreates",     location: "Shanghai",     isDownload: true,  minutesAgo: 20, color: "#FBBF24" },
-  { name: "emre_fx",        location: "Istanbul",     isDownload: true,  minutesAgo: 32, color: "#F97316" },
-  { name: "carlos.studio",  location: "Mexico City",  isDownload: true,  minutesAgo: 36, color: "#FB7185" },
-  { name: "AlekseiMakes",   location: "Warsaw",       isDownload: true,  minutesAgo: 48, color: "#6366F1" },
+// Small fallback set shown when the DB has no data yet
+const FALLBACK: ActivityEvent[] = [
+  { type: "subscription", maskedName: "svenv***",     minutesAgo: 2,  color: "#C9A96E" },
+  { type: "download",     maskedName: "JakeCr******", assetTitle: "PayPal Notification", minutesAgo: 4,  color: "#818CF8" },
+  { type: "subscription", maskedName: "sophieC*****", minutesAgo: 6,  color: "#34D399" },
+  { type: "download",     maskedName: "tyler**",      assetTitle: "Stripe Revenue Chart", minutesAgo: 9,  color: "#4ADE80" },
+  { type: "subscription", maskedName: "lena**",       minutesAgo: 12, color: "#A78BFA" },
+  { type: "download",     maskedName: "jordan*****",  assetTitle: "YouTube Analytics Dashboard", minutesAgo: 15, color: "#38BDF8" },
 ]
 
-const SHOW_DELAY = 4000   // initial delay before first toast
-const VISIBLE_MS = 5500   // how long each toast is visible
-const BETWEEN_MS = 9000   // gap between toasts
+const SHOW_DELAY  = 4000  // delay before first toast
+const VISIBLE_MS  = 5500  // how long each toast stays visible
+const BETWEEN_MS  = 9000  // gap between toasts
 
-interface ActivityToastProps {
-  assetTitles?: string[]
-}
-
-export function ActivityToast({ assetTitles = [] }: ActivityToastProps) {
+export function ActivityToast() {
+  const [events,    setEvents]    = useState<ActivityEvent[]>([])
   const [index,     setIndex]     = useState(0)
   const [visible,   setVisible]   = useState(false)
   const [dismissed, setDismissed] = useState(false)
-  // Track when each toast was shown so we can compute realistic elapsed time
   const shownAtRef = useRef<number>(Date.now())
 
+  // Fetch real data once on mount
   useEffect(() => {
-    if (dismissed) return
-    setIndex(Math.floor(Math.random() * activities.length))
+    fetch("/api/activity")
+      .then((r) => r.ok ? r.json() : Promise.reject())
+      .then((data: ActivityEvent[]) => {
+        setEvents(data.length > 0 ? data : FALLBACK)
+      })
+      .catch(() => setEvents(FALLBACK))
+  }, [])
+
+  // Start cycling once we have events
+  useEffect(() => {
+    if (events.length === 0 || dismissed) return
+    setIndex(Math.floor(Math.random() * events.length))
     const show = setTimeout(() => {
       shownAtRef.current = Date.now()
       setVisible(true)
     }, SHOW_DELAY)
     return () => clearTimeout(show)
-  }, [dismissed])
+  }, [events, dismissed])
 
   useEffect(() => {
     if (!visible || dismissed) return
-
     const hide = setTimeout(() => {
       setVisible(false)
       const next = setTimeout(() => {
         shownAtRef.current = Date.now()
-        setIndex((i) => (i + 1) % activities.length)
+        setIndex((i) => (i + 1) % events.length)
         setVisible(true)
       }, BETWEEN_MS)
       return () => clearTimeout(next)
     }, VISIBLE_MS)
-
     return () => clearTimeout(hide)
-  }, [visible, index, dismissed])
+  }, [visible, index, dismissed, events.length])
 
-  const activity = activities[index]
+  if (events.length === 0) return null
 
-  // Compute dynamic timestamp: base offset + time since page load
+  const event = events[index]
   const elapsedMinutes = Math.floor((Date.now() - shownAtRef.current) / 60000)
-  const displayMinutes = activity.minutesAgo + elapsedMinutes
-  const timeLabel = formatMinutesAgo(displayMinutes)
-
-  const actionText = activity.isDownload && assetTitles.length > 0
-    ? `downloaded ${assetTitles[index % assetTitles.length]}`
+  const timeLabel = formatMinutesAgo(event.minutesAgo + elapsedMinutes)
+  const actionText = event.type === "download" && event.assetTitle
+    ? `downloaded ${event.assetTitle}`
     : "just subscribed"
 
   return (
@@ -126,17 +96,15 @@ export function ActivityToast({ assetTitles = [] }: ActivityToastProps) {
         {/* Avatar */}
         <div
           className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-base"
-          style={{ backgroundColor: activity.color }}
+          style={{ backgroundColor: event.color }}
         >
-          {activity.name[0]}
+          {event.maskedName[0].toUpperCase()}
         </div>
 
         {/* Text */}
         <div className="flex-1 min-w-0">
           <p className="text-xs leading-snug text-content-primary">
-            <span className="font-semibold">{maskUsername(activity.name)}</span>
-            {" "}
-            <span className="text-content-secondary">from {activity.location}</span>
+            <span className="font-semibold">{event.maskedName}</span>
           </p>
           <p className="mt-0.5 text-xs text-content-secondary">{actionText}</p>
           <p className="mt-1 text-xs text-content-muted">{timeLabel}</p>
