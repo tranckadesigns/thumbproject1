@@ -53,6 +53,52 @@ const KEYWORD_MAP = {
   Reactions:   ["reaction", "poll", "vote", "emoji", "comment", "response", "community", "chat"],
 };
 
+// ─── Synonym map ─────────────────────────────────────────────────────────────
+// When Claude returns a niche that is a known alias, collapse it to the
+// canonical term. Add pairs here as the library grows.
+// Format: "alias" → "canonical"
+
+const NICHE_SYNONYMS = {
+  // Apple ecosystem
+  "ios":          "Apple",
+  "iphone":       "Apple",
+  "ipad":         "Apple",
+  "macos":        "Apple",
+  "apple ios":    "Apple",
+  "apple music":  "Apple",
+
+  // Google / Android
+  "android":      "Google",
+  "google play":  "Google",
+  "google ads":   "Google",
+
+  // Finance
+  "forex":        "Trading",
+  "fx":           "Trading",
+  "stocks":       "Trading",
+  "stock market": "Trading",
+  "crypto":       "Crypto",
+  "cryptocurrency": "Crypto",
+  "bitcoin":      "Crypto",
+  "ethereum":     "Crypto",
+  "defi":         "Crypto",
+
+  // Social
+  "twitter":      "X / Twitter",
+  "x":            "X / Twitter",
+  "instagram reels": "Instagram",
+  "tiktok videos": "TikTok",
+
+  // E-commerce
+  "woocommerce":  "Shopify",
+  "e-commerce":   "E-Commerce",
+  "ecommerce":    "E-Commerce",
+};
+
+function normalizeNiche(name) {
+  return NICHE_SYNONYMS[name.toLowerCase()] ?? name;
+}
+
 function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -95,11 +141,12 @@ Rules for "primary":
 - MUST be one of the broad categories listed above, copied exactly
 
 Rules for "niches":
-- A niche is a recognizable DOMAIN or PLATFORM ECOSYSTEM, not a feature or screen name
-- Good niches: "Apple", "iOS", "Android", "Trading", "Crypto", "Forex", "Shopify", "Fitness", "Gaming"
-- Bad niches: "Screen Time", "Weekly Stats", "MetaTrader", "Usage Tracking", "Notification" (too specific or just a feature)
-- Ask yourself: "Would someone search for MORE assets in this niche?" If no, skip it
-- Maximum 3 niches. Often 1 or 2 is enough. Empty is fine if no clear domain applies
+- A niche is a recognizable BRAND or PLATFORM ECOSYSTEM that multiple assets could share
+- Good niches: "Apple", "Android", "Trading", "Crypto", "Shopify", "Fitness", "Gaming", "YouTube"
+- Bad niches: "iOS" (use "Apple" instead), "MetaTrader" (use "Trading"), "Screen Time" (feature, not ecosystem), "Weekly Stats" (too generic)
+- NEVER suggest two niches that overlap or mean the same thing — pick only the parent brand (e.g. "Apple" covers iOS/iPhone/iPad — do NOT also add "iOS")
+- Ask yourself: "Would someone browse a collection of assets in this niche?" If no, skip it
+- Maximum 2 niches. One is often enough. Empty is fine.
 - Return valid JSON only, nothing else
 
 Asset:
@@ -144,11 +191,14 @@ Tags: ${tags.length ? tags.join(", ") : "(none)"}`;
  * Geeft altijd terug: { primary: string, niches: string[] }
  */
 export async function categorizeAsset(title, description, tags = []) {
-  const claudeResult = await claudeCategorize(title, description, tags);
-  if (claudeResult) return claudeResult;
+  const raw = await claudeCategorize(title, description, tags)
+    ?? (console.log("   ↩  Claude niet beschikbaar — keyword-fallback gebruikt"),
+        keywordFallback(title, description, tags));
 
-  console.log("   ↩  Claude niet beschikbaar — keyword-fallback gebruikt");
-  return keywordFallback(title, description, tags);
+  // Normalize niches: collapse synonyms, deduplicate
+  const normalized = [...new Set(raw.niches.map(normalizeNiche))];
+
+  return { primary: raw.primary, niches: normalized };
 }
 
 /**
