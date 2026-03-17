@@ -14,10 +14,11 @@ export default async function AccountLayout({
   if (!user) redirect("/login");
 
   const subscribed = await hasActiveSubscription();
+  const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={user.email ?? ""} hasSubscription={subscribed} />
+      <AppNav email={user.email ?? ""} hasSubscription={subscribed} displayName={displayName} />
       <main className="pt-14">{children}</main>
     </div>
   );
