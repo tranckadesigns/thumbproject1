@@ -25,9 +25,10 @@ function toAsset(t: TrackedAsset): Asset {
 
 interface RecentlyViewedProps {
   favoriteIds?: string[];
+  validSlugs?: Set<string>;
 }
 
-export function RecentlyViewed({ favoriteIds = [] }: RecentlyViewedProps) {
+export function RecentlyViewed({ favoriteIds = [], validSlugs }: RecentlyViewedProps) {
   const [assets, setAssets] = useState<TrackedAsset[]>([]);
 
   useEffect(() => {
@@ -41,11 +42,12 @@ export function RecentlyViewed({ favoriteIds = [] }: RecentlyViewedProps) {
       const raw: TrackedAsset[] = JSON.parse(
         localStorage.getItem(STORAGE_KEY) ?? "[]"
       );
-      // Deduplicate by slug (stable identifier), drop invalid entries, cap at 4
+      // Deduplicate by slug, drop invalid entries, filter deleted assets, cap at 4
       const seen = new Set<string>();
       const valid = raw.filter((a) => {
         if (!a.slug || !a.category || typeof a.file_size_mb !== "number") return false;
         if (seen.has(a.slug)) return false;
+        if (validSlugs && !validSlugs.has(a.slug)) return false;
         seen.add(a.slug);
         return true;
       }).slice(0, 4);

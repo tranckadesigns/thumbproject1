@@ -108,7 +108,7 @@ export default async function DashboardPage() {
         {!hasFavorites && <WelcomeCard />}
 
         {/* Recently viewed — reads localStorage, renders nothing if empty */}
-        <RecentlyViewed favoriteIds={[...favoriteIds]} />
+        <RecentlyViewed favoriteIds={[...favoriteIds]} validSlugs={new Set(allAssets.map((a) => a.slug))} />
 
         {/* Favorites */}
         <section>
