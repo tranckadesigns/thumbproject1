@@ -92,7 +92,7 @@ function VideoCard({ withOverlay, image, title, channel, views, ctr, animated }:
             withOverlay ? 'text-accent' : 'text-content-secondary'
           }`}>
             {animated
-              ? <CountUp to={847} decimals={0} suffix="K" duration={1800} />
+              ? <CountUp to={3.1} decimals={1} suffix=" mln." duration={1800} />
               : '28K'
             }
           </p>
@@ -133,8 +133,8 @@ export function CtrImpactSection() {
               <VideoCard
                 withOverlay={false}
                 image="/thumbnails/ctr-bad.jpg"
-                title="How Much Money I Made From YouTube This Month"
-                channel="JakeOnline"
+                title="The Laziest Ways To Make $100+/Day Online in 2026"
+                channel="Mark Tilbury"
                 views="28K"
                 ctr={2.3}
               />
@@ -187,10 +187,10 @@ export function CtrImpactSection() {
                 <VideoCard
                   withOverlay
                   image="/thumbnails/ctr-good.jpg"
-                  title="I Made $24,180 on YouTube This Month (Revenue Breakdown)"
-                  channel="MarkBuilds"
-                  views="847K"
-                  ctr={8.7}
+                  title="The Laziest Ways To Make $100+/Day Online in 2026"
+                  channel="Mark Tilbury"
+                  views="3,1 mln."
+                  ctr={12.4}
                   animated
                 />
               </div>
