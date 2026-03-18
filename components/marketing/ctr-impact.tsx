@@ -128,18 +128,36 @@ export function CtrImpactSection() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-start">
 
-          {/* ── Left: without Vaulted ── */}
+          {/* ── Left: without PSDfuel ── */}
           <Reveal>
             <div>
               <p className="mb-2.5 text-xs font-medium text-content-muted">Without PSDfuel</p>
-              <VideoCard
-                withOverlay={false}
-                image="/thumbnails/ctr-bad.jpg"
-                title="The Laziest Ways To Make $100+/Day Online in 2026"
-                channel="Mark Tilbury"
-                views="28K"
-                ctr={2.3}
-              />
+              <div className="relative">
+                {/* Red X badge — top-left corner */}
+                <div
+                  className="absolute -left-3 -top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-red-500/30 bg-base-elevated"
+                  style={{ boxShadow: '0 0 12px rgba(239,68,68,0.25), 0 0 24px rgba(239,68,68,0.1)' }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M2 2l8 8M10 2l-8 8"
+                      stroke="#ef4444"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      style={{ filter: 'drop-shadow(0 0 3px rgba(239,68,68,0.7))' }}
+                    />
+                  </svg>
+                </div>
+
+                <VideoCard
+                  withOverlay={false}
+                  image="/thumbnails/ctr-bad.jpg"
+                  title="The Laziest Ways To Make $100+/Day Online in 2026"
+                  channel="Mark Tilbury"
+                  views="28K"
+                  ctr={2.3}
+                />
+              </div>
             </div>
           </Reveal>
 
