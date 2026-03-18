@@ -566,6 +566,9 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "2M views",
     image: "/thumbnails/thumb-4.jpeg",
     profileImage: "/thumbnails/pf-4.jpg",
+    assetSlug: "stars-review",
+    assetLabel: "Stars Review",
+    assetImage: "https://emhfnmdloxycguepybiy.supabase.co/storage/v1/object/public/thumbnails/stars-review/preview.png",
   },
 ];
 

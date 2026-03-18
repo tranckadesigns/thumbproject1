@@ -81,15 +81,20 @@ async function generateMetaWithAI(client, slug, previewPath, categories) {
 
   const prompt = `You are writing product copy for PSDfuel — a premium library of fully editable PSD assets for YouTube thumbnail designers.
 
-Every asset is a layered PSD file. The text, numbers, and colors in the preview are placeholder values the buyer replaces in Photoshop.
+Every asset is a fully layered PSD file. Everything visible in the preview — text, numbers, names, profile photos, star ratings, colors — are placeholder values. The buyer replaces all of it in Photoshop. That is the entire point.
 
 Look carefully at the image and identify:
-1. The exact real-world platform or product it replicates (e.g. Etsy, Spotify, Stripe, Apple, Amazon, YouTube Studio, Google Analytics)
-2. The exact UI element type (e.g. sales overview panel, revenue chart, now playing card, order summary, analytics dashboard, countdown timer)
+1. The exact real-world platform or product it replicates (e.g. Etsy, Spotify, Stripe, Apple, Amazon, YouTube Studio, Google Analytics, Yelp, Trustpilot)
+2. The exact UI element type (e.g. sales overview panel, revenue chart, now playing card, order summary, star review card, analytics dashboard, countdown timer)
 
-Use both to write the title and descriptions — platform + UI type, specific and confident. Skip filler phrases. Do not describe placeholder values, colors, or individual sub-elements.
+Use both to write the title and descriptions — platform + UI type, specific and confident. Skip filler phrases.
 
-IMPORTANT: Never use the word "overlay" anywhere in your output. Use "asset", "element", or describe the UI type directly.
+STRICT RULES:
+- Never use the word "overlay" anywhere. Use "asset", "element", or describe the UI type directly.
+- Never describe placeholder values as real features. A profile photo placeholder is not "anonymous" — it is a placeholder. Do not mention it.
+- Never assume tone or use case from placeholder content. A star review card is neutral — do not say it is "for bad reviews" or "for exposés" just because the preview shows low stars. It can show any rating.
+- Never describe specific placeholder text, numbers, or names as if they are fixed.
+- Focus only on: what platform UI this replicates, and what type of visual element it is.
 
 Asset slug: "${slug}"
 
@@ -102,7 +107,7 @@ Return this JSON:
 {
   "title": "Max 4 words. Platform + UI type. (e.g. 'Etsy Sales Overview', 'Spotify Now Playing', 'Stripe Revenue Chart')",
   "short_description": "One sentence. Platform + UI type only. No 'asset', 'overlay', 'for thumbnails', or similar. Max 10 words. Example: 'Etsy seller revenue stat card.' or 'Spotify Now Playing card.'",
-  "full_description": "2 sentences. First: which platform UI this replicates and its visual style. Second: what thumbnail context it supports — no 'perfect for' or 'ideal for'.",
+  "full_description": "2 sentences. First: which platform UI this replicates and its visual style. Second: what thumbnail context it supports — no 'perfect for', 'ideal for', or assumptions about tone/use case. Never describe placeholder content as fixed features.",
   "category": "Exact name from the list above, or a new name if truly needed",
   "new_category_description": "Only if category is new — one short sentence. Otherwise omit.",
   "style_type": "One of: Dark | Light | Minimal | Bold | Neon | Gradient",
