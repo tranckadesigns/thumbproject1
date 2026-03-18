@@ -219,218 +219,137 @@
   to { --aurora-angle: 360deg; }
 }
 
-/* ── Thumbnail 3D folder hover effect ───────────────────────────────────────── */
+/* ── Thumbnail hover + asset reveal ─────────────────────────────────────────── */
 /*                                                                               */
-/*  Mental model: the thumbnail IS the folder cover. It is hinged on the        */
-/*  OPPOSITE side from where the asset flies out. So:                           */
-/*    – Right column: asset → right, hinge → left,  cover swings right          */
-/*    – Left  column: asset → left,  hinge → right, cover swings left           */
-/*  rotateY over the matching axis so the opening direction and the asset        */
-/*  direction are always the same. Spring easing (slight overshoot) = premium.  */
+/*  Concept: the asset card hides flush against the thumbnail edge.             */
+/*  On hover the thumbnail lifts, the card slides out from the edge it was      */
+/*  pressed against — like pulling something out from underneath a photo.       */
+/*  Zero rotation. All motion is 2D translate + scale + opacity.                */
 
 .thumb-group {
   position: relative;
 }
 
-/* ① Folder interior — revealed as the cover swings open */
-.thumb-interior {
-  position: absolute;
-  inset: 0;
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, #0D0D0D 0%, #111 55%, #0E0E0E 100%);
-  border: 1px solid #242424;
-  pointer-events: none;
-  overflow: hidden;
-}
+/* ── Thumbnail ─────────────────────────────────────────────────────────────── */
 
-/* Vertical accent line on the LEFT side — revealed for right-column cards */
-.thumb-interior-left::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  inset-block: 0;
-  width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent 5%,
-    rgba(201,169,110,0.5) 30%,
-    rgba(255,228,140,0.7) 50%,
-    rgba(201,169,110,0.5) 70%,
-    transparent 95%
-  );
-  opacity: 0;
-  transition: opacity 400ms ease;
-}
-
-/* Vertical accent line on the RIGHT side — revealed for left-column cards */
-.thumb-interior-right::before {
-  content: '';
-  position: absolute;
-  right: 0;
-  inset-block: 0;
-  width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent 5%,
-    rgba(201,169,110,0.5) 30%,
-    rgba(255,228,140,0.7) 50%,
-    rgba(201,169,110,0.5) 70%,
-    transparent 95%
-  );
-  opacity: 0;
-  transition: opacity 400ms ease;
-}
-
-/* Small label silhouette near the bottom of the interior */
-.thumb-interior::after {
-  content: '';
-  position: absolute;
-  inset-inline: 1rem;
-  bottom: 0.85rem;
-  height: 1.5rem;
-  border-radius: 0.375rem;
-  background: rgba(255,255,255,0.022);
-  border: 1px solid rgba(255,255,255,0.04);
-  opacity: 0;
-  transition: opacity 420ms ease;
-}
-
-.thumb-group:hover .thumb-interior::before,
-.thumb-group:hover .thumb-interior::after {
-  opacity: 1;
-}
-
-/* ② Folder cover — the thumbnail                                               */
-/*    .hinge-left  → transform-origin: left  → right edge swings back (→ right) */
-/*    .hinge-right → transform-origin: right → left  edge swings back (← left)  */
 .thumb-cover {
   position: relative;
-  will-change: transform;
+  z-index: 2;
+  will-change: transform, box-shadow;
+  /* Enter: smooth ease-out */
   transition:
-    transform     580ms cubic-bezier(0.34, 1.38, 0.64, 1),
-    border-color  260ms ease;
+    transform    360ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow   360ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 240ms ease;
 }
 
-/* Right-column card: hinge on left, cover opens rightward */
-.thumb-cover.hinge-left {
-  transform-origin: left center;
-}
-.thumb-group:hover .thumb-cover.hinge-left {
-  transform: rotateY(-20deg);
-  border-color: #333333 !important;
-}
-
-/* Left-column card: hinge on right, cover opens leftward */
-.thumb-cover.hinge-right {
-  transform-origin: right center;
-}
-.thumb-group:hover .thumb-cover.hinge-right {
-  transform: rotateY(20deg);
-  border-color: #333333 !important;
+/* Exit: snappy — thumbnail settles back fast */
+.thumb-group:not(:hover) .thumb-cover {
+  transition:
+    transform    220ms ease,
+    box-shadow   220ms ease,
+    border-color 160ms ease;
 }
 
-/* Edge sheen — appears on the side the cover is swinging toward */
-.thumb-cover::after {
-  content: '';
+.thumb-group:hover .thumb-cover {
+  transform: translateY(-5px) scale(1.018);
+  box-shadow:
+    0 2px 8px  rgba(0,0,0,0.35),
+    0 12px 40px rgba(0,0,0,0.55);
+  border-color: #2e2e2e;
+}
+
+/* Subtle accent on the edge where the card emerges — visual connector */
+.thumb-cover.connects-right {
+  transition:
+    transform    360ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow   360ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 240ms ease,
+    border-right-color 240ms ease;
+}
+.thumb-group:hover .thumb-cover.connects-right {
+  border-right-color: rgba(201,169,110,0.4);
+}
+
+.thumb-cover.connects-left {
+  transition:
+    transform    360ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow   360ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 240ms ease,
+    border-left-color 240ms ease;
+}
+.thumb-group:hover .thumb-cover.connects-left {
+  border-left-color: rgba(201,169,110,0.4);
+}
+
+/* Inner vignette — deepens on hover */
+.thumb-vignette {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
   pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.22) 0%,
+    transparent 55%
+  );
   opacity: 0;
-  transition: opacity 580ms ease;
+  transition: opacity 360ms ease;
 }
-.thumb-cover.hinge-left::after {
-  background: linear-gradient(
-    to left,
-    rgba(255,255,255,0.06) 0%,
-    transparent 40%
-  );
-}
-.thumb-cover.hinge-right::after {
-  background: linear-gradient(
-    to right,
-    rgba(255,255,255,0.06) 0%,
-    transparent 40%
-  );
-}
-.thumb-group:hover .thumb-cover::after {
+.thumb-group:hover .thumb-vignette {
   opacity: 1;
 }
 
-/* Bottom vignette deepens on hover */
-.thumb-cover-vignette {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  height: 56px;
-  background: linear-gradient(to top, rgba(0,0,0,0.26), transparent);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 500ms ease;
-}
-.thumb-group:hover .thumb-cover-vignette {
-  opacity: 1;
-}
+/* ── Asset card ────────────────────────────────────────────────────────────── */
+/*                                                                               */
+/*  Initial position: flush with the thumbnail edge, opacity 0.                 */
+/*  translateX(0) = card's anchor edge aligned with thumbnail edge.             */
+/*  On hover: slides out with spring easing, 50ms after the thumbnail moves.   */
 
-/* ③ Drop shadow — swells and drops as the cover lifts */
-.thumb-shadow {
-  position: absolute;
-  inset-inline: 2.5rem;
-  bottom: -4px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  filter: blur(18px);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity  580ms cubic-bezier(0.34, 1.38, 0.64, 1),
-    bottom   580ms cubic-bezier(0.34, 1.38, 0.64, 1),
-    filter   580ms ease;
-}
-.thumb-group:hover .thumb-shadow {
-  opacity: 0.68;
-  bottom: -18px;
-  filter: blur(22px);
-}
-
-/* ④ Asset flyout card */
 .flyout-card {
   position: absolute;
-  top: 0.75rem;
+  top: 50%;
   z-index: 20;
   display: none;
   flex-direction: column;
-  opacity: 0;
   pointer-events: none;
+  opacity: 0;
+  /* Enter: spring with thumbnail-first stagger */
   transition:
-    opacity   460ms cubic-bezier(0.34, 1.38, 0.64, 1),
-    transform 460ms cubic-bezier(0.34, 1.38, 0.64, 1);
+    opacity   380ms cubic-bezier(0.34, 1.28, 0.64, 1) 50ms,
+    transform 380ms cubic-bezier(0.34, 1.28, 0.64, 1) 50ms;
 }
+
+/* Exit: quick snap back, no delay */
+.thumb-group:not(:hover) .flyout-card {
+  transition:
+    opacity   180ms ease 0ms,
+    transform 180ms ease 0ms;
+}
+
 @media (min-width: 768px) {
   .flyout-card { display: flex; }
 }
 
-/* Right column: card flies right, same side the cover opens toward */
+/* Right column ─ card starts at right edge, slides right */
 .flyout-card.flyout-right {
   right: 0;
-  transform: translateX(-14px) scale(0.91);
+  transform: translateY(-50%) translateX(0px) scale(0.91);
   transform-origin: left center;
 }
 .thumb-group:hover .flyout-card.flyout-right {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(calc(100% + 12px)) scale(1);
+  transform: translateY(-50%) translateX(calc(100% + 14px)) scale(1);
 }
 
-/* Left column: card flies left, same side the cover opens toward */
+/* Left column ─ card starts at left edge, slides left */
 .flyout-card.flyout-left {
   left: 0;
-  transform: translateX(14px) scale(0.91);
+  transform: translateY(-50%) translateX(0px) scale(0.91);
   transform-origin: right center;
 }
 .thumb-group:hover .flyout-card.flyout-left {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(calc(-100% - 12px)) scale(1);
+  transform: translateY(-50%) translateX(calc(-100% - 14px)) scale(1);
 }

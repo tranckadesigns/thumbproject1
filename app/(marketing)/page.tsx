@@ -77,51 +77,46 @@ function ThumbnailMockup({
   return (
     <div className="thumb-group">
 
-      {/* Perspective context — tight for a more dramatic rotateY effect */}
-      <div className="relative" style={{ perspective: "700px" }}>
-
-        {/* ① Folder interior — accent line on the side being revealed */}
-        <div className={cn("thumb-interior", flyLeft ? "thumb-interior-right" : "thumb-interior-left")} />
-
-        {/* ② Folder cover — hinge on the side OPPOSITE to where the asset flies */}
-        {/*   flyLeft → hinge-right (right edge fixed, left swings back)          */}
-        {/*   flyRight → hinge-left (left edge fixed, right swings back)          */}
-        <div className={cn("thumb-cover aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated", flyLeft ? "hinge-right" : "hinge-left")}>
+      {/* Thumbnail — lifts on hover, no rotation */}
+      <div className="relative">
+        <div className={cn(
+          "thumb-cover aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated",
+          flyLeft ? "connects-left" : "connects-right"
+        )}>
           <Image src={image} alt={videoTitle} fill className="object-cover" />
-          <div className="thumb-cover-vignette" />
+          <div className="thumb-vignette" />
         </div>
 
-        {/* ③ Drop shadow */}
-        <div className="thumb-shadow" />
+        {/* Asset card — starts flush with the thumbnail edge, slides out on hover */}
+        <Link
+          href={assetSlug ? `/asset/${assetSlug}` : "/library"}
+          tabIndex={-1}
+          className={cn("flyout-card", flyLeft ? "flyout-left" : "flyout-right")}
+        >
+          <div className="w-44 overflow-hidden rounded-xl border border-border bg-base-elevated shadow-2xl shadow-black/60">
+            {/* Asset preview placeholder */}
+            <div className="relative aspect-video bg-base-surface flex items-center justify-center overflow-hidden">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(201,169,110,0.2) 0%, transparent 55%)",
+                }}
+              />
+              <span className="relative text-[9px] font-semibold tracking-widest text-content-muted uppercase">
+                Asset Preview
+              </span>
+            </div>
+            {/* Label */}
+            <div className="flex items-center justify-between px-3 py-2.5 border-t border-border">
+              <span className="text-[11px] font-semibold text-content-primary truncate mr-2">
+                {assetLabel ?? "View asset"}
+              </span>
+              <ArrowRight className="h-3 w-3 flex-shrink-0 text-accent" />
+            </div>
+          </div>
+        </Link>
       </div>
-
-      {/* ④ Asset flyout — outside perspective wrapper, pure 2D slide */}
-      <Link
-        href={assetSlug ? `/asset/${assetSlug}` : "/library"}
-        tabIndex={-1}
-        className={cn("flyout-card", flyLeft ? "flyout-left" : "flyout-right")}
-      >
-        <div className="w-44 overflow-hidden rounded-xl border border-border bg-base-elevated shadow-2xl shadow-black/60">
-          <div className="relative aspect-video bg-base-surface flex items-center justify-center overflow-hidden">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(201,169,110,0.22) 0%, transparent 60%)",
-              }}
-            />
-            <span className="relative text-[9px] font-semibold tracking-widest text-content-muted uppercase">
-              Asset Preview
-            </span>
-          </div>
-          <div className="flex items-center justify-between px-3 py-2.5 border-t border-border">
-            <span className="text-[11px] font-semibold text-content-primary truncate mr-2">
-              {assetLabel ?? "View asset"}
-            </span>
-            <ArrowRight className="h-3 w-3 flex-shrink-0 text-accent" />
-          </div>
-        </div>
-      </Link>
 
       {/* Video metadata */}
       <div className="mt-3 flex items-start gap-2.5 px-0.5">
