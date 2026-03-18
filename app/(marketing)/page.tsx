@@ -542,6 +542,9 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "1.8M views",
     image: "/thumbnails/thumb-1.jpeg",
     profileImage: "/thumbnails/pf-1.jpg",
+    assetSlug: "paypal-payment-received",
+    assetLabel: "PayPal Payment Received",
+    assetImage: "https://emhfnmdloxycguepybiy.supabase.co/storage/v1/object/public/thumbnails/paypal-payment-received/preview.png",
   },
   {
     videoTitle: "everything you need to know about selling digital products in 2026",
@@ -559,6 +562,9 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "30K views",
     image: "/thumbnails/thumb-3.jpeg",
     profileImage: "/thumbnails/pf-3.jpg",
+    assetSlug: "paypal-balance",
+    assetLabel: "PayPal Balance",
+    assetImage: "https://emhfnmdloxycguepybiy.supabase.co/storage/v1/object/public/thumbnails/paypal-balance/preview.png",
   },
   {
     videoTitle: "I Tested The Worst Rated Restaurants...",
