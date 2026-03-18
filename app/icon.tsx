@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 64, height: 64 };
+export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
 export default function Icon() {
@@ -8,34 +8,41 @@ export default function Icon() {
     (
       <div
         style={{
-          width: 64,
-          height: 64,
+          width: 512,
+          height: 512,
           background: "#050505",
-          borderRadius: 14,
+          borderRadius: 110,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
         }}
       >
-        {/* Horizontal arm */}
+        {/* Vertical arm — no borderRadius = hard pixel edges */}
         <div
           style={{
             position: "absolute",
-            width: 54,
-            height: 16,
+            width: 72,
+            height: 460,
             background: "#C9A96E",
-            borderRadius: "50%",
           }}
         />
-        {/* Vertical arm */}
+        {/* Horizontal arm — no borderRadius = hard pixel edges */}
         <div
           style={{
             position: "absolute",
-            width: 16,
-            height: 54,
+            width: 460,
+            height: 72,
             background: "#C9A96E",
-            borderRadius: "50%",
+          }}
+        />
+        {/* Center overlap square to fill the intersection cleanly */}
+        <div
+          style={{
+            position: "absolute",
+            width: 72,
+            height: 72,
+            background: "#C9A96E",
           }}
         />
       </div>
