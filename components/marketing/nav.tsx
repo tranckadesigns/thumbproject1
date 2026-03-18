@@ -10,6 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { signOutAction } from "@/app/(auth)/actions";
 import { FavoritesNavButton } from "@/components/ui/favorites-nav-button";
 import { cn } from "@/lib/utils/cn";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 interface NavProps {
   isLoggedIn?: boolean;
@@ -59,7 +60,18 @@ export function Nav({ isLoggedIn, hasSubscription, email, displayName }: NavProp
   const dropdownRef = useRef<HTMLDivElement>(null);
   const initials = getInitials(displayName, email);
 
+  const [liveAvatarUrl, setLiveAvatarUrl] = useState<string | undefined>(undefined);
+
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    if (!supabase) return;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const url = session?.user?.user_metadata?.avatar_url as string | undefined;
+      setLiveAvatarUrl(url ?? undefined);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
   useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -95,10 +107,15 @@ export function Nav({ isLoggedIn, hasSubscription, email, displayName }: NavProp
         <div ref={dropdownRef} className="relative">
           <button
             onClick={() => setDropdownOpen(o => !o)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
+            className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
             aria-label="Account menu"
           >
-            {initials}
+            {liveAvatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={liveAvatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              initials
+            )}
           </button>
 
           {dropdownOpen && (
@@ -147,10 +164,15 @@ export function Nav({ isLoggedIn, hasSubscription, email, displayName }: NavProp
         <div ref={dropdownRef} className="relative">
           <button
             onClick={() => setDropdownOpen(o => !o)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
+            className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
             aria-label="Account menu"
           >
-            {initials}
+            {liveAvatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={liveAvatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              initials
+            )}
           </button>
 
           {dropdownOpen && (
