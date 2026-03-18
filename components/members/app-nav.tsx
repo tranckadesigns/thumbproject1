@@ -9,6 +9,7 @@ import { Wordmark } from "@/components/brand/wordmark";
 import { UnlockButton } from "@/components/ui/unlock-button";
 import { FavoritesNavButton } from "@/components/ui/favorites-nav-button";
 import { cn } from "@/lib/utils/cn";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 interface AppNavProps {
   email: string;
@@ -79,6 +80,18 @@ export function AppNav({ email, displayName, avatarUrl, hasSubscription = false 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const initials = getInitials(displayName, email);
 
+  // Keep avatar in sync with live browser session — layout caching means
+  // the server-rendered avatarUrl prop can be stale after client navigations.
+  const [liveAvatarUrl, setLiveAvatarUrl] = useState(avatarUrl);
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    if (!supabase) return;
+    supabase.auth.getUser().then(({ data }) => {
+      const url = data.user?.user_metadata?.avatar_url as string | undefined;
+      if (url) setLiveAvatarUrl(url);
+    });
+  }, []);
+
   // Close dropdown on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -125,9 +138,9 @@ export function AppNav({ email, displayName, avatarUrl, hasSubscription = false 
                 className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
                 aria-label="Account menu"
               >
-                {avatarUrl ? (
+                {liveAvatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                  <img src={liveAvatarUrl} alt="" className="h-full w-full object-cover" />
                 ) : (
                   initials
                 )}
