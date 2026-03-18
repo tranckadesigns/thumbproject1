@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { Reveal } from '@/components/ui/reveal'
 
 function CountUp({ to, decimals = 1, suffix = '', duration = 1500 }: {
@@ -35,6 +36,7 @@ function CountUp({ to, decimals = 1, suffix = '', duration = 1500 }: {
 
 interface CardProps {
   withOverlay: boolean
+  image: string
   title: string
   channel: string
   views: string
@@ -42,7 +44,7 @@ interface CardProps {
   animated?: boolean
 }
 
-function VideoCard({ withOverlay, title, channel, views, ctr, animated }: CardProps) {
+function VideoCard({ withOverlay, image, title, channel, views, ctr, animated }: CardProps) {
   return (
     <div className={`flex flex-col rounded-2xl border p-4 ${
       withOverlay
@@ -52,14 +54,7 @@ function VideoCard({ withOverlay, title, channel, views, ctr, animated }: CardPr
 
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden rounded-xl bg-[#0d0d0d]">
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(135deg, #180d00 0%, #2a1400 55%, #0d0800 100%)' }}
-        />
-        <div
-          className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, #FF8C00 0%, transparent 70%)' }}
-        />
+        <Image src={image} alt={title} fill className="object-cover" />
         <div className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5">
           <span className="text-[11px] font-medium text-white">14:32</span>
         </div>
@@ -137,6 +132,7 @@ export function CtrImpactSection() {
               <p className="mb-2.5 text-xs font-medium text-content-muted">Without PSDfuel</p>
               <VideoCard
                 withOverlay={false}
+                image="/thumbnails/ctr-bad.jpg"
                 title="How Much Money I Made From YouTube This Month"
                 channel="JakeOnline"
                 views="28K"
@@ -190,6 +186,7 @@ export function CtrImpactSection() {
 
                 <VideoCard
                   withOverlay
+                  image="/thumbnails/ctr-good.jpg"
                   title="I Made $24,180 on YouTube This Month (Revenue Breakdown)"
                   channel="MarkBuilds"
                   views="847K"
