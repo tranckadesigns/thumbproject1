@@ -62,7 +62,9 @@ function VideoCard({ withOverlay, image, title, channel, views, ctr, animated }:
 
       {/* YouTube metadata */}
       <div className="mt-3 flex gap-3">
-        <div className="h-9 w-9 shrink-0 rounded-full bg-white/8 border border-border" />
+        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-border">
+          <Image src="/thumbnails/pf-1.jpg" alt={channel} fill className="object-cover" />
+        </div>
         <div className="min-w-0">
           <p className="line-clamp-2 text-sm font-medium leading-snug text-content-primary">{title}</p>
           <p className="mt-1 text-xs text-content-muted">{channel} · {views} views · 2 days ago</p>
