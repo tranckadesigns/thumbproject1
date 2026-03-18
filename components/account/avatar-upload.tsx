@@ -63,6 +63,9 @@ export function AvatarUpload({ userId, currentUrl, initials }: AvatarUploadProps
       }
 
       setPreview(url);
+      // Refresh session so the updated user metadata is written to cookies
+      // before router.refresh() re-renders the server layout (AppNav).
+      await supabase.auth.refreshSession();
       router.refresh();
     });
   }
