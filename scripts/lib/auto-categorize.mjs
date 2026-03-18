@@ -89,10 +89,10 @@ const NICHE_SYNONYMS = {
   "instagram reels": "Instagram",
   "tiktok videos": "TikTok",
 
-  // E-commerce
+  // E-commerce platforms (specific platforms, NOT the broad "E-Commerce" category)
   "woocommerce":  "Shopify",
-  "e-commerce":   "E-Commerce",
-  "ecommerce":    "E-Commerce",
+  "etsy shop":    "Etsy",
+  "etsy seller":  "Etsy",
 };
 
 function normalizeNiche(name) {
@@ -141,11 +141,10 @@ Rules for "primary":
 - MUST be one of the broad categories listed above, copied exactly
 
 Rules for "niches":
-- A niche is a recognizable BRAND or PLATFORM ECOSYSTEM that multiple assets could share
-- Good niches: "Apple", "Android", "Trading", "Crypto", "Shopify", "Fitness", "Gaming", "YouTube"
-- Bad niches: "iOS" (use "Apple" instead), "MetaTrader" (use "Trading"), "Screen Time" (feature, not ecosystem), "Weekly Stats" (too generic)
-- NEVER suggest two niches that overlap or mean the same thing — pick only the parent brand (e.g. "Apple" covers iOS/iPhone/iPad — do NOT also add "iOS")
-- Ask yourself: "Would someone browse a collection of assets in this niche?" If no, skip it
+- A niche is a specific BRAND or PLATFORM — never one of the broad categories listed above
+- Good niches: "Apple", "Spotify", "Etsy", "Amazon", "Shopify", "Trading", "Crypto", "Fitness", "Gaming", "YouTube"
+- Bad niches: "E-Commerce" (that's a broad category), "iOS" (use "Apple"), "MetaTrader" (use "Trading"), "Weekly Stats" (too generic)
+- Ask yourself: "Is this a specific platform/brand someone would filter by?" If no, skip it.
 - Maximum 2 niches. One is often enough. Empty is fine.
 - Return valid JSON only, nothing else
 
@@ -195,10 +194,26 @@ export async function categorizeAsset(title, description, tags = []) {
     ?? (console.log("   ↩  Claude niet beschikbaar — keyword-fallback gebruikt"),
         keywordFallback(title, description, tags));
 
-  // Normalize niches: collapse synonyms, deduplicate
-  const normalized = [...new Set(raw.niches.map(normalizeNiche))];
+  // Normalize niches: collapse synonyms, deduplicate, remove any that match a broad category
+  const normalized = [...new Set(raw.niches.map(normalizeNiche))]
+    .filter((n) => !BROAD_CATEGORIES.includes(n));
 
   return { primary: raw.primary, niches: normalized };
+}
+
+/**
+ * Bepaalt ALLEEN niche-categorieën voor een asset.
+ * Gebruikt de primary category uit meta.json — herbeoordeelt deze NIET.
+ * Geeft altijd terug: string[]
+ */
+export async function getNiches(title, description, tags = []) {
+  const raw = await claudeCategorize(title, description, tags)
+    ?? { primary: "", niches: [] };
+
+  const normalized = [...new Set(raw.niches.map(normalizeNiche))]
+    .filter((n) => !BROAD_CATEGORIES.includes(n));
+
+  return normalized;
 }
 
 /**

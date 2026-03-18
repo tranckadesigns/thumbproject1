@@ -26,7 +26,8 @@ import { readdir, readFile, rename, mkdir, rm } from "fs/promises";
 import { existsSync } from "fs";
 import { join, resolve } from "path";
 import {
-  categorizeAsset,
+  BROAD_CATEGORIES,
+  getNiches,
   findOrCreateNiches,
   getBroadCategoryId,
   assignCategories,
@@ -100,8 +101,17 @@ async function run() {
     console.log(`⬆️  ${slug}`);
 
     try {
-      // ── Auto-categorisatie ────────────────────────────────────────────────
-      const { primary, niches } = await categorizeAsset(
+      // ── Categorisatie ─────────────────────────────────────────────────────
+      // Primary: use vision-AI category from meta.json (most accurate — sees the image).
+      // Fallback to "Growth" if missing or invalid.
+      const metaCategory = meta.category;
+      const primary = BROAD_CATEGORIES.includes(metaCategory) ? metaCategory : "Growth";
+      if (!BROAD_CATEGORIES.includes(metaCategory)) {
+        console.log(`   ⚠️  meta.json category '${metaCategory}' is onbekend — fallback naar 'Growth'`);
+      }
+
+      // Niches: determined by text AI (title + description + tags).
+      const niches = await getNiches(
         meta.title ?? slug,
         meta.short_description ?? "",
         meta.tags ?? []

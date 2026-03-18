@@ -81,38 +81,36 @@ async function generateMetaWithAI(client, slug, previewPath, categories) {
 
   const prompt = `You are writing product copy for PSDfuel — a premium library of fully editable PSD overlay assets for YouTube thumbnail designers.
 
-Every asset is a layered PSD file. The text, numbers, and colors in the preview are placeholder values — the buyer will replace them with their own content in Photoshop.
+Every asset is a layered PSD file. The text, numbers, and colors in the preview are placeholder values the buyer replaces in Photoshop.
 
-RULES for descriptions:
-- NEVER describe specific placeholder text, numbers, timestamps, or colors you see in the preview — those will be replaced by the user
-- NEVER describe individual sub-elements (e.g. "three stacked items with blue, red, and orange dots")
-- DO name what type of notification/overlay this IS (e.g. "Apple Reminders notification", "Stripe payout alert", "YouTube revenue card")
-- DO mention the visual style and what kind of thumbnail story it supports — in one confident sentence
-- NEVER say "perfect for", "ideal for", "great for" — that's filler
-- Keep it short, confident, and specific. Think premium product copy, not a visual alt-text description.
+Look carefully at the image and identify:
+1. The exact real-world platform or product it replicates (e.g. Etsy, Spotify, Stripe, Apple, Amazon, YouTube Studio, Google Analytics)
+2. The exact UI element type (e.g. sales overview panel, revenue chart, now playing card, order summary, analytics dashboard, countdown timer)
+
+Use both to write the title and descriptions — platform + UI type, specific and confident. Skip filler phrases. Do not describe placeholder values, colors, or individual sub-elements.
 
 Asset slug: "${slug}"
 
-EXISTING CATEGORIES (pick the single best fit — be precise, not lazy):
+EXISTING CATEGORIES (pick the single best fit):
 ${categoryList}
 
-If the asset truly doesn't fit any existing category, suggest a new one.
+If none fit, suggest a new one.
 
 Return this JSON:
 {
-  "title": "Short, sharp title. Max 4 words. Name the overlay type, not a feature.",
-  "short_description": "One sentence. Name what this overlay IS. Max 12 words. No filler.",
-  "full_description": "2 sentences. First: what this overlay represents and its visual style. Second: what thumbnail context it fits — without saying 'perfect for' or 'ideal for'. Zero visual blow-by-blow. Zero mention of placeholder values.",
+  "title": "Max 4 words. Platform + UI type. (e.g. 'Etsy Sales Overview', 'Spotify Now Playing', 'Stripe Revenue Chart')",
+  "short_description": "One sentence. What this overlay IS — platform and UI type. Max 12 words.",
+  "full_description": "2 sentences. First: which platform UI this replicates and its visual style. Second: what thumbnail context it supports — no 'perfect for' or 'ideal for'.",
   "category": "Exact name from the list above, or a new name if truly needed",
-  "new_category_description": "Only include if category is new — one short sentence describing the category. Otherwise omit.",
-  "style_type": "One of: Dark (dark background/theme) | Light (white or light background) | Minimal (stripped back, simple, lots of space) | Bold (high contrast, strong typography, heavy visuals) | Neon (bright glowing colors, vivid) | Gradient (gradient-heavy design)",
+  "new_category_description": "Only if category is new — one short sentence. Otherwise omit.",
+  "style_type": "One of: Dark | Light | Minimal | Bold | Neon | Gradient",
   "tags": ["max 5 tags", "lowercase", "what a designer would search"]
 }
 
 Return ONLY the JSON object.`;
 
   const response = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-sonnet-4-6",
     max_tokens: 600,
     messages: [
       {
