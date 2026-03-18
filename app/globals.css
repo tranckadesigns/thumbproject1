@@ -220,42 +220,68 @@
 }
 
 /* ── Thumbnail 3D folder hover effect ───────────────────────────────────────── */
-/* Spring easing: slight overshoot on the way in, smooth settle on the way out  */
+/*                                                                               */
+/*  Mental model: the thumbnail IS the folder cover. It is hinged on the        */
+/*  OPPOSITE side from where the asset flies out. So:                           */
+/*    – Right column: asset → right, hinge → left,  cover swings right          */
+/*    – Left  column: asset → left,  hinge → right, cover swings left           */
+/*  rotateY over the matching axis so the opening direction and the asset        */
+/*  direction are always the same. Spring easing (slight overshoot) = premium.  */
 
 .thumb-group {
   position: relative;
 }
 
-/* ① Folder interior — full-size panel sitting behind the cover */
+/* ① Folder interior — revealed as the cover swings open */
 .thumb-interior {
   position: absolute;
   inset: 0;
   border-radius: 0.75rem;
-  background: linear-gradient(168deg, #0D0D0D 0%, #111111 60%, #0F0F0F 100%);
+  background: linear-gradient(135deg, #0D0D0D 0%, #111 55%, #0E0E0E 100%);
   border: 1px solid #242424;
   pointer-events: none;
   overflow: hidden;
 }
 
-/* Accent line at the top of the interior — like a folder spine */
-.thumb-interior::before {
+/* Vertical accent line on the LEFT side — revealed for right-column cards */
+.thumb-interior-left::before {
   content: '';
   position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
+  left: 0;
+  inset-block: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
     transparent 5%,
-    rgba(201,169,110,0.55) 35%,
-    rgba(255,228,140,0.75) 50%,
-    rgba(201,169,110,0.55) 65%,
+    rgba(201,169,110,0.5) 30%,
+    rgba(255,228,140,0.7) 50%,
+    rgba(201,169,110,0.5) 70%,
     transparent 95%
   );
   opacity: 0;
-  transition: opacity 380ms ease;
+  transition: opacity 400ms ease;
 }
 
-/* Bottom label silhouette inside the folder */
+/* Vertical accent line on the RIGHT side — revealed for left-column cards */
+.thumb-interior-right::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  inset-block: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 5%,
+    rgba(201,169,110,0.5) 30%,
+    rgba(255,228,140,0.7) 50%,
+    rgba(201,169,110,0.5) 70%,
+    transparent 95%
+  );
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+/* Small label silhouette near the bottom of the interior */
 .thumb-interior::after {
   content: '';
   position: absolute;
@@ -263,10 +289,10 @@
   bottom: 0.85rem;
   height: 1.5rem;
   border-radius: 0.375rem;
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.045);
+  background: rgba(255,255,255,0.022);
+  border: 1px solid rgba(255,255,255,0.04);
   opacity: 0;
-  transition: opacity 380ms ease;
+  transition: opacity 420ms ease;
 }
 
 .thumb-group:hover .thumb-interior::before,
@@ -274,64 +300,84 @@
   opacity: 1;
 }
 
-/* ② Folder cover — the thumbnail, hinged at the bottom edge */
+/* ② Folder cover — the thumbnail                                               */
+/*    .hinge-left  → transform-origin: left  → right edge swings back (→ right) */
+/*    .hinge-right → transform-origin: right → left  edge swings back (← left)  */
 .thumb-cover {
   position: relative;
-  transform-origin: center bottom;
   will-change: transform;
   transition:
-    transform 580ms cubic-bezier(0.34, 1.38, 0.64, 1),
-    border-color 260ms ease;
+    transform     580ms cubic-bezier(0.34, 1.38, 0.64, 1),
+    border-color  260ms ease;
 }
 
-.thumb-group:hover .thumb-cover {
-  transform: rotateX(-14deg) translateY(-10px);
+/* Right-column card: hinge on left, cover opens rightward */
+.thumb-cover.hinge-left {
+  transform-origin: left center;
+}
+.thumb-group:hover .thumb-cover.hinge-left {
+  transform: rotateY(-20deg);
   border-color: #333333 !important;
 }
 
-/* Light sheen on the cover — subtle top-left reflection that appears on hover */
+/* Left-column card: hinge on right, cover opens leftward */
+.thumb-cover.hinge-right {
+  transform-origin: right center;
+}
+.thumb-group:hover .thumb-cover.hinge-right {
+  transform: rotateY(20deg);
+  border-color: #333333 !important;
+}
+
+/* Edge sheen — appears on the side the cover is swinging toward */
 .thumb-cover::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    150deg,
-    rgba(255,255,255,0.07) 0%,
-    rgba(255,255,255,0.01) 35%,
-    transparent 55%
-  );
-  opacity: 0;
   pointer-events: none;
+  opacity: 0;
   transition: opacity 580ms ease;
 }
-
+.thumb-cover.hinge-left::after {
+  background: linear-gradient(
+    to left,
+    rgba(255,255,255,0.06) 0%,
+    transparent 40%
+  );
+}
+.thumb-cover.hinge-right::after {
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0.06) 0%,
+    transparent 40%
+  );
+}
 .thumb-group:hover .thumb-cover::after {
   opacity: 1;
 }
 
-/* Bottom vignette inside the cover — deepens as it tilts */
+/* Bottom vignette deepens on hover */
 .thumb-cover-vignette {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  height: 60px;
-  background: linear-gradient(to top, rgba(0,0,0,0.28), transparent);
+  height: 56px;
+  background: linear-gradient(to top, rgba(0,0,0,0.26), transparent);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 580ms ease;
+  transition: opacity 500ms ease;
 }
-
 .thumb-group:hover .thumb-cover-vignette {
   opacity: 1;
 }
 
-/* ③ Drop shadow — detaches from the card and drops as it lifts */
+/* ③ Drop shadow — swells and drops as the cover lifts */
 .thumb-shadow {
   position: absolute;
   inset-inline: 2.5rem;
   bottom: -4px;
-  height: 18px;
+  height: 16px;
   border-radius: 50%;
   background: #000;
   filter: blur(18px);
@@ -342,10 +388,9 @@
     bottom   580ms cubic-bezier(0.34, 1.38, 0.64, 1),
     filter   580ms ease;
 }
-
 .thumb-group:hover .thumb-shadow {
-  opacity: 0.72;
-  bottom: -20px;
+  opacity: 0.68;
+  bottom: -18px;
   filter: blur(22px);
 }
 
@@ -359,32 +404,31 @@
   opacity: 0;
   pointer-events: none;
   transition:
-    opacity  460ms cubic-bezier(0.34, 1.38, 0.64, 1),
+    opacity   460ms cubic-bezier(0.34, 1.38, 0.64, 1),
     transform 460ms cubic-bezier(0.34, 1.38, 0.64, 1);
 }
-
 @media (min-width: 768px) {
   .flyout-card { display: flex; }
 }
 
+/* Right column: card flies right, same side the cover opens toward */
 .flyout-card.flyout-right {
   right: 0;
-  transform: translateX(-12px) scale(0.92);
+  transform: translateX(-14px) scale(0.91);
   transform-origin: left center;
 }
-
-.flyout-card.flyout-left {
-  left: 0;
-  transform: translateX(12px) scale(0.92);
-  transform-origin: right center;
-}
-
 .thumb-group:hover .flyout-card.flyout-right {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(calc(100% + 12px)) scale(1);
 }
 
+/* Left column: card flies left, same side the cover opens toward */
+.flyout-card.flyout-left {
+  left: 0;
+  transform: translateX(14px) scale(0.91);
+  transform-origin: right center;
+}
 .thumb-group:hover .flyout-card.flyout-left {
   opacity: 1;
   pointer-events: auto;

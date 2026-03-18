@@ -77,19 +77,21 @@ function ThumbnailMockup({
   return (
     <div className="thumb-group">
 
-      {/* Perspective context for the 3D fold */}
-      <div className="relative" style={{ perspective: "680px" }}>
+      {/* Perspective context — tight for a more dramatic rotateY effect */}
+      <div className="relative" style={{ perspective: "700px" }}>
 
-        {/* ① Folder interior — revealed behind the tilted cover */}
-        <div className="thumb-interior" />
+        {/* ① Folder interior — accent line on the side being revealed */}
+        <div className={cn("thumb-interior", flyLeft ? "thumb-interior-right" : "thumb-interior-left")} />
 
-        {/* ② Folder cover — the thumbnail, hinged at the bottom */}
-        <div className="thumb-cover aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated">
+        {/* ② Folder cover — hinge on the side OPPOSITE to where the asset flies */}
+        {/*   flyLeft → hinge-right (right edge fixed, left swings back)          */}
+        {/*   flyRight → hinge-left (left edge fixed, right swings back)          */}
+        <div className={cn("thumb-cover aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated", flyLeft ? "hinge-right" : "hinge-left")}>
           <Image src={image} alt={videoTitle} fill className="object-cover" />
           <div className="thumb-cover-vignette" />
         </div>
 
-        {/* ③ Drop shadow — detaches and falls as the cover lifts */}
+        {/* ③ Drop shadow */}
         <div className="thumb-shadow" />
       </div>
 
