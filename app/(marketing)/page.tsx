@@ -75,42 +75,29 @@ function ThumbnailMockup({
   flyLeft,
 }: ThumbnailMockupProps) {
   return (
-    <div className="group relative">
+    <div className="thumb-group">
 
-      {/* 3D folder — perspective wrapper keeps the tilt contained */}
-      <div className="relative" style={{ perspective: "720px" }}>
+      {/* Perspective context for the 3D fold */}
+      <div className="relative" style={{ perspective: "680px" }}>
 
-        {/* Folder base: the "shelf" that peeks out as the cover opens */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3.5 translate-y-0.5 rounded-b-xl border border-border bg-base-surface opacity-0 transition-all duration-500 ease-out group-hover:opacity-100" />
+        {/* ① Folder interior — revealed behind the tilted cover */}
+        <div className="thumb-interior" />
 
-        {/* Folder cover (thumbnail) — lifts and tilts back from the bottom edge */}
-        <div
-          className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated [will-change:transform] transition-all duration-500 ease-out group-hover:border-border-strong group-hover:[transform:rotateX(-13deg)_translateY(-10px)]"
-          style={{ transformOrigin: "center bottom" }}
-        >
+        {/* ② Folder cover — the thumbnail, hinged at the bottom */}
+        <div className="thumb-cover aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated">
           <Image src={image} alt={videoTitle} fill className="object-cover" />
-          {/* Inner bottom vignette — reinforces depth as cover tilts */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="thumb-cover-vignette" />
         </div>
 
-        {/* Drop shadow — grows and drops as the cover lifts */}
-        <div className="pointer-events-none absolute inset-x-10 -bottom-1 h-4 rounded-full bg-black/50 opacity-0 blur-xl transition-all duration-500 ease-out group-hover:-bottom-4 group-hover:opacity-70" />
+        {/* ③ Drop shadow — detaches and falls as the cover lifts */}
+        <div className="thumb-shadow" />
       </div>
 
-      {/* Asset flyout card — outside the perspective wrapper, slides in 2D */}
+      {/* ④ Asset flyout — outside perspective wrapper, pure 2D slide */}
       <Link
         href={assetSlug ? `/asset/${assetSlug}` : "/library"}
         tabIndex={-1}
-        className={cn(
-          "hidden md:flex flex-col absolute top-3 z-20",
-          "pointer-events-none opacity-0",
-          "transition-all duration-500 ease-out",
-          "group-hover:pointer-events-auto group-hover:opacity-100",
-          flyLeft
-            ? "left-0 [transform:translateX(10px)_scale(0.94)] group-hover:[transform:translateX(calc(-100%-12px))_scale(1)]"
-            : "right-0 [transform:translateX(-10px)_scale(0.94)] group-hover:[transform:translateX(calc(100%+12px))_scale(1)]"
-        )}
-        style={{ transformOrigin: flyLeft ? "right center" : "left center" }}
+        className={cn("flyout-card", flyLeft ? "flyout-left" : "flyout-right")}
       >
         <div className="w-44 overflow-hidden rounded-xl border border-border bg-base-elevated shadow-2xl shadow-black/60">
           <div className="relative aspect-video bg-base-surface flex items-center justify-center overflow-hidden">
@@ -118,7 +105,7 @@ function ThumbnailMockup({
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(201,169,110,0.2) 0%, transparent 60%)",
+                  "linear-gradient(135deg, rgba(201,169,110,0.22) 0%, transparent 60%)",
               }}
             />
             <span className="relative text-[9px] font-semibold tracking-widest text-content-muted uppercase">
