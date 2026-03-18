@@ -61,6 +61,7 @@ interface ThumbnailMockupProps {
   profileImage: string;
   assetSlug?: string;
   assetLabel?: string;
+  assetImage?: string;
   flyLeft?: boolean;
 }
 
@@ -72,6 +73,7 @@ function ThumbnailMockup({
   profileImage,
   assetSlug,
   assetLabel,
+  assetImage,
   flyLeft,
 }: ThumbnailMockupProps) {
   return (
@@ -94,18 +96,16 @@ function ThumbnailMockup({
           className={cn("flyout-card", flyLeft ? "flyout-left" : "flyout-right")}
         >
           <div className="w-44 overflow-hidden rounded-xl border border-border bg-base-elevated shadow-2xl shadow-black/60">
-            {/* Asset preview placeholder */}
-            <div className="relative aspect-video bg-base-surface flex items-center justify-center overflow-hidden">
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(201,169,110,0.2) 0%, transparent 55%)",
-                }}
-              />
-              <span className="relative text-[9px] font-semibold tracking-widest text-content-muted uppercase">
-                Asset Preview
-              </span>
+            {/* Asset preview */}
+            <div className="relative aspect-video bg-base-surface overflow-hidden">
+              {assetImage ? (
+                <Image src={assetImage} alt={assetLabel ?? "Asset preview"} fill className="object-cover" />
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(135deg, rgba(201,169,110,0.2) 0%, transparent 55%)" }}
+                />
+              )}
             </div>
             {/* Label */}
             <div className="flex items-center justify-between px-3 py-2.5 border-t border-border">
@@ -548,6 +548,7 @@ const thumbnailData: ThumbnailMockupProps[] = [
     profileImage: "/thumbnails/pf-2.jpg",
     assetSlug: "etsy-sales",
     assetLabel: "Etsy Sales Overview",
+    assetImage: "https://emhfnmdloxycguepybiy.supabase.co/storage/v1/object/public/thumbnails/etsy-sales/preview.png",
   },
   {
     videoTitle: "How To Make Money Online as a Teenager…",
