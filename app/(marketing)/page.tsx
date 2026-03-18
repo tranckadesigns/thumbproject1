@@ -61,6 +61,7 @@ interface ThumbnailMockupProps {
   profileImage: string;
   assetSlug?: string;
   assetLabel?: string;
+  flyLeft?: boolean;
 }
 
 function ThumbnailMockup({
@@ -71,30 +72,47 @@ function ThumbnailMockup({
   profileImage,
   assetSlug,
   assetLabel,
+  flyLeft,
 }: ThumbnailMockupProps) {
   return (
     <div className="group relative">
-      {/* Thumbnail — subtle lift on hover, no 3D tilt */}
-      <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-400 ease-out [will-change:transform] group-hover:border-border-strong group-hover:-translate-y-1 group-hover:shadow-xl group-hover:shadow-black/40">
-        <Image src={image} alt={videoTitle} fill className="object-cover" />
+
+      {/* 3D folder — perspective wrapper keeps the tilt contained */}
+      <div className="relative" style={{ perspective: "720px" }}>
+
+        {/* Folder base: the "shelf" that peeks out as the cover opens */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3.5 translate-y-0.5 rounded-b-xl border border-border bg-base-surface opacity-0 transition-all duration-500 ease-out group-hover:opacity-100" />
+
+        {/* Folder cover (thumbnail) — lifts and tilts back from the bottom edge */}
+        <div
+          className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated [will-change:transform] transition-all duration-500 ease-out group-hover:border-border-strong group-hover:[transform:rotateX(-13deg)_translateY(-10px)]"
+          style={{ transformOrigin: "center bottom" }}
+        >
+          <Image src={image} alt={videoTitle} fill className="object-cover" />
+          {/* Inner bottom vignette — reinforces depth as cover tilts */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </div>
+
+        {/* Drop shadow — grows and drops as the cover lifts */}
+        <div className="pointer-events-none absolute inset-x-10 -bottom-1 h-4 rounded-full bg-black/50 opacity-0 blur-xl transition-all duration-500 ease-out group-hover:-bottom-4 group-hover:opacity-70" />
       </div>
 
-      {/* Asset flyout card — desktop only, slides out from the right edge */}
+      {/* Asset flyout card — outside the perspective wrapper, slides in 2D */}
       <Link
         href={assetSlug ? `/asset/${assetSlug}` : "/library"}
         tabIndex={-1}
-        className="hidden md:flex flex-col absolute top-3 right-0 z-20
-          pointer-events-none opacity-0
-          translate-x-0 scale-[0.94]
-          transition-all duration-400 ease-out
-          group-hover:pointer-events-auto
-          group-hover:opacity-100
-          group-hover:translate-x-[calc(100%+10px)]
-          group-hover:scale-100"
-        style={{ transformOrigin: "left center" }}
+        className={cn(
+          "hidden md:flex flex-col absolute top-3 z-20",
+          "pointer-events-none opacity-0",
+          "transition-all duration-500 ease-out",
+          "group-hover:pointer-events-auto group-hover:opacity-100",
+          flyLeft
+            ? "left-0 [transform:translateX(10px)_scale(0.94)] group-hover:[transform:translateX(calc(-100%-12px))_scale(1)]"
+            : "right-0 [transform:translateX(-10px)_scale(0.94)] group-hover:[transform:translateX(calc(100%+12px))_scale(1)]"
+        )}
+        style={{ transformOrigin: flyLeft ? "right center" : "left center" }}
       >
         <div className="w-44 overflow-hidden rounded-xl border border-border bg-base-elevated shadow-2xl shadow-black/60">
-          {/* Placeholder asset preview */}
           <div className="relative aspect-video bg-base-surface flex items-center justify-center overflow-hidden">
             <div
               className="absolute inset-0"
@@ -107,7 +125,6 @@ function ThumbnailMockup({
               Asset Preview
             </span>
           </div>
-          {/* Label + arrow */}
           <div className="flex items-center justify-between px-3 py-2.5 border-t border-border">
             <span className="text-[11px] font-semibold text-content-primary truncate mr-2">
               {assetLabel ?? "View asset"}
@@ -585,7 +602,7 @@ function RealThumbnailsSection() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
           {thumbnailData.map((t, i) => (
             <Reveal key={t.videoTitle} delay={i * 80}>
-              <ThumbnailMockup {...t} />
+              <ThumbnailMockup {...t} flyLeft={i % 2 === 0} />
             </Reveal>
           ))}
         </div>
