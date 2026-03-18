@@ -45,11 +45,11 @@ export function StickyCTABar({ hasSubscription }: { hasSubscription?: boolean })
 
         <div className="flex flex-1 items-center justify-between gap-3 sm:flex-none sm:justify-end">
           <p className="text-sm font-semibold text-content-primary sm:hidden">
-            From <span className="text-accent">$19</span>/month
+            From <span className="text-accent">$30</span>/month
           </p>
           <div className="flex items-center gap-2">
             <p className="hidden text-sm font-semibold text-accent sm:block">
-              From $19/month
+              From $30/month
             </p>
             <Link
               href="/signup"

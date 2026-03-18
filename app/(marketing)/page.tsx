@@ -721,7 +721,7 @@ function CtaSection({ creatorCount }: { creatorCount: number }) {
           </div>
           <div className="mt-6 flex flex-col items-center gap-2">
             <p className="text-sm text-content-muted">
-              Monthly from $19 · Yearly from $149 · Cancel anytime
+              Monthly from $30 · Yearly from $240 · Cancel anytime
             </p>
             <p className="flex items-center gap-1.5 text-xs text-content-muted/60">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent/60">

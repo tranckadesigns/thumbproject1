@@ -402,7 +402,7 @@ function PricingCta() {
               Monthly
             </p>
             <p className="text-3xl font-semibold tracking-tighter text-content-primary">
-              $19 <span className="text-base font-normal text-content-muted">/mo</span>
+              $30 <span className="text-base font-normal text-content-muted">/mo</span>
             </p>
             <p className="mt-1.5 text-xs text-content-muted">Cancel anytime.</p>
             <MonthlyCtaButton />
@@ -415,13 +415,13 @@ function PricingCta() {
                 Yearly
               </p>
               <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent">
-                Save 35%
+                Save 33%
               </span>
             </div>
             <p className="text-3xl font-semibold tracking-tighter text-content-primary">
-              $149 <span className="text-base font-normal text-content-muted">/yr</span>
+              $240 <span className="text-base font-normal text-content-muted">/yr</span>
             </p>
-            <p className="mt-1.5 text-xs text-content-muted">$12.42/mo equivalent.</p>
+            <p className="mt-1.5 text-xs text-content-muted">$20/mo equivalent.</p>
             <YearlyCtaButton />
           </div>
         </div>

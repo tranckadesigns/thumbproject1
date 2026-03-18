@@ -294,7 +294,7 @@ export function Nav({ isLoggedIn, hasSubscription, email, displayName }: NavProp
                       Get access
                     </Link>
                     <p className="text-center text-xs text-content-muted">
-                      Monthly from $19 · Cancel anytime
+                      Monthly from $30 · Cancel anytime
                     </p>
                   </>
                 )}

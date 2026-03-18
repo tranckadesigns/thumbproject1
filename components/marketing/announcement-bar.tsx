@@ -29,7 +29,7 @@ export function AnnouncementBar() {
 
       <p className="text-content-secondary">
         <span className="font-medium text-content-primary">Founding member pricing</span>
-        {" — "}lock in <span className="font-semibold text-accent">$19/mo</span> before April 30, 2026.{" "}
+        {" — "}lock in <span className="font-semibold text-accent">$30/mo</span> before April 30, 2026.{" "}
         <Link
           href="/pricing"
           className="font-medium text-content-primary underline underline-offset-2 transition-colors hover:text-accent"

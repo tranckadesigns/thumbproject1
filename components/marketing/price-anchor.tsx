@@ -27,7 +27,7 @@ const alternatives = [
   },
   {
     label: "PSDfuel",
-    price: "$19",
+    price: "$30",
     unit: "per month",
     note: "180+ assets, unlimited downloads",
     dim: false,
@@ -108,7 +108,7 @@ export function PriceAnchorSection() {
                 "active:scale-[0.97] transition-transform"
               )}
             >
-              Start for $19/mo
+              Start for $30/mo
             </Link>
             <p className="text-xs text-content-muted">
               Cancel anytime · No questions asked

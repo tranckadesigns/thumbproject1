@@ -40,7 +40,7 @@ export function PricingPreviewSection({ assetCount, categoryCount }: { assetCoun
                 <p className="text-sm font-medium text-content-muted">Monthly</p>
                 <div className="mt-4 flex items-baseline gap-1.5">
                   <span className="text-5xl font-semibold tracking-tightest text-content-primary">
-                    $19
+                    $30
                   </span>
                   <span className="text-sm text-content-muted">/ month</span>
                 </div>
@@ -84,7 +84,7 @@ export function PricingPreviewSection({ assetCount, categoryCount }: { assetCoun
               {/* Best value badge */}
               <div className="absolute -top-3.5 right-6">
                 <span className="rounded-full bg-accent px-3.5 py-1 text-[11px] font-semibold text-[#0a0a0a]">
-                  Best value · Save 35%
+                  Best value · Save 33%
                 </span>
               </div>
 
@@ -92,14 +92,14 @@ export function PricingPreviewSection({ assetCount, categoryCount }: { assetCoun
                 <p className="text-sm font-medium text-content-muted">Annual</p>
                 <div className="mt-4 flex items-baseline gap-1.5">
                   <span className="text-5xl font-semibold tracking-tightest text-content-primary">
-                    $149
+                    $240
                   </span>
                   <span className="text-sm text-content-muted">/ year</span>
                 </div>
                 <div className="mt-2 flex items-center gap-2.5">
-                  <span className="text-xs text-content-muted">$12.42 / month</span>
+                  <span className="text-xs text-content-muted">$20 / month</span>
                   <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
-                    vs $228/yr on monthly
+                    vs $360/yr on monthly
                   </span>
                 </div>
               </div>

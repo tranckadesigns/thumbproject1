@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 };
 
 const PLAN_LABELS: Record<string, string> = {
-  monthly: "Monthly — $19/mo",
-  yearly:  "Yearly — $149/yr",
+  monthly: "Monthly — $30/mo",
+  yearly:  "Yearly — $240/yr",
 };
 
 const STATUS_BADGE: Record<string, { label: string; variant: "success" | "error" | "secondary" }> = {

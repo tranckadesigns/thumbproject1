@@ -73,7 +73,7 @@ export function FeaturedPlanCard({ assetCount, categoryCount }: { assetCount: nu
 
         <div className="mt-2 space-y-0.5">
           <p className="text-sm text-accent font-medium">
-            {siteConfig.plans.yearly.savings} — $12.42/mo equivalent
+            {siteConfig.plans.yearly.savings} — $20/mo equivalent
           </p>
           <p className="text-xs text-content-muted">Billed annually. Cancel anytime.</p>
         </div>

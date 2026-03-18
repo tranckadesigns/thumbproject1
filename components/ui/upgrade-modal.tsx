@@ -65,7 +65,7 @@ export function UpgradeModal({ onClose }: UpgradeModalProps) {
             onClick={onClose}
             className={cn(buttonVariants({ size: "lg" }), "w-full btn-shine")}
           >
-            Get access — from $19/mo
+            Get access — from $30/mo
           </Link>
           <button
             onClick={onClose}

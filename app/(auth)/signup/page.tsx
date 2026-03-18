@@ -34,7 +34,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           <p className="text-xs text-content-secondary">
             You&apos;re signing up for the{" "}
             <span className="font-semibold text-content-primary">
-              {isYearly ? "Yearly plan ($149/yr · Save 35%)" : "Monthly plan ($19/mo)"}
+              {isYearly ? "Yearly plan ($240/yr · Save 33%)" : "Monthly plan ($30/mo)"}
             </span>
           </p>
         </div>
