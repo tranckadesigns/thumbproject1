@@ -55,8 +55,8 @@ function VideoCard({ withOverlay, image, title, channel, views, ctr, animated }:
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden rounded-xl bg-[#0d0d0d]">
         <Image src={image} alt={title} fill className="object-cover" />
-        <div className="absolute bottom-1.5 right-1.5 rounded-sm bg-black/90 px-1 py-px">
-          <span className="text-[11px] font-semibold leading-none text-white">14:32</span>
+        <div className="absolute bottom-1.5 right-1.5 rounded-[2px] bg-black/90" style={{ padding: '1px 4px' }}>
+          <span className="text-[11px] font-medium text-white" style={{ lineHeight: 1 }}>14:32</span>
         </div>
       </div>
 
