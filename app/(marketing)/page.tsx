@@ -14,6 +14,7 @@ import {
   Download,
   Check,
   Shield,
+  ArrowRight,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
@@ -58,6 +59,8 @@ interface ThumbnailMockupProps {
   views: string;
   image: string;
   profileImage: string;
+  assetSlug?: string;
+  assetLabel?: string;
 }
 
 function ThumbnailMockup({
@@ -66,13 +69,63 @@ function ThumbnailMockup({
   views,
   image,
   profileImage,
+  assetSlug,
+  assetLabel,
 }: ThumbnailMockupProps) {
-
   return (
-    <div>
-      <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated transition-colors duration-300 hover:border-border-strong">
-        <Image src={image} alt={videoTitle} fill className="object-cover" />
+    <div className="group relative">
+      {/* Perspective wrapper — gives the 3D context for the folder tilt */}
+      <div className="relative" style={{ perspective: "900px" }}>
+
+        {/* Thumbnail — tilts back on hover like a folder lid opening */}
+        <div
+          className="relative aspect-video overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-500 ease-out [will-change:transform] group-hover:border-border-strong group-hover:[transform:rotateX(-9deg)_translateY(-6px)]"
+          style={{ transformOrigin: "center bottom" }}
+        >
+          <Image src={image} alt={videoTitle} fill className="object-cover" />
+          {/* depth shadow that intensifies when tilted */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </div>
+
+        {/* Asset flyout card — desktop only, slides out from underneath on hover */}
+        <Link
+          href={assetSlug ? `/asset/${assetSlug}` : "/library"}
+          tabIndex={-1}
+          className="hidden md:block absolute bottom-0 left-4 z-10
+            pointer-events-none opacity-0
+            [transform:translateY(-10px)_scale(0.88)]
+            transition-all duration-500 ease-out
+            group-hover:pointer-events-auto
+            group-hover:opacity-100
+            group-hover:[transform:translateY(calc(100%_+_12px))_scale(1)]"
+          style={{ transformOrigin: "top left" }}
+        >
+          <div className="w-48 overflow-hidden rounded-xl border border-border bg-base-elevated shadow-2xl shadow-black/70">
+            {/* Placeholder asset preview */}
+            <div className="relative aspect-video bg-base-surface flex items-center justify-center overflow-hidden">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(201,169,110,0.18) 0%, transparent 65%)",
+                }}
+              />
+              <span className="relative text-[9px] font-semibold tracking-widest text-content-muted uppercase">
+                Asset Preview
+              </span>
+            </div>
+            {/* Label + arrow */}
+            <div className="flex items-center justify-between px-3 py-2.5 border-t border-border">
+              <span className="text-[11px] font-semibold text-content-primary truncate mr-2">
+                {assetLabel ?? "View asset"}
+              </span>
+              <ArrowRight className="h-3 w-3 flex-shrink-0 text-accent" />
+            </div>
+          </div>
+        </Link>
       </div>
+
+      {/* Video metadata */}
       <div className="mt-3 flex items-start gap-2.5 px-0.5">
         <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border">
           <Image src={profileImage} alt={channel} fill className="object-cover" />
