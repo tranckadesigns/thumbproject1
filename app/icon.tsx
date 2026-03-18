@@ -18,31 +18,24 @@ export default function Icon() {
           position: "relative",
         }}
       >
-        {/* Vertical arm — no borderRadius = hard pixel edges */}
-        <div
-          style={{
-            position: "absolute",
-            width: 72,
-            height: 460,
-            background: "#C9A96E",
-          }}
-        />
-        {/* Horizontal arm — no borderRadius = hard pixel edges */}
+        {/* Horizontal arm — wide ellipse = pointed left/right tips */}
         <div
           style={{
             position: "absolute",
             width: 460,
-            height: 72,
+            height: 110,
             background: "#C9A96E",
+            borderRadius: "50%",
           }}
         />
-        {/* Center overlap square to fill the intersection cleanly */}
+        {/* Vertical arm — tall ellipse = pointed top/bottom tips */}
         <div
           style={{
             position: "absolute",
-            width: 72,
-            height: 72,
+            width: 110,
+            height: 460,
             background: "#C9A96E",
+            borderRadius: "50%",
           }}
         />
       </div>
