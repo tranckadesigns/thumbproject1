@@ -79,9 +79,9 @@ export function MemberAssetCard({ asset, className, isFavorited = false }: Membe
             src={asset.thumbnail_url}
             alt={asset.title}
             fill
-            className="object-contain p-5"
-            style={{ filter: "drop-shadow(0 6px 20px rgba(0,0,0,0.55))" }}
-            unoptimized
+            sizes="(max-width: 639px) calc(50vw - 16px), (max-width: 1200px) calc(25vw - 12px), 284px"
+            quality={90}
+            className="object-contain p-2"
           />
         )}
 

@@ -83,9 +83,9 @@ export function NewThisMonthSection({
                         src={asset.thumbnail_url}
                         alt={asset.title}
                         fill
-                        className="object-contain p-4"
-                        style={{ filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.6))" }}
-                        unoptimized
+                        sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 1023px) calc(50vw - 40px), calc(25vw - 24px)"
+                        quality={90}
+                        className="object-contain p-2"
                       />
                     ) : (
                       <div className="absolute inset-0 p-4 flex flex-col justify-end gap-1.5 opacity-15">
