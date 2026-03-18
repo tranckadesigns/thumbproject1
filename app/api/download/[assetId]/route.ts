@@ -6,7 +6,7 @@ import { assetService } from "@/lib/services/index";
 import { hasActiveSubscription } from "@/lib/subscription";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ assetId: string }> }
 ) {
   const { assetId } = await params;
@@ -43,9 +43,13 @@ export async function GET(
       .createSignedUrl(asset.psd_file_key, 300); // 5 minutes — enough for slow connections
 
     if (!error && data?.signedUrl) {
-      // Log the download and increment counter (both fire-and-forget)
+      // Log the download with audit info, then increment counter (fire-and-forget)
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+        ?? request.headers.get("x-real-ip")
+        ?? null;
+      const userAgent = request.headers.get("user-agent") ?? null;
       sb.from("downloads")
-        .insert({ user_id: user.id, asset_id: asset.id })
+        .insert({ user_id: user.id, asset_id: asset.id, ip_address: ip, user_agent: userAgent })
         .then(({ error }) => { if (error) console.error("Download log failed:", error.message); });
       sb.rpc("increment_download_count", { asset_id: asset.id })
         .then(({ error }) => { if (error) console.error("Download count increment failed:", error.message); });
