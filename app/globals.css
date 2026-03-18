@@ -330,6 +330,21 @@
   .flyout-card { display: flex; }
 }
 
+/* Disable thumbnail lift on mobile — touch :hover during scroll feels buggy */
+@media (max-width: 767px) {
+  .thumb-cover {
+    will-change: auto;
+    transition: none;
+  }
+  .thumb-group:hover .thumb-cover {
+    transform: none;
+    box-shadow: none;
+  }
+  .thumb-group:hover .thumb-cover.connects-right { border-right-color: inherit; }
+  .thumb-group:hover .thumb-cover.connects-left  { border-left-color:  inherit; }
+  .thumb-group:hover .thumb-vignette { opacity: 0; }
+}
+
 /* Right column ─ card starts at right edge, slides right */
 .flyout-card.flyout-right {
   right: 0;
