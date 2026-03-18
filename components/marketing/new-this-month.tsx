@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal } from "@/components/ui/reveal";
 import type { Asset } from "@/types/asset";
 
@@ -19,10 +20,14 @@ export function NewThisMonthSection({
   assetCount,
   recentAssets,
   thisMonthCount,
+  isLoggedIn,
+  hasSubscription,
 }: {
   assetCount: number;
   recentAssets: Asset[];
   thisMonthCount: number;
+  isLoggedIn: boolean;
+  hasSubscription: boolean;
 }) {
   if (recentAssets.length === 0) return null;
 
@@ -68,9 +73,14 @@ export function NewThisMonthSection({
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {recentAssets.map((asset, i) => {
             const tag = assetTag(asset);
+            const href = hasSubscription && asset.slug
+              ? `/asset/${asset.slug}`
+              : isLoggedIn
+              ? "/pricing"
+              : "/signup";
             return (
               <Reveal key={asset.id} delay={i * 70}>
-                <div className="group relative overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
+                <Link href={href} className="group relative block overflow-hidden rounded-xl border border-border bg-base-elevated transition-all duration-300 hover:border-border-strong hover:shadow-elevated">
                   {/* Badge */}
                   <div className="absolute right-3 top-3 z-10">
                     <span className={tag.style}>{tag.label}</span>
@@ -100,7 +110,7 @@ export function NewThisMonthSection({
                     <p className="text-sm font-semibold text-content-primary">{asset.title}</p>
                     <p className="mt-0.5 text-xs text-content-muted">{asset.category}</p>
                   </div>
-                </div>
+                </Link>
               </Reveal>
             );
           })}

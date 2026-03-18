@@ -816,7 +816,7 @@ export default async function HomePage({
       <CategoryShowcaseSection stats={stats} categoryPreviews={categoryPreviews} />
 
       {/* 6 — Freshness signal: active product, new assets this month */}
-      <NewThisMonthSection assetCount={stats.assetCount} recentAssets={recentAssets} thisMonthCount={thisMonthCount} />
+      <NewThisMonthSection assetCount={stats.assetCount} recentAssets={recentAssets} thisMonthCount={thisMonthCount} isLoggedIn={!!user} hasSubscription={hasSubscription} />
 
       {/* 7 — Now that they've seen it, the problem lands harder */}
       <ProblemSection />
