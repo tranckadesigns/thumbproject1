@@ -47,13 +47,14 @@ export function DownloadButton({ assetId, slug: _slug, className }: DownloadButt
         throw new Error(body.error ?? "Download failed");
       }
 
-      const { url, filename } = await res.json();
-
-      // Fetch as blob so we can set the download filename regardless of origin
-      const fileRes = await fetch(url);
-      if (!fileRes.ok) throw new Error("Download failed");
-      const blob = await fileRes.blob();
+      // API returns ZIP binary directly
+      const blob = await res.blob();
       const objectUrl = URL.createObjectURL(blob);
+
+      // Derive filename from Content-Disposition or fall back to generic name
+      const disposition = res.headers.get("content-disposition") ?? "";
+      const match = disposition.match(/filename="([^"]+)"/);
+      const filename = match?.[1] ?? "psdfuel-asset.zip";
 
       const a = document.createElement("a");
       a.href = objectUrl;
