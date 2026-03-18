@@ -80,16 +80,19 @@ export function AppNav({ email, displayName, avatarUrl, hasSubscription = false 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const initials = getInitials(displayName, email);
 
-  // Keep avatar in sync with live browser session — layout caching means
-  // the server-rendered avatarUrl prop can be stale after client navigations.
+  // Keep avatar in sync with the live browser session.
+  // onAuthStateChange fires on mount (INITIAL_SESSION) and on every
+  // update (USER_UPDATED, TOKEN_REFRESHED), so the avatar is always current
+  // regardless of layout caching or client-side navigation.
   const [liveAvatarUrl, setLiveAvatarUrl] = useState(avatarUrl);
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     if (!supabase) return;
-    supabase.auth.getUser().then(({ data }) => {
-      const url = data.user?.user_metadata?.avatar_url as string | undefined;
-      if (url) setLiveAvatarUrl(url);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const url = session?.user?.user_metadata?.avatar_url as string | undefined;
+      setLiveAvatarUrl(url ?? undefined);
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   // Close dropdown on outside click
