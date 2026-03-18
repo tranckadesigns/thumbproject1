@@ -7,6 +7,7 @@ import { getSubscription } from "@/lib/subscription";
 import { stripe } from "@/lib/stripe";
 import { signOutAction } from "@/app/(auth)/actions";
 import { DisplayNameForm } from "@/components/account/display-name-form";
+import { AvatarUpload } from "@/components/account/avatar-upload";
 import { Badge } from "@/components/ui/badge";
 import { BillingPortalButton } from "@/components/members/billing-portal-button";
 import { UnlockButton } from "@/components/ui/unlock-button";
@@ -121,6 +122,24 @@ export default async function AccountPage() {
             </div>
 
             <div className="space-y-4">
+              <div>
+                <p className="mb-1.5 text-xs text-content-muted">Profile photo</p>
+                <AvatarUpload
+                  userId={user.id}
+                  currentUrl={user?.user_metadata?.avatar_url ?? undefined}
+                  initials={
+                    (() => {
+                      const name = (user?.user_metadata?.display_name as string | undefined)?.trim();
+                      if (name) {
+                        const parts = name.split(/\s+/);
+                        if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+                        return name.slice(0, 2).toUpperCase();
+                      }
+                      return ((user?.email ?? "u").split("@")[0]).slice(0, 2).toUpperCase();
+                    })()
+                  }
+                />
+              </div>
               <div>
                 <p className="mb-1.5 text-xs text-content-muted">Display name</p>
                 <DisplayNameForm

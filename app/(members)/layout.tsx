@@ -17,10 +17,11 @@ export default async function MembersLayout({
   if (!subscribed) redirect("/pricing");
 
   const displayName = (user?.user_metadata?.display_name as string | undefined) ?? undefined;
+  const avatarUrl = (user?.user_metadata?.avatar_url as string | undefined) ?? undefined;
 
   return (
     <div className="min-h-screen bg-base">
-      <AppNav email={user.email ?? ""} hasSubscription={subscribed} displayName={displayName} />
+      <AppNav email={user.email ?? ""} hasSubscription={subscribed} displayName={displayName} avatarUrl={avatarUrl} />
       <main className="pt-14">{children}</main>
     </div>
   );

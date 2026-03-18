@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils/cn";
 interface AppNavProps {
   email: string;
   displayName?: string;
+  avatarUrl?: string;
   hasSubscription?: boolean;
 }
 
@@ -70,7 +71,7 @@ const MOBILE_NO_SUB_LINKS = [
   { href: "/account", label: "Account", icon: Settings },
 ];
 
-export function AppNav({ email, displayName, hasSubscription = false }: AppNavProps) {
+export function AppNav({ email, displayName, avatarUrl, hasSubscription = false }: AppNavProps) {
   const mobileLinks = hasSubscription ? MOBILE_SUB_LINKS : MOBILE_NO_SUB_LINKS;
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -121,10 +122,15 @@ export function AppNav({ email, displayName, hasSubscription = false }: AppNavPr
             <div ref={dropdownRef} className="relative">
               <button
                 onClick={() => setDropdownOpen(o => !o)}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
+                className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-accent/20 text-xs font-semibold text-accent hover:bg-accent/30 transition-colors"
                 aria-label="Account menu"
               >
-                {initials}
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  initials
+                )}
               </button>
 
               {dropdownOpen && (
