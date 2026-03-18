@@ -89,6 +89,9 @@ function ThumbnailMockup({
           <div className="thumb-vignette" />
         </div>
 
+        {/* Invisible hover bridge — fills the gap between thumbnail and flyout card so hover doesn't break */}
+        <div aria-hidden className={cn("absolute top-0 bottom-0 z-10 w-5", flyLeft ? "-left-5" : "-right-5")} />
+
         {/* Asset card — starts flush with the thumbnail edge, slides out on hover */}
         <Link
           href={assetSlug ? `/asset/${assetSlug}` : "/library"}
