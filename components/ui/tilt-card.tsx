@@ -20,15 +20,12 @@ export function TiltCard({ children, className, strength = 7 }: TiltCardProps) {
     const y = (e.clientY - rect.top) / rect.height;
     const rotateX = (0.5 - y) * strength;
     const rotateY = (x - 0.5) * strength;
-    el.style.willChange = "transform";
     el.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
   }
 
   function onLeave() {
-    const el = ref.current;
-    if (!el) return;
-    el.style.transform = "perspective(700px) rotateX(0deg) rotateY(0deg)";
-    el.style.willChange = "auto";
+    if (ref.current)
+      ref.current.style.transform = "perspective(700px) rotateX(0deg) rotateY(0deg)";
   }
 
   return (
@@ -39,6 +36,7 @@ export function TiltCard({ children, className, strength = 7 }: TiltCardProps) {
       className={className}
       style={{
         transition: "transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        willChange: "transform",
       }}
     >
       {children}
