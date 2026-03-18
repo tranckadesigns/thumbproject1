@@ -546,6 +546,8 @@ const thumbnailData: ThumbnailMockupProps[] = [
     views: "38K views",
     image: "/thumbnails/thumb-2.jpeg",
     profileImage: "/thumbnails/pf-2.jpg",
+    assetSlug: "etsy-sales",
+    assetLabel: "Etsy Sales Overview",
   },
   {
     videoTitle: "How To Make Money Online as a Teenager…",
