@@ -132,7 +132,7 @@ export function CtrImpactSection() {
           <Reveal>
             <div>
               <p className="mb-2.5 text-xs font-medium text-content-muted">Without PSDfuel</p>
-              <div className="relative">
+              <div className="relative mt-3">
                 {/* Red X badge — top-left corner */}
                 <div
                   className="absolute -left-3 -top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-red-500/30 bg-base-elevated"
@@ -173,7 +173,7 @@ export function CtrImpactSection() {
 
               <p className="relative mb-2.5 text-xs font-semibold text-accent">With PSDfuel</p>
 
-              <div className="relative">
+              <div className="relative mt-3">
                 {/* Animated crown — top-right corner */}
                 <div
                   className="absolute -right-3 -top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-accent/30 bg-base-elevated"
