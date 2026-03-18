@@ -79,7 +79,7 @@ async function generateMetaWithAI(client, slug, previewPath, categories) {
     .map((c) => `  - "${c.name}": ${c.description}`)
     .join("\n");
 
-  const prompt = `You are writing product copy for PSDfuel — a premium library of fully editable PSD overlay assets for YouTube thumbnail designers.
+  const prompt = `You are writing product copy for PSDfuel — a premium library of fully editable PSD assets for YouTube thumbnail designers.
 
 Every asset is a layered PSD file. The text, numbers, and colors in the preview are placeholder values the buyer replaces in Photoshop.
 
@@ -88,6 +88,8 @@ Look carefully at the image and identify:
 2. The exact UI element type (e.g. sales overview panel, revenue chart, now playing card, order summary, analytics dashboard, countdown timer)
 
 Use both to write the title and descriptions — platform + UI type, specific and confident. Skip filler phrases. Do not describe placeholder values, colors, or individual sub-elements.
+
+IMPORTANT: Never use the word "overlay" anywhere in your output. Use "asset", "element", or describe the UI type directly.
 
 Asset slug: "${slug}"
 
@@ -99,7 +101,7 @@ If none fit, suggest a new one.
 Return this JSON:
 {
   "title": "Max 4 words. Platform + UI type. (e.g. 'Etsy Sales Overview', 'Spotify Now Playing', 'Stripe Revenue Chart')",
-  "short_description": "One sentence. What this overlay IS — platform and UI type. Max 12 words.",
+  "short_description": "One sentence. Platform + UI type only. No 'asset', 'overlay', 'for thumbnails', or similar. Max 10 words. Example: 'Etsy seller revenue stat card.' or 'Spotify Now Playing card.'",
   "full_description": "2 sentences. First: which platform UI this replicates and its visual style. Second: what thumbnail context it supports — no 'perfect for' or 'ideal for'.",
   "category": "Exact name from the list above, or a new name if truly needed",
   "new_category_description": "Only if category is new — one short sentence. Otherwise omit.",
@@ -182,7 +184,7 @@ async function run() {
         await addCategory(ai.category, ai.new_category_description);
       } else if (!existingNames.includes(ai.category)) {
         // Geen beschrijving meegestuurd — gebruik de categorie naam als fallback beschrijving
-        await addCategory(ai.category, `${ai.category} overlays and UI elements`);
+        await addCategory(ai.category, `${ai.category} assets and UI elements`);
       }
 
       const fileSizeMb = await getFileSizeMb(join(dir, `${slug}.psd`));
