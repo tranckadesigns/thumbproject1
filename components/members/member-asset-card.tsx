@@ -13,18 +13,18 @@ interface MemberAssetCardProps {
 }
 
 const categoryColors: Record<string, string> = {
-  Revenue:      "text-amber-400 bg-amber-400/10",
-  Subscribers:  "text-red-400 bg-red-400/10",
-  Growth:       "text-emerald-400 bg-emerald-400/10",
-  Alerts:       "text-yellow-400 bg-yellow-400/10",
-  Social:       "text-purple-400 bg-purple-400/10",
-  "E-Commerce": "text-lime-400 bg-lime-400/10",
-  Analytics:    "text-sky-400 bg-sky-400/10",
-  Challenges:   "text-orange-400 bg-orange-400/10",
-  Comparisons:  "text-slate-400 bg-slate-400/10",
-  Ratings:      "text-yellow-400 bg-yellow-400/10",
-  Timers:       "text-violet-400 bg-violet-400/10",
-  Reactions:    "text-pink-400 bg-pink-400/10",
+  Revenue:      "text-red-400 bg-red-500/15",
+  Subscribers:  "text-red-400 bg-red-500/15",
+  Growth:       "text-emerald-400 bg-emerald-500/15",
+  Alerts:       "text-yellow-400 bg-yellow-500/15",
+  Social:       "text-purple-400 bg-purple-500/15",
+  "E-Commerce": "text-lime-400 bg-lime-500/15",
+  Analytics:    "text-amber-400 bg-amber-500/15",
+  Challenges:   "text-orange-400 bg-orange-500/15",
+  Comparisons:  "text-sky-400 bg-sky-500/15",
+  Ratings:      "text-amber-400 bg-amber-500/15",
+  Timers:       "text-violet-400 bg-violet-500/15",
+  Reactions:    "text-pink-400 bg-pink-500/15",
 };
 
 function isNew(createdAt: string): boolean {
