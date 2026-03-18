@@ -103,7 +103,7 @@ export async function GET(
   zip.file("LICENSE.txt", buildLicense(asset.title, user.id, downloadedAt));
 
   const zipBuffer = await zip.generateAsync({
-    type: "nodebuffer",
+    type: "uint8array",
     compression: "STORE", // No compression — PSD is already binary, keeps it fast
   });
 
@@ -120,11 +120,11 @@ export async function GET(
 
   // Stream ZIP to client
   const safeTitle = asset.title.replace(/[^a-z0-9 _-]/gi, "").trim() || asset.slug;
-  return new Response(zipBuffer, {
+  return new Response(zipBuffer.buffer as ArrayBuffer, {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${safeTitle}.zip"`,
-      "Content-Length": String(zipBuffer.length),
+      "Content-Length": String(zipBuffer.byteLength),
     },
   });
 }
