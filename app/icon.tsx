@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 32, height: 32 };
+export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
 
 export default function Icon() {
@@ -8,21 +8,34 @@ export default function Icon() {
     (
       <div
         style={{
-          width: 32,
-          height: 32,
+          width: 64,
+          height: 64,
+          background: "#050505",
+          borderRadius: 14,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "transparent",
+          position: "relative",
         }}
       >
+        {/* Horizontal arm */}
         <div
           style={{
-            width: 28,
-            height: 28,
+            position: "absolute",
+            width: 54,
+            height: 16,
             background: "#C9A96E",
-            clipPath:
-              "polygon(50% 0%, 55% 45%, 100% 50%, 55% 55%, 50% 100%, 45% 55%, 0% 50%, 45% 45%)",
+            borderRadius: "50%",
+          }}
+        />
+        {/* Vertical arm */}
+        <div
+          style={{
+            position: "absolute",
+            width: 16,
+            height: 54,
+            background: "#C9A96E",
+            borderRadius: "50%",
           }}
         />
       </div>
