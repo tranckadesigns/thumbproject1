@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
 import { assetService } from "@/lib/services/index";
@@ -98,5 +99,6 @@ export async function POST(request: NextRequest) {
     tags,
   });
 
+  revalidatePath("/library");
   return NextResponse.json({ asset }, { status: 201 });
 }

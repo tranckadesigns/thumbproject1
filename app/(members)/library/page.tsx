@@ -4,7 +4,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LibraryShell } from "@/components/members/library-shell";
 import { siteConfig } from "@/lib/config/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // cache 5 minutes; revalidated on new asset upload
 export const metadata: Metadata = { title: "Library" };
 
 interface LibraryPageProps {

@@ -19,8 +19,8 @@ export interface IAssetService {
 export class AssetService implements IAssetService {
   constructor(private repo: IAssetRepository) {}
 
-  async getLibrary(filters?: AssetFilters): Promise<Asset[]> {
-    return this.repo.getAll(filters);
+  async getLibrary(_filters?: AssetFilters): Promise<Asset[]> {
+    return this.repo.getLibraryItems();
   }
 
   async getAllAdmin(): Promise<Asset[]> {

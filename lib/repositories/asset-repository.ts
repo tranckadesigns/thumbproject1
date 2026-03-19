@@ -9,6 +9,7 @@ export interface AssetFilters {
 
 export interface IAssetRepository {
   getAll(filters?: AssetFilters): Promise<Asset[]>;
+  getLibraryItems(): Promise<Asset[]>;
   getAllAdmin(): Promise<Asset[]>;
   getBySlug(slug: string): Promise<Asset | null>;
   getById(id: string): Promise<Asset | null>;

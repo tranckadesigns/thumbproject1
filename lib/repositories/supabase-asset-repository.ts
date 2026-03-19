@@ -31,6 +31,13 @@ function mapAsset(row: any): Asset {
 
 const ASSET_SELECT = `*, asset_categories(is_primary, categories(name))`;
 
+// Slimmer select for the library page — excludes heavy fields not needed in cards
+const LIBRARY_SELECT = `
+  id, slug, title, short_description, category, style_type,
+  thumbnail_url, file_size_mb, is_featured, tags, created_at,
+  download_count, asset_categories(is_primary, categories(name))
+`.trim();
+
 export class SupabaseAssetRepository implements IAssetRepository {
   async getAll(filters?: AssetFilters): Promise<Asset[]> {
     let q = sb().from("assets").select(ASSET_SELECT).eq("is_published", true);
@@ -45,6 +52,16 @@ export class SupabaseAssetRepository implements IAssetRepository {
     q = q.order("created_at", { ascending: false });
     const { data, error } = await q;
     if (error) throw new Error(`getAll failed: ${error.message}`);
+    return (data ?? []).map(mapAsset);
+  }
+
+  async getLibraryItems(): Promise<Asset[]> {
+    const { data, error } = await sb()
+      .from("assets")
+      .select(LIBRARY_SELECT)
+      .eq("is_published", true)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(`getLibraryItems failed: ${error.message}`);
     return (data ?? []).map(mapAsset);
   }
 
