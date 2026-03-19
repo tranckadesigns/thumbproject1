@@ -47,7 +47,7 @@ export function AssetPreviewTilt({ src, alt }: AssetPreviewTiltProps) {
           src={src}
           alt={alt}
           fill
-          className="object-contain p-8"
+          className="object-contain p-4"
           style={{ filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.6))" }}
           unoptimized
           priority
