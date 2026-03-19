@@ -212,7 +212,7 @@ export default async function AssetPage({ params }: AssetPageProps) {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {/* Preview */}
           <div className="space-y-4">
-            <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[4/3]">
+            <div className="relative overflow-hidden rounded-xl border border-border bg-base-elevated aspect-[16/10]">
               {asset.thumbnail_url ? (
                 <AssetPreviewTilt src={asset.thumbnail_url} alt={asset.title} />
               ) : (
